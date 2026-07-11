@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9&nbsp; Hồi quy tuyến tính – Phân tích dữ liệu</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./slide-multi-reg-vn.html" rel="next">
+<link href="./slide-causal-vn.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fa9e0952a64697c55f958ad13d4b0b73.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+    window.MathJax = {
+        tex: {
+            macros: {
+                E: "{\\mathbb{E}}",
+                P: "{\\mathbb{P}}",
+                Var: "{\\mathrm{Var}}"
+            }
+        }
+    };
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Phân tích dữ liệu</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./slide-simple-reg-vn.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hồi quy tuyến tính</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Giới thiệu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-0-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Các yêu cầu về môn học</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-1-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Giới thiệu về phân tích dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-2-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Các kỹ thuật thu thập dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-3-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Phân tích mô tả dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-research-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Phương pháp nghiên cứu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-inferences-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cơ sở suy diễn thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-hypo-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Kiểm định giả thuyết thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-bn-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Mô hình đồ thị</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-causal-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Phân tích nhân quả</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-simple-reg-vn.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hồi quy tuyến tính</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-multi-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Hồi quy đa biến và hồi quy logistic</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-mc-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Phương pháp mô phỏng Monte Carlo</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#khớp-đường-thẳng-phần-dư-và-tương-quan" id="toc-khớp-đường-thẳng-phần-dư-và-tương-quan" class="nav-link active" data-scroll-target="#khớp-đường-thẳng-phần-dư-và-tương-quan"><span class="header-section-number">9.1</span> Khớp đường thẳng, phần dư và tương quan</a></li>
+  <li><a href="#khớp-đường-thẳng-bằng-hồi-quy-bình-phương-tối-thiểu" id="toc-khớp-đường-thẳng-bằng-hồi-quy-bình-phương-tối-thiểu" class="nav-link" data-scroll-target="#khớp-đường-thẳng-bằng-hồi-quy-bình-phương-tối-thiểu"><span class="header-section-number">9.2</span> Khớp đường thẳng bằng hồi quy bình phương tối thiểu</a></li>
+  <li><a href="#các-loại-giá-trị-ngoại-lệ-trong-hồi-quy-tuyến-tính" id="toc-các-loại-giá-trị-ngoại-lệ-trong-hồi-quy-tuyến-tính" class="nav-link" data-scroll-target="#các-loại-giá-trị-ngoại-lệ-trong-hồi-quy-tuyến-tính"><span class="header-section-number">9.3</span> Các loại giá trị ngoại lệ trong hồi quy tuyến tính</a></li>
+  <li><a href="#suy-diễn-cho-hồi-quy-tuyến-tính" id="toc-suy-diễn-cho-hồi-quy-tuyến-tính" class="nav-link" data-scroll-target="#suy-diễn-cho-hồi-quy-tuyến-tính"><span class="header-section-number">9.4</span> Suy diễn cho hồi quy tuyến tính</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hồi quy tuyến tính</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="khớp-đường-thẳng-phần-dư-và-tương-quan" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="khớp-đường-thẳng-phần-dư-và-tương-quan"><span class="header-section-number">9.1</span> Khớp đường thẳng, phần dư và tương quan</h2>
+<section id="khớp-một-đường-thẳng-vào-dữ-liệu" class="level3">
+<h3 class="anchored" data-anchor-id="khớp-một-đường-thẳng-vào-dữ-liệu">Khớp một đường thẳng vào dữ liệu</h3>
+<section id="mô-hình-hóa-các-biến-số" class="level4">
+<h4 class="anchored" data-anchor-id="mô-hình-hóa-các-biến-số">Mô hình hóa các biến số</h4>
+<p>Trong phần này, chúng ta sẽ học cách định lượng mối quan hệ giữa hai biến số, cũng như mô hình hóa các biến phản hồi (response variables) dạng số bằng cách sử dụng một biến giải thích (explanatory variable) dạng số hoặc dạng phân loại.</p>
+</section>
+<section id="tỷ-lệ-nghèo-đói-so-với-tỷ-lệ-tốt-nghiệp-thpt" class="level4">
+<h4 class="anchored" data-anchor-id="tỷ-lệ-nghèo-đói-so-với-tỷ-lệ-tốt-nghiệp-thpt">Tỷ lệ nghèo đói so với Tỷ lệ tốt nghiệp THPT</h4>
+<p><em>Biểu đồ phân tán</em> (Scatterplot) dưới đây cho thấy mối quan hệ giữa tỷ lệ tốt nghiệp THPT (HS graduate rate) ở tất cả 50 bang của Hoa Kỳ và DC với % cư dân sống dưới mức nghèo khổ (thu nhập dưới $23,050 cho một gia đình 4 người vào năm 2012).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-1_linefit_res_corr/figures/poverty/poverty_hsgrad.svg" class="img-fluid figure-img"></p>
+<figcaption>Mối quan hệ giữa tỷ lệ nghèo đói và tỷ lệ tốt nghiệp THPT</figcaption>
+</figure>
+</div>
+<p><strong>Biến phản hồi (Response variable)?</strong> <em>% nghèo đói</em></p>
+<p><strong>Biến giải thích (Explanatory variable)?</strong> <em>% tốt nghiệp THPT</em></p>
+<p><strong>Mối quan hệ?</strong> <em>tuyến tính, nghịch biến (âm), mạnh vừa phải</em></p>
+</section>
+</section>
+<section id="sử-dụng-hồi-quy-tuyến-tính-để-dự-báo-nghèo-đói" class="level3">
+<h3 class="anchored" data-anchor-id="sử-dụng-hồi-quy-tuyến-tính-để-dự-báo-nghèo-đói">Sử dụng hồi quy tuyến tính để dự báo nghèo đói</h3>
+<p>Mô hình tuyến tính để dự báo tỷ lệ nghèo đói từ tỷ lệ tốt nghiệp trung học phổ thông ở Hoa Kỳ là:</p>
+<p><span class="math display">\[ \widehat{poverty} = 64.78 - 0.62 \times HS_{grad} \]</span></p>
+<p>Dấu “mũ” (hat) được sử dụng để biểu thị rằng đây là một giá trị ước lượng.</p>
+<p><strong>Tỷ lệ tốt nghiệp trung học ở Georgia là 85.1%. Mô hình dự báo mức độ nghèo đói cho bang này là bao nhiêu?</strong></p>
+<p><span class="math display">\[ 64.78 - 0.62 \times 85.1 = 12.018 \]</span></p>
+</section>
+<section id="quan-sát-đường-thẳng-bằng-mắt" class="level3">
+<h3 class="anchored" data-anchor-id="quan-sát-đường-thẳng-bằng-mắt">Quan sát đường thẳng bằng mắt</h3>
+<p><strong>Đường thẳng nào sau đây có vẻ khớp nhất với mối quan hệ tuyến tính giữa % nghèo đói và % tốt nghiệp THPT? Hãy chọn một.</strong></p>
+<p><em>(a)</em></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/poverty/poverty_hsgrad_manylines.svg" class="img-fluid figure-img"></p>
+<figcaption>Nhiều đường thẳng khác nhau thử khớp vào dữ liệu</figcaption>
+</figure>
+</div>
+</section>
+<section id="phần-dư" class="level3">
+<h3 class="anchored" data-anchor-id="phần-dư">Phần dư</h3>
+<p><em>Phần dư</em> (Residuals) là những gì còn lại sau khi khớp mô hình: Dữ liệu = Phần khớp + Phần dư</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/poverty/poverty_hsgrad_res.svg" class="img-fluid figure-img"></p>
+<figcaption>Minh họa phần dư trên biểu đồ</figcaption>
+</figure>
+</div>
+<p><strong>Phần dư (Residual)</strong></p>
+<p>Phần dư là sự khác biệt giữa giá trị quan sát (<span class="math inline">\(y_i\)</span>) và giá trị dự báo <span class="math inline">\(\hat{y}_i\)</span>. <span class="math display">\[ e_i = y_i - \hat{y}_i \]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/poverty/poverty_hsgrad_res_text.svg" class="img-fluid figure-img"></p>
+<figcaption>Giải thích phần dư bằng văn bản trên biểu đồ</figcaption>
+</figure>
+</div>
+<ul>
+<li>% sống trong nghèo đói ở DC cao hơn 5.44% so với dự báo.</li>
+<li>% sống trong nghèo đói ở RI thấp hơn 4.16% so với dự báo.</li>
+</ul>
+</section>
+<section id="mô-tả-các-mối-quan-hệ-tuyến-tính-bằng-tương-quan" class="level3">
+<h3 class="anchored" data-anchor-id="mô-tả-các-mối-quan-hệ-tuyến-tính-bằng-tương-quan">Mô tả các mối quan hệ tuyến tính bằng tương quan</h3>
+<section id="định-lượng-mối-quan-hệ" class="level4">
+<h4 class="anchored" data-anchor-id="định-lượng-mối-quan-hệ">Định lượng mối quan hệ</h4>
+<ul>
+<li><em>Tương quan</em> (Correlation) mô tả sức mạnh của mối liên hệ <strong>tuyến tính</strong> giữa hai biến.</li>
+<li>Nó nhận các giá trị trong khoảng từ -1 (nghịch biến hoàn hảo) đến +1 (đồng biến hoàn hảo).</li>
+<li>Giá trị bằng 0 cho biết không có mối liên hệ tuyến tính.</li>
+</ul>
+</section>
+<section id="đoán-hệ-số-tương-quan" class="level4">
+<h4 class="anchored" data-anchor-id="đoán-hệ-số-tương-quan">Đoán hệ số tương quan</h4>
+<p><strong>Phương án nào sau đây là dự đoán tốt nhất cho hệ số tương quan giữa % nghèo đói và % tốt nghiệp THPT?</strong></p>
+<ol type="1">
+<li>0.6</li>
+<li>-0.75 (Đáp án đúng)</li>
+<li>-0.1</li>
+<li>0.02</li>
+<li>-1.5</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-1_linefit_res_corr/figures/poverty/poverty_hsgrad_line.svg" class="img-fluid figure-img"></p>
+<figcaption>Biểu đồ tương quan giữa nghèo đói và tốt nghiệp THPT</figcaption>
+</figure>
+</div>
+</section>
+<section id="đoán-hệ-số-tương-quan-1" class="level4">
+<h4 class="anchored" data-anchor-id="đoán-hệ-số-tương-quan-1">Đoán hệ số tương quan</h4>
+<p><strong>Phương án nào sau đây là dự đoán tốt nhất cho hệ số tương quan giữa % nghèo đói và % tốt nghiệp THPT?</strong></p>
+<ol type="1">
+<li>0.1</li>
+<li>-0.6</li>
+<li>-0.4</li>
+<li>0.9</li>
+<li>0.5 (Đáp án đúng)</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-1_linefit_res_corr/figures/poverty/poverty_nohusband.svg" class="img-fluid figure-img"></p>
+<figcaption>Biểu đồ tương quan của một biến khác</figcaption>
+</figure>
+</div>
+</section>
+<section id="đánh-giá-hệ-số-tương-quan" class="level4">
+<h4 class="anchored" data-anchor-id="đánh-giá-hệ-số-tương-quan">Đánh giá hệ số tương quan</h4>
+<p><strong>Trường hợp nào sau đây có tương quan mạnh nhất, tức là hệ số tương quan gần +1 hoặc -1 nhất?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-1_linefit_res_corr/figures/cor/cor.svg" class="img-fluid figure-img"></p>
+<figcaption>So sánh các mức độ tương quan khác nhau</figcaption>
+</figure>
+</div>
+<p><em>(b)</em> <span class="math inline">\(\rightarrow\)</span> tương quan có nghĩa là mối liên hệ tuyến tính</p>
+</section>
+</section>
+</section>
+<section id="khớp-đường-thẳng-bằng-hồi-quy-bình-phương-tối-thiểu" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="khớp-đường-thẳng-bằng-hồi-quy-bình-phương-tối-thiểu"><span class="header-section-number">9.2</span> Khớp đường thẳng bằng hồi quy bình phương tối thiểu</h2>
+<section id="một-thước-đo-khách-quan-để-tìm-đường-thẳng-tốt-nhất" class="level3">
+<h3 class="anchored" data-anchor-id="một-thước-đo-khách-quan-để-tìm-đường-thẳng-tốt-nhất">Một thước đo khách quan để tìm đường thẳng tốt nhất</h3>
+<ul>
+<li>Chúng ta muốn một đường thẳng có các phần dư nhỏ:
+<ol type="1">
+<li><p>Lựa chọn 1: Giảm thiểu tổng các độ lớn (giá trị tuyệt đối) của các phần dư <span class="math display">\[ |e_1| + |e_2| + \cdots + |e_n| \]</span></p></li>
+<li><p>Lựa chọn 2: Giảm thiểu tổng bình phương các phần dư – <em>bình phương tối thiểu</em> (least squares) <span class="math display">\[ e_1^2 + e_2^2 + \cdots + e_n^2 \]</span></p></li>
+</ol></li>
+<li>Tại sao lại dùng bình phương tối thiểu?
+<ol type="1">
+<li>Được sử dụng phổ biến nhất</li>
+<li>Dễ tính toán bằng tay và bằng phần mềm hơn</li>
+<li>Trong nhiều ứng dụng, một phần dư lớn gấp đôi phần dư khác thường tồi tệ hơn gấp nhiều lần</li>
+</ol></li>
+</ul>
+<section id="đường-thẳng-bình-phương-tối-thiểu" class="level4">
+<h4 class="anchored" data-anchor-id="đường-thẳng-bình-phương-tối-thiểu">Đường thẳng bình phương tối thiểu</h4>
+<p><span class="math display">\[ \hat{y} = \beta_0 + \beta_1 x \]</span></p>
+<ul>
+<li><span class="math inline">\(\hat{y}\)</span>: Giá trị dự báo của biến phản hồi, <span class="math inline">\(y\)</span></li>
+<li><span class="math inline">\(\beta_0\)</span>: Hệ số chặn (Intercept), tham số
+<ul>
+<li><span class="math inline">\(b_0\)</span>: Hệ số chặn, ước lượng điểm (point estimate)</li>
+</ul></li>
+<li><span class="math inline">\(\beta_1\)</span>: Hệ số góc (Slope), tham số
+<ul>
+<li><span class="math inline">\(b_1\)</span>: Hệ số góc, ước lượng điểm</li>
+</ul></li>
+<li><span class="math inline">\(x\)</span>: Biến giải thích</li>
+</ul>
+</section>
+</section>
+<section id="các-điều-kiện-cho-đường-thẳng-bình-phương-tối-thiểu" class="level3">
+<h3 class="anchored" data-anchor-id="các-điều-kiện-cho-đường-thẳng-bình-phương-tối-thiểu">Các điều kiện cho đường thẳng bình phương tối thiểu</h3>
+<ol type="1">
+<li>Tính tuyến tính (Linearity)</li>
+<li>Các phần dư gần chuẩn (Nearly normal residuals)</li>
+<li>Độ biến thiên không đổi (Constant variability)</li>
+</ol>
+<section id="điều-kiện-1-tính-tuyến-tính" class="level4">
+<h4 class="anchored" data-anchor-id="điều-kiện-1-tính-tuyến-tính">Điều kiện: (1) Tính tuyến tính</h4>
+<ul>
+<li>Mối quan hệ giữa biến giải thích và biến phản hồi phải là tuyến tính.</li>
+<li>Kiểm tra bằng biểu đồ phân tán của dữ liệu, hoặc <em>biểu đồ phần dư</em> (residuals plot).</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/sampleLinesAndResPlots/sampleLinesAndResPlots.svg" class="img-fluid figure-img"></p>
+<figcaption>Các ví dụ về biểu đồ đường thẳng và biểu đồ phần dư</figcaption>
+</figure>
+</div>
+</section>
+<section id="giải-phẫu-một-biểu-đồ-phần-dư" class="level4">
+<h4 class="anchored" data-anchor-id="giải-phẫu-một-biểu-đồ-phần-dư">Giải phẫu một biểu đồ phần dư</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/poverty/poverty_hsgrad_resplot.svg" class="img-fluid figure-img"></p>
+<figcaption>Biểu đồ phần dư của dữ liệu nghèo đói</figcaption>
+</figure>
+</div>
+<p><em>RI:</em></p>
+<p><span class="math display">\[\begin{align*}
+\%~HS~grad &amp;= 81 \qquad \%~in~poverty = 10.3 \\
+\widehat{\%~in~poverty} &amp;= 64.68 - 0.62 \times 81 = 14.46 \\
+e &amp;= \%~in~poverty - \widehat{\%~in~poverty} \\
+&amp;= 10.3 - 14.46 = -4.16
+\end{align*}\]</span></p>
+<p><em>DC:</em></p>
+<p><span class="math display">\[\begin{align*}
+\%~HS~grad &amp;= 86 \qquad \%~in~poverty = 16.8 \\
+\widehat{\%~in~poverty} &amp;= 64.68 - 0.62 \times 86 = 11.36 \\
+e &amp;= \%~in~poverty - \widehat{\%~in~poverty} \\
+&amp;= 16.8 - 11.36 = 5.44
+\end{align*}\]</span></p>
+</section>
+<section id="điều-kiện-2-các-phần-dư-gần-chuẩn" class="level4">
+<h4 class="anchored" data-anchor-id="điều-kiện-2-các-phần-dư-gần-chuẩn">Điều kiện: (2) Các phần dư gần chuẩn</h4>
+<ul>
+<li>Các phần dư nên có phân phối gần chuẩn.</li>
+<li>Điều kiện này có thể không được thỏa mãn khi có các quan sát bất thường không tuân theo xu hướng của phần còn lại của dữ liệu.</li>
+<li>Kiểm tra bằng biểu đồ tần suất (histogram).</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/poverty/normal_res.svg" class="img-fluid figure-img"></p>
+<figcaption>Biểu đồ tần suất của các phần dư</figcaption>
+</figure>
+</div>
+</section>
+<section id="điều-kiện-3-độ-biến-thiên-không-đổi" class="level4">
+<h4 class="anchored" data-anchor-id="điều-kiện-3-độ-biến-thiên-không-đổi">Điều kiện: (3) Độ biến thiên không đổi</h4>
+<ul>
+<li>Độ biến thiên của các điểm xung quanh đường thẳng bình phương tối thiểu nên xấp xỉ không đổi.</li>
+<li>Điều này có nghĩa là độ biến thiên của các phần dư xung quanh đường 0 cũng nên xấp xỉ không đổi.</li>
+<li>Còn được gọi là <em>tính đồng phương sai</em> (homoscedasticity).</li>
+<li>Kiểm tra bằng biểu đồ phần dư.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/poverty/poverty_hsgrad_tube.svg" class="img-fluid figure-img"></p>
+<figcaption>Kiểm tra độ biến thiên không đổi</figcaption>
+</figure>
+</div>
+</section>
+<section id="kiểm-tra-các-điều-kiện" class="level4">
+<h4 class="anchored" data-anchor-id="kiểm-tra-các-điều-kiện">Kiểm tra các điều kiện</h4>
+<p><strong>Mô hình tuyến tính này rõ ràng đang vi phạm điều kiện nào?</strong></p>
+<ol type="1">
+<li>Độ biến thiên không đổi</li>
+<li>Mối quan hệ tuyến tính (Đáp án đúng)</li>
+<li>Phần dư có phân phối chuẩn</li>
+<li>Không có giá trị ngoại lệ cực đoan</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/problems/nonlinear.svg" class="img-fluid figure-img"></p>
+<figcaption>Dữ liệu phi tuyến tính</figcaption>
+</figure>
+</div>
+</section>
+<section id="kiểm-tra-các-điều-kiện-1" class="level4">
+<h4 class="anchored" data-anchor-id="kiểm-tra-các-điều-kiện-1">Kiểm tra các điều kiện</h4>
+<p><strong>Mô hình tuyến tính này rõ ràng đang vi phạm điều kiện nào?</strong></p>
+<ol type="1">
+<li>Độ biến thiên không đổi (Đáp án đúng)</li>
+<li>Mối quan hệ tuyến tính</li>
+<li>Phần dư có phân phối chuẩn</li>
+<li>Không có giá trị ngoại lệ cực đoan</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/problems/heteroscedastic.svg" class="img-fluid figure-img"></p>
+<figcaption>Dữ liệu có phương sai thay đổi</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="tìm-đường-thẳng-bình-phương-tối-thiểu" class="level3">
+<h3 class="anchored" data-anchor-id="tìm-đường-thẳng-bình-phương-tối-thiểu">Tìm đường thẳng bình phương tối thiểu</h3>
+<section id="cho-biết" class="level4">
+<h4 class="anchored" data-anchor-id="cho-biết">Cho biết…</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/poverty/poverty_hsgrad.svg" class="img-fluid figure-img"></p>
+<figcaption>Dữ liệu nghèo đói và tốt nghiệp</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>% tốt nghiệp THPT (<span class="math inline">\(x\)</span>)</th>
+<th>% nghèo đói (<span class="math inline">\(y\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>trung bình (mean)</td>
+<td><span class="math inline">\(\bar{x} = 86.01\)</span></td>
+<td><span class="math inline">\(\bar{y} = 11.35\)</span></td>
+</tr>
+<tr class="even">
+<td>độ lệch chuẩn (sd)</td>
+<td><span class="math inline">\(s_x = 3.73\)</span></td>
+<td><span class="math inline">\(s_y = 3.1\)</span></td>
+</tr>
+<tr class="odd">
+<td>tương quan (correlation)</td>
+<td></td>
+<td><span class="math inline">\(R = -0.75\)</span></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="diễn-giải-các-ước-lượng-tham-số-của-mô-hình-hồi-quy" class="level3">
+<h3 class="anchored" data-anchor-id="diễn-giải-các-ước-lượng-tham-số-của-mô-hình-hồi-quy">Diễn giải các ước lượng tham số của mô hình hồi quy</h3>
+<section id="hệ-số-góc" class="level4">
+<h4 class="anchored" data-anchor-id="hệ-số-góc">Hệ số góc</h4>
+<p><strong>Hệ số góc</strong> Hệ số góc của hồi quy có thể được tính bằng <span class="math display">\[ b_1 = \frac{s_y}{s_x} R \]</span></p>
+<p><em>Trong ngữ cảnh…</em> <span class="math display">\[ b_1 = \frac{3.1}{3.73} \times -0.75 = -0.62 \]</span></p>
+<p><em>Diễn giải</em> Cứ mỗi điểm % tăng thêm trong tỷ lệ tốt nghiệp THPT, chúng ta kỳ vọng % sống trong nghèo đói sẽ thấp hơn trung bình 0.62 điểm %.</p>
+</section>
+<section id="hệ-số-chặn" class="level4">
+<h4 class="anchored" data-anchor-id="hệ-số-chặn">Hệ số chặn</h4>
+<p><strong>Hệ số chặn</strong> Hệ số chặn là nơi đường hồi quy cắt trục <span class="math inline">\(y\)</span>. Việc tính toán hệ số chặn sử dụng một thực tế là đường hồi quy luôn đi qua điểm <span class="math inline">\((\bar{x},\bar{y})\)</span>. <span class="math display">\[ b_0 = \bar{y} - b_1 \bar{x} \]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/poverty/poverty_hsgrad_line_wide.svg" class="img-fluid figure-img"></p>
+<figcaption>Đường hồi quy mở rộng để thấy hệ số chặn</figcaption>
+</figure>
+</div>
+<p><span class="math display">\[\begin{align*}
+b_0 &amp;= 11.35 - (-0.62) \times 86.01 \\
+&amp;= 64.68
+\end{align*}\]</span></p>
+<p><strong>Câu nào sau đây là cách diễn giải đúng về hệ số chặn?</strong></p>
+<ol type="1">
+<li>Với mỗi điểm % tăng thêm của tỷ lệ tốt nghiệp THPT, % sống trong nghèo đói dự kiến tăng trung bình 64.68%.</li>
+<li>Với mỗi điểm % giảm đi của tỷ lệ tốt nghiệp THPT, % sống trong nghèo đói dự kiến tăng trung bình 64.68%.</li>
+<li>Việc không có người tốt nghiệp THPT dẫn đến 64.68% cư dân sống dưới mức nghèo khổ.</li>
+<li>Các bang không có người tốt nghiệp THPT dự kiến sẽ có trung bình 64.68% cư dân sống dưới mức nghèo khổ. (Đáp án đúng)</li>
+<li>Ở các bang không có người tốt nghiệp THPT, % sống trong nghèo đói dự kiến tăng trung bình 64.68%.</li>
+</ol>
+</section>
+<section id="thêm-về-hệ-số-chặn" class="level4">
+<h4 class="anchored" data-anchor-id="thêm-về-hệ-số-chặn">Thêm về hệ số chặn</h4>
+<p>Vì không có bang nào trong tập dữ liệu có tỷ lệ tốt nghiệp THPT bằng 0, nên hệ số chặn không được quan tâm, không hữu ích lắm và cũng không đáng tin cậy vì giá trị dự báo của hệ số chặn nằm quá xa so với phần lớn dữ liệu.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/poverty/poverty_hsgrad_line_wide.svg" class="img-fluid figure-img"></p>
+<figcaption>Đường hồi quy mở rộng</figcaption>
+</figure>
+</div>
+</section>
+<section id="đường-hồi-quy" class="level4">
+<h4 class="anchored" data-anchor-id="đường-hồi-quy">Đường hồi quy</h4>
+<p><span class="math display">\[ \widehat{\%~in~poverty} = 64.68 - 0.62~\%~HS~grad \]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/poverty/poverty_hsgrad_line.svg" class="img-fluid figure-img"></p>
+<figcaption>Đường hồi quy trên dữ liệu nghèo đói</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="tóm-tắt-diễn-giải-hệ-số-góc-và-hệ-số-chặn" class="level3">
+<h3 class="anchored" data-anchor-id="tóm-tắt-diễn-giải-hệ-số-góc-và-hệ-số-chặn">Tóm tắt: Diễn giải hệ số góc và hệ số chặn</h3>
+<section id="diễn-giải-hệ-số-góc-và-hệ-số-chặn" class="level4">
+<h4 class="anchored" data-anchor-id="diễn-giải-hệ-số-góc-và-hệ-số-chặn">Diễn giải hệ số góc và hệ số chặn</h4>
+<ul>
+<li><em>Hệ số chặn (Intercept):</em> Khi <span class="math inline">\(x = 0\)</span>, <span class="math inline">\(y\)</span> dự kiến bằng hệ số chặn.</li>
+<li><em>Hệ số góc (Slope):</em> Với mỗi đơn vị tăng thêm của <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span> dự kiến tăng / giảm trung bình một lượng bằng hệ số góc.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/diagram.png" class="img-fluid figure-img"></p>
+<figcaption>Sơ đồ minh họa hệ số góc và hệ số chặn</figcaption>
+</figure>
+</div>
+<p>Lưu ý: Những phát biểu này không mang tính nhân quả, trừ khi nghiên cứu là một thử nghiệm có đối chứng ngẫu nhiên.</p>
+</section>
+</section>
+<section id="dự-báo-ngoại-suy" class="level3">
+<h3 class="anchored" data-anchor-id="dự-báo-ngoại-suy">Dự báo &amp; Ngoại suy</h3>
+<section id="dự-báo" class="level4">
+<h4 class="anchored" data-anchor-id="dự-báo">Dự báo</h4>
+<ul>
+<li>Việc sử dụng mô hình tuyến tính để dự báo giá trị của biến phản hồi cho một giá trị cho trước của biến giải thích được gọi là <em>dự báo</em> (prediction), đơn giản bằng cách thay giá trị của <span class="math inline">\(x\)</span> vào phương trình mô hình tuyến tính.</li>
+<li>Sẽ có một sự không chắc chắn nhất định đi kèm với giá trị dự báo.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/poverty/poverty_hsgrad_pred.svg" class="img-fluid figure-img"></p>
+<figcaption>Dự báo trên biểu đồ</figcaption>
+</figure>
+</div>
+</section>
+<section id="ngoại-suy" class="level4">
+<h4 class="anchored" data-anchor-id="ngoại-suy">Ngoại suy</h4>
+<ul>
+<li>Áp dụng một ước lượng mô hình cho các giá trị nằm ngoài phạm vi của dữ liệu gốc được gọi là <em>ngoại suy</em> (extrapolation).</li>
+<li>Đôi khi hệ số chặn có thể là một sự ngoại suy.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/poverty/poverty_hsgrad_line_wide.svg" class="img-fluid figure-img"></p>
+<figcaption>Ví dụ về ngoại suy</figcaption>
+</figure>
+</div>
+</section>
+<section id="các-ví-dụ-về-ngoại-suy" class="level4">
+<h4 class="anchored" data-anchor-id="các-ví-dụ-về-ngoại-suy">Các ví dụ về ngoại suy</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/extrapolation.png" class="img-fluid figure-img"></p>
+<figcaption>Biếm họa về ngoại suy</figcaption>
+</figure>
+</div>
+</section>
+<section id="các-ví-dụ-về-ngoại-suy-1" class="level4">
+<h4 class="anchored" data-anchor-id="các-ví-dụ-về-ngoại-suy-1">Các ví dụ về ngoại suy</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/womenOutsprintBBC.png" class="img-fluid figure-img"></p>
+<figcaption>Ví dụ ngoại suy về tốc độ chạy của phụ nữ</figcaption>
+</figure>
+</div>
+</section>
+<section id="các-ví-dụ-về-ngoại-suy-2" class="level4">
+<h4 class="anchored" data-anchor-id="các-ví-dụ-về-ngoại-suy-2">Các ví dụ về ngoại suy</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/womenOutsprint.png" class="img-fluid figure-img"></p>
+<figcaption>Ngoại suy phi lý về tốc độ chạy</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="sử-dụng-r2-để-mô-tả-độ-mạnh-của-sự-phù-hợp" class="level3">
+<h3 class="anchored" data-anchor-id="sử-dụng-r2-để-mô-tả-độ-mạnh-của-sự-phù-hợp">Sử dụng <span class="math inline">\(R^2\)</span> để mô tả độ mạnh của sự phù hợp</h3>
+<section id="r2" class="level4">
+<h4 class="anchored" data-anchor-id="r2"><span class="math inline">\(R^2\)</span></h4>
+<ul>
+<li>Độ mạnh của sự phù hợp (fit) của một mô hình tuyến tính thường được đánh giá bằng <span class="math inline">\(R^2\)</span>.</li>
+<li><span class="math inline">\(R^2\)</span> được tính bằng bình phương của hệ số tương quan.</li>
+<li>Nó cho chúng ta biết bao nhiêu phần trăm độ biến thiên của biến phản hồi được giải thích bởi mô hình.</li>
+<li>Phần biến thiên còn lại được giải thích bởi các biến không được đưa vào mô hình hoặc bởi tính ngẫu nhiên vốn có trong dữ liệu.</li>
+<li>Đối với mô hình chúng ta đang làm việc, <span class="math inline">\(R^2 = (-0.62)^2 = 0.38\)</span>.</li>
+</ul>
+</section>
+<section id="diễn-giải-r2" class="level4">
+<h4 class="anchored" data-anchor-id="diễn-giải-r2">Diễn giải <span class="math inline">\(R^2\)</span></h4>
+<p><strong>Cách diễn giải nào sau đây là đúng cho</strong> <span class="math inline">\(R = -0.62\)</span>, <span class="math inline">\(R^2 = 0.38\)</span>?</p>
+<ol type="1">
+<li>38% độ biến thiên của % tốt nghiệp THPT giữa 51 bang được giải thích bởi mô hình.</li>
+<li>38% độ biến thiên của % cư dân sống trong nghèo đói giữa 51 bang được giải thích bởi mô hình. (Đáp án đúng)</li>
+<li>38% thời gian % tốt nghiệp THPT dự báo chính xác % sống trong nghèo đói.</li>
+<li>62% độ biến thiên của % cư dân sống trong nghèo đói giữa 51 bang được giải thích bởi mô hình.</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-2_least_square_reg/figures/poverty/poverty_hsgrad.svg" class="img-fluid figure-img"></p>
+<figcaption>Biểu đồ dữ liệu nghèo đói ban đầu</figcaption>
+</figure>
+</div>
+</section>
+</section>
+</section>
+<section id="các-loại-giá-trị-ngoại-lệ-trong-hồi-quy-tuyến-tính" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="các-loại-giá-trị-ngoại-lệ-trong-hồi-quy-tuyến-tính"><span class="header-section-number">9.3</span> Các loại giá trị ngoại lệ trong hồi quy tuyến tính</h2>
+<section id="các-loại-giá-trị-ngoại-lệ" class="level4">
+<h4 class="anchored" data-anchor-id="các-loại-giá-trị-ngoại-lệ">Các loại giá trị ngoại lệ</h4>
+<p><strong>Các giá trị ngoại lệ (outliers) ảnh hưởng như thế nào đến đường bình phương tối thiểu trong biểu đồ này?</strong></p>
+<p>Để trả lời câu hỏi này, hãy nghĩ xem đường hồi quy sẽ ở đâu nếu có và không có (các) giá trị ngoại lệ. Nếu không có các giá trị ngoại lệ, đường hồi quy sẽ dốc hơn và nằm gần nhóm quan sát lớn hơn. Khi có các giá trị ngoại lệ, đường thẳng bị kéo lên trên và ra xa một số quan sát trong nhóm lớn.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-3_outliers/figures/outlierPlots/out4.svg" class="img-fluid figure-img"></p>
+<figcaption>Ảnh hưởng của giá trị ngoại lệ lên đường hồi quy</figcaption>
+</figure>
+</div>
+</section>
+<section id="các-loại-giá-trị-ngoại-lệ-1" class="level4">
+<h4 class="anchored" data-anchor-id="các-loại-giá-trị-ngoại-lệ-1">Các loại giá trị ngoại lệ</h4>
+<p><strong>Các giá trị ngoại lệ ảnh hưởng như thế nào đến đường bình phương tối thiểu trong biểu đồ này?</strong></p>
+<p><em>Nếu không có giá trị ngoại lệ, sẽ không có mối quan hệ rõ ràng giữa</em> <span class="math inline">\(x\)</span> và <span class="math inline">\(y\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-3_outliers/figures/outlierPlots/out5.svg" class="img-fluid figure-img"></p>
+<figcaption>Một điểm ngoại lệ tạo ra xu hướng</figcaption>
+</figure>
+</div>
+</section>
+<section id="một-số-thuật-ngữ" class="level4">
+<h4 class="anchored" data-anchor-id="một-số-thuật-ngữ">Một số thuật ngữ</h4>
+<ul>
+<li><em>Giá trị ngoại lệ</em> (Outliers) là các điểm nằm xa đám mây các điểm dữ liệu.</li>
+<li>Các giá trị ngoại lệ nằm xa tâm của đám mây theo phương ngang được gọi là các điểm có <em>đòn bẩy cao</em> (high leverage).</li>
+<li>Các điểm có đòn bẩy cao thực sự ảnh hưởng đến <strong>hệ số góc</strong> của đường hồi quy được gọi là các điểm <em>ảnh hưởng</em> (influential).</li>
+<li>Để xác định một điểm có phải là điểm ảnh hưởng hay không, hãy hình dung đường hồi quy khi có và không có điểm đó. Hệ số góc của đường thẳng có thay đổi đáng kể không? Nếu có, thì đó là điểm ảnh hưởng. Nếu không, thì đó không phải là điểm ảnh hưởng.</li>
+</ul>
+</section>
+<section id="các-điểm-ảnh-hưởng" class="level4">
+<h4 class="anchored" data-anchor-id="các-điểm-ảnh-hưởng">Các điểm ảnh hưởng</h4>
+<p>Dữ liệu có sẵn về logarit của nhiệt độ bề mặt và logarit của cường độ ánh sáng của 47 ngôi sao trong cụm sao CYG OB1.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-3_outliers/figures/stars/star.svg" class="img-fluid figure-img"></p>
+<figcaption>Biểu đồ phân tán các ngôi sao</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-3_outliers/figures/stars/cyg.svg" class="img-fluid figure-img"></p>
+<figcaption>Các điểm ảnh hưởng trong dữ liệu sao</figcaption>
+</figure>
+</div>
+</section>
+<section id="các-loại-giá-trị-ngoại-lệ-2" class="level4">
+<h4 class="anchored" data-anchor-id="các-loại-giá-trị-ngoại-lệ-2">Các loại giá trị ngoại lệ</h4>
+<p><strong>Phương án nào dưới đây mô tả đúng nhất về giá trị ngoại lệ này?</strong></p>
+<ol type="1">
+<li>điểm ảnh hưởng</li>
+<li>đòn bẩy cao (Đáp án đúng)</li>
+<li>không có phương án nào ở trên</li>
+<li>không có giá trị ngoại lệ nào</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-3_outliers/figures/outlierPlots/out6.svg" class="img-fluid figure-img"></p>
+<figcaption>Ví dụ về điểm đòn bẩy cao</figcaption>
+</figure>
+</div>
+</section>
+<section id="các-loại-giá-trị-ngoại-lệ-3" class="level4">
+<h4 class="anchored" data-anchor-id="các-loại-giá-trị-ngoại-lệ-3">Các loại giá trị ngoại lệ</h4>
+<p><strong>Giá trị ngoại lệ này có ảnh hưởng đến hệ số góc của đường hồi quy không?</strong></p>
+<p><em>Không nhiều…</em></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-3_outliers/figures/outlierPlots/out1.svg" class="img-fluid figure-img"></p>
+<figcaption>Điểm ngoại lệ nhưng không ảnh hưởng nhiều</figcaption>
+</figure>
+</div>
+</section>
+<section id="tóm-tắt" class="level4">
+<h4 class="anchored" data-anchor-id="tóm-tắt">Tóm tắt</h4>
+<p><strong>Câu nào sau đây là đúng?</strong></p>
+<ol type="1">
+<li>Các điểm ảnh hưởng luôn làm thay đổi hệ số chặn của đường hồi quy.</li>
+<li>Các điểm ảnh hưởng luôn làm giảm <span class="math inline">\(R^2\)</span>.</li>
+<li>Một điểm có đòn bẩy thấp có khả năng trở thành điểm ảnh hưởng cao hơn nhiều so với một điểm có đòn bẩy cao.</li>
+<li>Khi tập dữ liệu bao gồm một điểm ảnh hưởng, mối quan hệ giữa biến giải thích và biến phản hồi luôn là phi tuyến.</li>
+<li>Không có câu nào ở trên là đúng. (Đáp án đúng)</li>
+</ol>
+<p><span class="math display">\[ R = 0.08, R^2 = 0.0064 \]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-3_outliers/figures/outlierPlots/out5-1.svg" class="img-fluid figure-img"></p>
+<figcaption>Biểu đồ không có điểm ảnh hưởng</figcaption>
+</figure>
+</div>
+<p><span class="math display">\[ R = 0.79, R^2 = 0.6241 \]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-3_outliers/figures/outlierPlots/out5.svg" class="img-fluid figure-img"></p>
+<figcaption>Biểu đồ có điểm ảnh hưởng</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="suy-diễn-cho-hồi-quy-tuyến-tính" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="suy-diễn-cho-hồi-quy-tuyến-tính"><span class="header-section-number">9.4</span> Suy diễn cho hồi quy tuyến tính</h2>
+<section id="hiểu-kết-quả-hồi-quy-từ-phần-mềm" class="level3">
+<h3 class="anchored" data-anchor-id="hiểu-kết-quả-hồi-quy-từ-phần-mềm">Hiểu kết quả hồi quy từ phần mềm</h3>
+<section id="bản-chất-hay-nuôi-dưỡng" class="level4">
+<h4 class="anchored" data-anchor-id="bản-chất-hay-nuôi-dưỡng">Bản chất hay nuôi dưỡng?</h4>
+<p>Vào năm 1966, Cyril Burt đã công bố một bài báo có tiêu đề “Sự xác định di truyền của những khác biệt về trí thông minh: Một nghiên cứu về các cặp song sinh cùng trứng được nuôi dưỡng tách biệt?” Dữ liệu bao gồm điểm IQ của [được giả định là một mẫu ngẫu nhiên gồm] 27 cặp song sinh cùng trứng, một người được nuôi dưỡng bởi cha mẹ nuôi, người kia bởi cha mẹ ruột.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-4_inf_lin_reg/figures/twins/twins_IQ.svg" class="img-fluid figure-img"></p>
+<figcaption>Dữ liệu IQ của các cặp song sinh</figcaption>
+</figure>
+</div>
+<p><strong>Câu nào sau đây là sai?</strong></p>
+<pre class="output" contenteditable="true"><code>Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       9.20760    9.29990   0.990    0.332    
+bioIQ             0.90144    0.09633   9.358  1.2e-09
+
+Residual standard error: 7.729 on 25 degrees of freedom
+Multiple R-squared: 0.7779, Adjusted R-squared: 0.769 
+F-statistic: 87.56 on 1 and 25 DF,  p-value: 1.204e-09 </code></pre>
+<ol type="1">
+<li>Trung bình, điểm IQ của anh chị em ruột tăng thêm 10 điểm thì điểm IQ của anh chị em nuôi tăng thêm 9 điểm.</li>
+<li>Khoảng 78% điểm IQ của các anh chị em nuôi có thể được dự báo chính xác bởi mô hình. (Đáp án đúng)</li>
+<li>Mô hình tuyến tính là <span class="math inline">\(\widehat{fosterIQ} = 9.2 + 0.9 \times bioIQ\)</span>.</li>
+<li>Các cặp song sinh nuôi có điểm IQ cao hơn mức trung bình thường cũng có anh chị em ruột có điểm IQ cao hơn mức trung bình.</li>
+</ol>
+</section>
+<section id="kiểm-định-cho-hệ-số-góc" class="level4">
+<h4 class="anchored" data-anchor-id="kiểm-định-cho-hệ-số-góc">Kiểm định cho hệ số góc</h4>
+<p><strong>Giả sử rằng 27 cặp song sinh này tạo thành một mẫu đại diện cho tất cả các cặp song sinh bị tách biệt khi sinh ra, chúng ta muốn kiểm định xem liệu những dữ liệu này có cung cấp bằng chứng thuyết phục rằng IQ của người anh chị em ruột là một biến dự báo có ý nghĩa cho IQ của người anh chị em nuôi hay không. Các giả thuyết phù hợp là gì?</strong></p>
+<ol type="1">
+<li><span class="math inline">\(H_0: b_0 = 0; H_A: b_0 \ne 0\)</span></li>
+<li><span class="math inline">\(H_0: \beta_0 = 0; H_A: \beta_0 \ne 0\)</span></li>
+<li><span class="math inline">\(H_0: b_1 = 0; H_A: b_1 \ne 0\)</span></li>
+<li><span class="math inline">\(H_0: \beta_1 = 0; H_A: \beta_1 \ne 0\)</span> (Đáp án đúng)</li>
+</ol>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 16%">
+<col style="width: 20%">
+<col style="width: 15%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước lượng (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hệ số chặn (Intercept)</td>
+<td>9.2076</td>
+<td>9.2999</td>
+<td>0.99</td>
+<td>0.3316</td>
+</tr>
+<tr class="even">
+<td>bioIQ</td>
+<td>0.9014</td>
+<td>0.0963</td>
+<td>9.36</td>
+<td>0.0000</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Chúng ta luôn sử dụng kiểm định <span class="math inline">\(t\)</span> trong suy diễn cho hồi quy.</li>
+<li><strong>Thống kê kiểm định (Test statistic),</strong> <span class="math inline">\(T = \frac{\text{ước lượng điểm} - \text{giá trị null}}{SE}\)</span></li>
+<li>Ước lượng điểm = <span class="math inline">\(b_1\)</span> là hệ số góc quan sát được.</li>
+<li><span class="math inline">\(SE_{b_1}\)</span> là sai số chuẩn đi kèm với hệ số góc.</li>
+<li>Bậc tự do đi kèm với hệ số góc là <span class="math inline">\(df = n - 2\)</span>, trong đó <span class="math inline">\(n\)</span> là kích thước mẫu.</li>
+<li>Lưu ý: Chúng ta mất đi 1 bậc tự do cho mỗi tham số chúng ta ước lượng, và trong hồi quy tuyến tính đơn (simple linear regression), chúng ta ước lượng 2 tham số, <span class="math inline">\(\beta_0\)</span> và <span class="math inline">\(\beta_1\)</span>.</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 16%">
+<col style="width: 20%">
+<col style="width: 15%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước lượng (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hệ số chặn (Intercept)</td>
+<td>9.2076</td>
+<td>9.2999</td>
+<td>0.99</td>
+<td>0.3316</td>
+</tr>
+<tr class="even">
+<td>bioIQ</td>
+<td>0.9014</td>
+<td>0.0963</td>
+<td>9.36</td>
+<td>0.0000</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[\begin{eqnarray*}
+T &amp;=&amp; \frac{0.9014 - 0}{0.0963} = 9.36 \\
+df &amp;=&amp; 27 - 2 = 25 \\
+p-value &amp;=&amp; P(|T| &gt; 9.36) &lt; 0.01
+\end{eqnarray*}\]</span></p>
+</section>
+<section id="tốt-nghiệp-đại-học-so-với-người-gốc-tây-ban-nha-ở-la" class="level4">
+<h4 class="anchored" data-anchor-id="tốt-nghiệp-đại-học-so-với-người-gốc-tây-ban-nha-ở-la">% Tốt nghiệp đại học so với % người gốc Tây Ban Nha ở LA</h4>
+<p><strong>Bạn có thể nói gì về mối quan hệ giữa % tốt nghiệp đại học và % người gốc Tây Ban Nha trong một mẫu gồm 100 khu vực mã zip (zip code) ở LA?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-4_inf_lin_reg/figures/la/Prop_EduHigherThan16th.svg" class="img-fluid figure-img"></p>
+<figcaption>Tỷ lệ học vấn ở LA</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-4_inf_lin_reg/figures/la/Prop_RaceEthHispanic.svg" class="img-fluid figure-img"></p>
+<figcaption>Tỷ lệ sắc tộc ở LA</figcaption>
+</figure>
+</div>
+</section>
+<section id="có-trình-độ-đại-học-so-với-người-gốc-tây-ban-nha-ở-la---cái-nhìn-khác" class="level4">
+<h4 class="anchored" data-anchor-id="có-trình-độ-đại-học-so-với-người-gốc-tây-ban-nha-ở-la---cái-nhìn-khác">% Có trình độ đại học so với % người gốc Tây Ban Nha ở LA - cái nhìn khác</h4>
+<p><strong>Bạn có thể nói gì về mối quan hệ giữa % tốt nghiệp đại học và % người gốc Tây Ban Nha trong một mẫu gồm 100 khu vực mã zip ở LA?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="8-4_inf_lin_reg/figures/la/la.svg" class="img-fluid figure-img"></p>
+<figcaption>Mối quan hệ giữa học vấn và sắc tộc</figcaption>
+</figure>
+</div>
+</section>
+<section id="có-trình-độ-đại-học-so-với-người-gốc-tây-ban-nha-ở-la---mô-hình-tuyến-tính" class="level4">
+<h4 class="anchored" data-anchor-id="có-trình-độ-đại-học-so-với-người-gốc-tây-ban-nha-ở-la---mô-hình-tuyến-tính">% Có trình độ đại học so với % người gốc Tây Ban Nha ở LA - mô hình tuyến tính</h4>
+<p><strong>Cách diễn giải nào dưới đây là tốt nhất cho hệ số góc?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 16%">
+<col style="width: 20%">
+<col style="width: 15%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước lượng (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hệ số chặn (Intercept)</td>
+<td>0.7290</td>
+<td>0.0308</td>
+<td>23.68</td>
+<td>0.0000</td>
+</tr>
+<tr class="even">
+<td>%Hispanic</td>
+<td>-0.7527</td>
+<td>0.0501</td>
+<td>-15.01</td>
+<td>0.0000</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li>Tăng 1% cư dân gốc Tây Ban Nha trong một khu vực mã zip ở LA đi kèm với mức giảm 75% trong % tốt nghiệp đại học.</li>
+<li>Tăng 1% cư dân gốc Tây Ban Nha trong một khu vực mã zip ở LA đi kèm với mức giảm 0.75% trong % tốt nghiệp đại học. (Đáp án đúng)</li>
+<li>Cứ thêm 1% cư dân gốc Tây Ban Nha sẽ làm giảm % tốt nghiệp đại học trong một khu vực mã zip ở LA đi 0.75%.</li>
+<li>Trong các khu vực mã zip không có cư dân gốc Tây Ban Nha, % tốt nghiệp đại học dự kiến là 75%.</li>
+</ol>
+</section>
+<section id="có-trình-độ-đại-học-so-với-người-gốc-tây-ban-nha-ở-la---mô-hình-tuyến-tính-1" class="level4">
+<h4 class="anchored" data-anchor-id="có-trình-độ-đại-học-so-với-người-gốc-tây-ban-nha-ở-la---mô-hình-tuyến-tính-1">% Có trình độ đại học so với % người gốc Tây Ban Nha ở LA - mô hình tuyến tính</h4>
+<p><strong>Những dữ liệu này có cung cấp bằng chứng thuyết phục rằng có mối quan hệ có ý nghĩa thống kê giữa % người gốc Tây Ban Nha và % tốt nghiệp đại học ở các khu vực mã zip tại LA không?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 16%">
+<col style="width: 20%">
+<col style="width: 15%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước lượng (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hệ số chặn (Intercept)</td>
+<td>0.7290</td>
+<td>0.0308</td>
+<td>23.68</td>
+<td>0.0000</td>
+</tr>
+<tr class="even">
+<td>hispanic</td>
+<td>-0.7527</td>
+<td>0.0501</td>
+<td>-15.01</td>
+<td>0.0000</td>
+</tr>
+</tbody>
+</table>
+<p><em>Có, giá trị p cho % người gốc Tây Ban Nha là thấp, cho thấy dữ liệu cung cấp bằng chứng thuyết phục rằng tham số hệ số góc khác 0.</em></p>
+<p><strong>Giá trị p này đáng tin cậy đến mức nào nếu các khu vực mã zip này không được chọn ngẫu nhiên?</strong></p>
+<p><em>Không đáng tin lắm…</em></p>
+</section>
+</section>
+<section id="khoảng-tin-cậy-cho-hệ-số-góc" class="level3">
+<h3 class="anchored" data-anchor-id="khoảng-tin-cậy-cho-hệ-số-góc">Khoảng tin cậy cho hệ số góc</h3>
+<p><strong>Hãy nhớ rằng một khoảng tin cậy (confidence interval) được tính bằng</strong> <span class="math inline">\(ước~lượng~điểm \pm ME\)</span> và bậc tự do đi kèm với hệ số góc trong hồi quy tuyến tính đơn là <span class="math inline">\(n - 2\)</span>. Phương án nào dưới đây là khoảng tin cậy 95% đúng cho tham số hệ số góc? Lưu ý rằng mô hình được dựa trên các quan sát từ 27 cặp song sinh.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 16%">
+<col style="width: 20%">
+<col style="width: 15%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước lượng (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hệ số chặn (Intercept)</td>
+<td>9.2076</td>
+<td>9.2999</td>
+<td>0.99</td>
+<td>0.3316</td>
+</tr>
+<tr class="even">
+<td>bioIQ</td>
+<td>0.9014</td>
+<td>0.0963</td>
+<td>9.36</td>
+<td>0.0000</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li><span class="math inline">\(9.2076 \pm 1.65 \times 9.2999\)</span></li>
+<li><span class="math inline">\(0.9014 \pm 2.06 \times 0.0963\)</span> (Đáp án đúng)</li>
+<li><span class="math inline">\(0.9014 \pm 1.96 \times 0.0963\)</span></li>
+<li><span class="math inline">\(9.2076 \pm 1.96 \times 0.0963\)</span></li>
+</ol>
+<p><span class="math display">\[\begin{eqnarray*}
+n &amp;=&amp; 27 \qquad df = 27 - 2 = 25 \\
+95\%:~t^\star_{25} &amp;=&amp; 2.06 \\
+0.9014 &amp;\pm&amp; 2.06 \times 0.0963 \\
+(0.7 &amp;,&amp; 1.1)
+\end{eqnarray*}\]</span></p>
+<section id="tóm-tắt-1" class="level4">
+<h4 class="anchored" data-anchor-id="tóm-tắt-1">Tóm tắt</h4>
+<ul>
+<li>Suy diễn cho hệ số góc của mô hình hồi quy tuyến tính với một biến dự báo (single-predictor):
+<ul>
+<li>Kiểm định giả thuyết: <span class="math display">\[ T = \frac{b_1 - giá~trị~null}{SE_{b_1}} \qquad df = n - 2 \]</span></li>
+<li>Khoảng tin cậy: <span class="math display">\[ b_1 \pm t^\star_{df = n - 2} SE_{b_1} \]</span></li>
+</ul></li>
+<li>Giá trị null thường bằng 0 vì chúng ta thường kiểm tra xem có <em>bất kỳ</em> mối quan hệ nào giữa biến giải thích và biến phản hồi hay không.</li>
+<li>Kết quả hồi quy cung cấp <span class="math inline">\(b_1\)</span>, <span class="math inline">\(SE_{b_1}\)</span>, và giá trị p <em>hai phía</em> cho kiểm định <span class="math inline">\(t\)</span> cho hệ số góc với giá trị null là 0.</li>
+<li>Chúng ta hiếm khi thực hiện suy diễn cho hệ số chặn, vì vậy chúng ta sẽ tập trung vào các ước lượng và suy diễn cho hệ số góc.</li>
+</ul>
+</section>
+<section id="thận-trọng" class="level4">
+<h4 class="anchored" data-anchor-id="thận-trọng">Thận trọng</h4>
+<ul>
+<li>Luôn nhận thức được loại dữ liệu bạn đang làm việc: mẫu ngẫu nhiên, mẫu không ngẫu nhiên, hay toàn bộ quần thể.</li>
+<li>Suy diễn thống kê, và các giá trị p kết quả, là vô nghĩa khi bạn đã có dữ liệu của toàn bộ quần thể.</li>
+<li>Nếu bạn có một mẫu không ngẫu nhiên (bị chệch), việc suy diễn trên các kết quả sẽ không đáng tin cậy.</li>
+<li>Mục tiêu cuối cùng là có được các quan sát độc lập.</li>
+</ul>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const tocLinks = document.querySelectorAll("nav#TOC a[data-scroll-target]");
+  if (tocLinks.length === 0) return;
+
+  const sections = Array.from(tocLinks).map(link => {
+    const target = link.getAttribute("data-scroll-target");
+    if (target.startsWith("#")) {
+      return document.getElementById(decodeURI(target.slice(1)));
+    } else {
+      return document.querySelector(decodeURI(target));
+    }
+  });
+
+  function updateActive() {
+    let activeIndex = 0;
+    // Find the section closest to the top of the viewport
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        // If the section top has scrolled past the top offset (120px for navbar)
+        if (rect.top <= 120) {
+          activeIndex = i;
+        }
+      }
+    }
+
+    // Update active class
+    tocLinks.forEach((link, idx) => {
+      if (idx === activeIndex) {
+        link.classList.add("active");
+        
+        // Ensure parent lists are expanded (prevent Quarto from auto-collapsing active submenus)
+        let parent = link.parentElement;
+        while (parent && parent !== document.getElementById("TOC")) {
+          if (parent.tagName === "UL") {
+            parent.classList.remove("collapse");
+          }
+          parent = parent.parentElement;
+        }
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  }
+
+  // Bind to window scroll and resize events
+  window.addEventListener("scroll", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  window.addEventListener("resize", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  
+  // Initial runs to align state
+  updateActive();
+  setTimeout(updateActive, 100);
+  setTimeout(updateActive, 500);
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./slide-causal-vn.html" class="pagination-link" aria-label="Phân tích nhân quả">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Phân tích nhân quả</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./slide-multi-reg-vn.html" class="pagination-link" aria-label="Hồi quy đa biến và hồi quy logistic">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Hồi quy đa biến và hồi quy logistic</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

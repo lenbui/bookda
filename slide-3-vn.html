@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3&nbsp; Phân tích mô tả dữ liệu – Phân tích dữ liệu</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./slide-research-vn.html" rel="next">
+<link href="./slide-2-vn.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fa9e0952a64697c55f958ad13d4b0b73.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+    window.MathJax = {
+        tex: {
+            macros: {
+                E: "{\\mathbb{E}}",
+                P: "{\\mathbb{P}}",
+                Var: "{\\mathrm{Var}}"
+            }
+        }
+    };
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Phân tích dữ liệu</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./slide-3-vn.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Phân tích mô tả dữ liệu</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Giới thiệu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-0-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Các yêu cầu về môn học</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-1-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Giới thiệu về phân tích dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-2-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Các kỹ thuật thu thập dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-3-vn.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Phân tích mô tả dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-research-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Phương pháp nghiên cứu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-inferences-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cơ sở suy diễn thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-hypo-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Kiểm định giả thuyết thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-bn-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Mô hình đồ thị</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-causal-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Phân tích nhân quả</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-simple-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hồi quy tuyến tính</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-multi-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Hồi quy đa biến và hồi quy logistic</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-mc-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Phương pháp mô phỏng Monte Carlo</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#dữ-liệu-số" id="toc-dữ-liệu-số" class="nav-link active" data-scroll-target="#dữ-liệu-số"><span class="header-section-number">3.1</span> Dữ liệu số</a></li>
+  <li><a href="#dữ-liệu-định-danh" id="toc-dữ-liệu-định-danh" class="nav-link" data-scroll-target="#dữ-liệu-định-danh"><span class="header-section-number">3.2</span> Dữ liệu định danh</a></li>
+  <li><a href="#hệ-số-tương-quan" id="toc-hệ-số-tương-quan" class="nav-link" data-scroll-target="#hệ-số-tương-quan"><span class="header-section-number">3.3</span> Hệ số tương quan</a></li>
+  <li><a href="#case-study-phân-biệt-đối-xử-theo-giới-tính" id="toc-case-study-phân-biệt-đối-xử-theo-giới-tính" class="nav-link" data-scroll-target="#case-study-phân-biệt-đối-xử-theo-giới-tính"><span class="header-section-number">3.4</span> Case Study: Phân biệt đối xử theo giới tính</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Phân tích mô tả dữ liệu</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="dữ-liệu-số" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="dữ-liệu-số"><span class="header-section-number">3.1</span> Dữ liệu số</h2>
+<section id="biểu-đồ-phân-tán-cho-dữ-liệu-cặp" class="level3">
+<h3 class="anchored" data-anchor-id="biểu-đồ-phân-tán-cho-dữ-liệu-cặp">Biểu đồ phân tán cho dữ liệu cặp</h3>
+<section id="biểu-đồ-phân-tán" class="level4">
+<h4 class="anchored" data-anchor-id="biểu-đồ-phân-tán">Biểu đồ phân tán</h4>
+<p><em>Biểu đồ phân tán (Scatterplots)</em> rất hữu ích để trực quan hóa mối quan hệ giữa hai biến số (numerical variables).</p>
+<p><strong>Kỳ vọng sống và tổng tỷ suất sinh có vẻ liên quan (associated) hay độc lập (independent)</strong></p>
+<p>Chúng có vẻ liên quan tuyến tính và nghịch biến: khi tỷ suất sinh tăng, kỳ vọng sống giảm.</p>
+<p><strong>Mối quan hệ này có giữ nguyên qua các năm không, hay nó đã thay đổi?</strong></p>
+<p>Mối quan hệ đã thay đổi qua các năm.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="http://www.gapminder.org/world"><img src="2-1_numerical_data/figures/life_exp_child.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="biểu-đồ-chấm-và-trung-bình" class="level3">
+<h3 class="anchored" data-anchor-id="biểu-đồ-chấm-và-trung-bình">Biểu đồ chấm và trung bình</h3>
+<section id="biểu-đồ-chấm" class="level4">
+<h4 class="anchored" data-anchor-id="biểu-đồ-chấm">Biểu đồ chấm</h4>
+<p>Hữu ích để trực quan hóa một biến số. Màu sắc đậm hơn đại diện cho các khu vực có nhiều quan sát hơn.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/gpa_dot_plot/gpa_dot_plot.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p><strong>Hãy mô tả phân phối (distribution) của điểm GPA trong tập dữ liệu này như thế nào? Hãy đảm bảo đề cập đến trung tâm (center), hình dạng (shape), và độ phân tán (spread) của phân phối.</strong></p>
+</section>
+<section id="biểu-đồ-chấm-trung-bình" class="level4">
+<h4 class="anchored" data-anchor-id="biểu-đồ-chấm-trung-bình">Biểu đồ chấm &amp; trung bình</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/gpa_dot_plot/gpa_dot_plot_mean.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<ul>
+<li>Số trung bình (mean), còn được gọi là giá trị trung bình (average) (được đánh dấu bằng hình tam giác trong biểu đồ trên), là một cách để đo lường trung tâm của một phân phối dữ liệu.</li>
+<li>Điểm GPA trung bình là 3,59.</li>
+</ul>
+</section>
+<section id="trung-bình" class="level4">
+<h4 class="anchored" data-anchor-id="trung-bình">Trung bình</h4>
+<ul>
+<li>Trung bình mẫu (sample mean), ký hiệu là <span class="math inline">\(\bar{x}\)</span>, có thể được tính bằng <span class="math display">\[ \bar{x} = \frac{x_1 + x_2 + \cdots + x_n}{n}, \]</span> trong đó <span class="math inline">\(x_1, x_2, \cdots, x_n\)</span> đại diện cho <em>n</em> giá trị quan sát được.</li>
+<li>Trung bình quần thể (population mean) cũng được tính theo cách tương tự nhưng được ký hiệu là <span class="math inline">\(\mu\)</span>. Thường không thể tính được <span class="math inline">\(\mu\)</span> vì hiếm khi có sẵn dữ liệu của toàn bộ quần thể.</li>
+<li>Trung bình mẫu là một thống kê mẫu (sample statistic), và đóng vai trò như một ước lượng điểm (point estimate) của trung bình quần thể. Ước lượng này có thể không hoàn hảo, nhưng nếu mẫu tốt (đại diện cho quần thể), nó thường là một ước lượng khá tốt.</li>
+</ul>
+</section>
+<section id="biểu-đồ-chấm-xếp-chồng" class="level4">
+<h4 class="anchored" data-anchor-id="biểu-đồ-chấm-xếp-chồng">Biểu đồ chấm xếp chồng</h4>
+<p>Các cột cao hơn đại diện cho các khu vực có nhiều quan sát hơn, giúp việc đánh giá trung tâm và hình dạng của phân phối dễ dàng hơn một chút.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/gpa_dot_plot/gpa_dot_plot_stacked.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="biểu-đồ-tần-suất-và-hình-dạng" class="level3">
+<h3 class="anchored" data-anchor-id="biểu-đồ-tần-suất-và-hình-dạng">Biểu đồ tần suất và hình dạng</h3>
+<section id="biểu-đồ-tần-suất---giờ-hoạt-động-ngoại-khóa" class="level4">
+<h4 class="anchored" data-anchor-id="biểu-đồ-tần-suất---giờ-hoạt-động-ngoại-khóa">Biểu đồ tần suất - Giờ hoạt động ngoại khóa</h4>
+<ul>
+<li>Biểu đồ tần suất (Histograms) cung cấp cái nhìn về mật độ dữ liệu (data density). Các cột cao hơn thể hiện nơi dữ liệu tương đối phổ biến hơn.</li>
+<li>Biểu đồ tần suất đặc biệt thuận tiện để mô tả hình dạng của phân phối dữ liệu.</li>
+<li>Độ rộng khoảng (bin width) được chọn có thể làm thay đổi câu chuyện mà biểu đồ tần suất đang kể.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/extracurr_hrs_hist/extracurr_hrs_hist.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="độ-rộng-khoảng" class="level4">
+<h4 class="anchored" data-anchor-id="độ-rộng-khoảng">Độ rộng khoảng</h4>
+<p><strong>Biểu đồ tần suất nào trong số này là hữu ích? Biểu đồ nào tiết lộ quá nhiều về dữ liệu? Biểu đồ nào che giấu quá nhiều?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/extracurr_hrs_hist/extracurr_hrs_hist2.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/extracurr_hrs_hist/extracurr_hrs_hist.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/extracurr_hrs_hist/extracurr_hrs_hist20.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/extracurr_hrs_hist/extracurr_hrs_hist30.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="hình-dạng-của-phân-phối-tính-yếu-vị" class="level4">
+<h4 class="anchored" data-anchor-id="hình-dạng-của-phân-phối-tính-yếu-vị">Hình dạng của phân phối: tính yếu vị</h4>
+<p>Biểu đồ tần suất có một đỉnh nổi bật duy nhất (đơn đỉnh (unimodal)), nhiều đỉnh nổi bật (song đỉnh/đa đỉnh (bimodal/multimodal)), hay không có đỉnh rõ rệt (đồng nhất (uniform))?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/singleBiMultiModalUnifPlots/singleBiMultiModalUnifPlots.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="hình-dạng-của-phân-phối-độ-lệch" class="level4">
+<h4 class="anchored" data-anchor-id="hình-dạng-của-phân-phối-độ-lệch">Hình dạng của phân phối: độ lệch</h4>
+<p>Biểu đồ tần suất lệch phải (right skewed), lệch trái (left skewed), hay đối xứng (symmetric)?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/skewedSymPlots/skewedSymPlots.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p>Biểu đồ tần suất được gọi là lệch về phía có chiếc đuôi dài.</p>
+</section>
+<section id="hình-dạng-của-phân-phối-các-quan-sát-bất-thường" class="level4">
+<h4 class="anchored" data-anchor-id="hình-dạng-của-phân-phối-các-quan-sát-bất-thường">Hình dạng của phân phối: các quan sát bất thường</h4>
+<p>Có bất kỳ quan sát bất thường hoặc giá trị ngoại lệ (outliers) tiềm năng nào không?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/outlierPlots/outlierPlots.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="hoạt-động-ngoại-khóa" class="level4">
+<h4 class="anchored" data-anchor-id="hoạt-động-ngoại-khóa">Hoạt động ngoại khóa</h4>
+<p><strong>Hãy mô tả hình dạng của phân phối số giờ mỗi tuần sinh viên dành cho các hoạt động ngoại khóa như thế nào?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/extracurr_hrs_hist/extracurr_hrs_hist.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="luyện-tập" class="level4">
+<h4 class="anchored" data-anchor-id="luyện-tập">✍ Luyện tập</h4>
+<p><strong>Kỳ vọng biến nào trong số này có phân phối đồng nhất?</strong></p>
+<ol type="1">
+<li>Cân nặng của phụ nữ trưởng thành</li>
+<li>Lương của một mẫu ngẫu nhiên những người từ Bắc Carolina</li>
+<li>Giá nhà</li>
+<li>Ngày sinh của các bạn cùng lớp (ngày trong tháng)</li>
+</ol>
+</section>
+<section id="hoạt-động-ứng-dụng-hình-dạng-của-phân-phối" class="level4">
+<h4 class="anchored" data-anchor-id="hoạt-động-ứng-dụng-hình-dạng-của-phân-phối">Hoạt động ứng dụng: Hình dạng của phân phối</h4>
+<p>Phác thảo phân phối kỳ vọng của các biến sau:</p>
+<ul>
+<li>Điểm trong một bài kiểm tra</li>
+<li>Điểm IQ</li>
+</ul>
+<p>Hãy đưa ra một cách ngắn gọn (1-2 câu) để dạy ai đó cách xác định phân phối kỳ vọng của bất kỳ biến nào.</p>
+</section>
+<section id="bạn-có-điển-hình-không" class="level4">
+<h4 class="anchored" data-anchor-id="bạn-có-điển-hình-không">Bạn có điển hình không?</h4>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/4B2xOvKFFz4" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<p><strong>Chỉ số trung tâm đơn thuần có tác dụng như thế nào trong việc truyền đạt các đặc điểm thực sự của một phân phối?</strong></p>
+</section>
+</section>
+<section id="phương-sai-và-độ-lệch-chuẩn" class="level3">
+<h3 class="anchored" data-anchor-id="phương-sai-và-độ-lệch-chuẩn">Phương sai và độ lệch chuẩn</h3>
+<section id="phương-sai" class="level4">
+<h4 class="anchored" data-anchor-id="phương-sai">Phương sai</h4>
+<p>Phương sai (Variance) xấp xỉ bằng trung bình bình phương các độ lệch so với số trung bình.</p>
+<p><span class="math display">\[ s^2 = \frac{\sum_{i = 1}^n (x_i - \bar{x})^2}{n - 1} \]</span></p>
+<ul>
+<li>Trung bình mẫu là <span class="math inline">\(\bar{x} = 6,71\)</span>, và kích thước mẫu là <span class="math inline">\(n = 217\)</span>.</li>
+<li>Phương sai của thời lượng ngủ mỗi đêm của sinh viên có thể được tính như sau:</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/sleep_hist/sleep_hist.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p><span class="math display">\[ s^2 = \frac{(5 - 6,71)^2 + (9 - 6,71)^2 + \cdots + (7 - 6,71)^2}{217 - 1} = 4,11~giờ^2 \]</span></p>
+<p><strong>Tại sao chúng ta sử dụng bình phương độ lệch trong việc tính toán phương sai?</strong></p>
+<ul>
+<li>Để loại bỏ các giá trị âm sao cho các quan sát cách đều số trung bình được tính trọng số như nhau.</li>
+<li>Để tính trọng số cho các độ lệch lớn hơn nặng hơn.</li>
+</ul>
+</section>
+<section id="độ-lệch-chuẩn" class="level4">
+<h4 class="anchored" data-anchor-id="độ-lệch-chuẩn">Độ lệch chuẩn</h4>
+<p>Độ lệch chuẩn (standard deviation) là căn bậc hai của phương sai, và có cùng đơn vị với dữ liệu.</p>
+<p><span class="math display">\[ s = \sqrt{s^2} \]</span></p>
+<ul>
+<li>Độ lệch chuẩn của thời lượng ngủ mỗi đêm của sinh viên có thể được tính là: <span class="math display">\[ s = \sqrt{4,11} = 2,03~giờ\]</span></li>
+<li>Có thể thấy rằng tất cả các dữ liệu đều nằm trong khoảng 3 lần độ lệch chuẩn so với số trung bình.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/sleep_hist/sleep_hist.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="biểu-đồ-hộp-tứ-phân-vị-và-trung-vị" class="level3">
+<h3 class="anchored" data-anchor-id="biểu-đồ-hộp-tứ-phân-vị-và-trung-vị">Biểu đồ hộp, tứ phân vị và trung vị</h3>
+<section id="trung-vị" class="level4">
+<h4 class="anchored" data-anchor-id="trung-vị">Trung vị</h4>
+<ul>
+<li>Trung vị (median) là giá trị chia dữ liệu thành hai nửa khi được sắp xếp theo thứ tự tăng dần. <span class="math display">\[ 0,1,2,3,4 \]</span></li>
+<li>Nếu có một số lượng chẵn các quan sát, thì trung vị là trung bình cộng của hai giá trị ở giữa. <span class="math display">\[ 0,1,2,3,4,5 \rightarrow \frac{2 + 3}{2} = 2,5 \]</span></li>
+<li>Vì trung vị là điểm giữa của dữ liệu, nên 50% các giá trị nằm dưới nó. Do đó, nó cũng là phân vị (percentile) thứ 50.</li>
+</ul>
+</section>
+<section id="q1-q3-và-iqr" class="level4">
+<h4 class="anchored" data-anchor-id="q1-q3-và-iqr">Q1, Q3 và IQR</h4>
+<ul>
+<li>Phân vị thứ 25 còn được gọi là tứ phân vị thứ nhất (first quartile), <em>Q1</em>.</li>
+<li>Phân vị thứ 50 còn được gọi là trung vị.</li>
+<li>Phân vị thứ 75 còn được gọi là tứ phân vị thứ ba (third quartile), <em>Q3</em>.</li>
+<li>Giữa Q1 và Q3 là 50% dữ liệu ở giữa. Phạm vi mà các dữ liệu này trải rộng được gọi là khoảng cách tứ phân vị (interquartile range - IQR).</li>
+</ul>
+<p><span class="math display">\[ IQR = Q3 - Q1 \]</span></p>
+</section>
+<section id="biểu-đồ-hộp" class="level4">
+<h4 class="anchored" data-anchor-id="biểu-đồ-hộp">Biểu đồ hộp</h4>
+<p>Chiếc hộp trong biểu đồ hộp (Box plots) đại diện cho 50% dữ liệu ở giữa, và vạch dày trong hộp là trung vị.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/study_hours/study_hours_box.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="biểu-đồ-hộp-chi-tiết" class="level4">
+<h4 class="anchored" data-anchor-id="biểu-đồ-hộp-chi-tiết">Biểu đồ hộp chi tiết</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/study_hours/study_hours_box_layout.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="giá-trị-ngoại-lệ" class="level4">
+<h4 class="anchored" data-anchor-id="giá-trị-ngoại-lệ">Giá trị ngoại lệ</h4>
+<ul>
+<li>Whiskers của biểu đồ hộp có thể kéo dài tới <span class="math inline">\(1,5 \times IQR\)</span> tính từ các tứ phân vị.</li>
+</ul>
+<p><span class="math display">\[\begin{align*}
+\text{độ~vươn~tối~đa~của~whisker~trên} &amp;= Q3 + 1,5 \times IQR \\
+\text{độ~vươn~tối~đa~của~whisker~dưới} &amp;= Q1 - 1,5 \times IQR
+\end{align*}\]</span> <span class="math display">\[\begin{align*}
+\text{IQR}&amp;: 20 - 10 = 10 \\
+\text{độ~vươn~tối~đa~của~whisker~trên}&amp;= 20 + 1,5 \times 10 = 35 \\
+\text{độ~vươn~tối~đa~của~whisker~dưới}&amp;= 10 - 1,5 \times 10 = -5
+\end{align*}\]</span></p>
+<ul>
+<li>Một giá trị ngoại lệ tiềm năng được định nghĩa là một quan sát nằm ngoài độ vươn tối đa của whisker. Đó là một quan sát có vẻ cực đoan so với phần còn lại của dữ liệu.</li>
+</ul>
+<p><strong>Tại sao việc tìm kiếm các giá trị ngoại lệ lại quan trọng?</strong></p>
+<ul>
+<li>Xác định độ lệch cực đoan trong phân phối.</li>
+<li>Xác định các lỗi trong thu thập và nhập dữ liệu.</li>
+<li>Cung cấp cái nhìn sâu sắc về các đặc điểm thú vị của dữ liệu.</li>
+</ul>
+</section>
+</section>
+<section id="thống-kê-bền-vững" class="level3">
+<h3 class="anchored" data-anchor-id="thống-kê-bền-vững">Thống kê bền vững</h3>
+<section id="các-quan-sát-cực-đoan" class="level4">
+<h4 class="anchored" data-anchor-id="các-quan-sát-cực-đoan">Các quan sát cực đoan</h4>
+<p><strong>Các thống kê mẫu như trung bình, trung vị, độ lệch chuẩn và IQR của thu nhập hộ gia đình sẽ bị ảnh hưởng như thế nào nếu giá trị lớn nhất được thay thế bằng 10 triệu USD? Điều gì sẽ xảy ra nếu giá trị nhỏ nhất được thay thế bằng 10 triệu USD?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/house_income/house_income_dot_stacked.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="thống-kê-bền-vững-1" class="level4">
+<h4 class="anchored" data-anchor-id="thống-kê-bền-vững-1">Thống kê bền vững</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/house_income/house_income_dot_stacked.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 51%">
+<col style="width: 14%">
+<col style="width: 8%">
+<col style="width: 16%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>kịch bản</th>
+<th>trung vị</th>
+<th>IQR</th>
+<th><span class="math inline">\(\bar{x}\)</span></th>
+<th><span class="math inline">\(s\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>dữ liệu gốc</td>
+<td>190K</td>
+<td>200K</td>
+<td>245K</td>
+<td>226K</td>
+</tr>
+<tr class="even">
+<td>chuyển giá trị lớn nhất lên $10M</td>
+<td>190K</td>
+<td>200K</td>
+<td>309K</td>
+<td>853K</td>
+</tr>
+<tr class="odd">
+<td>chuyển giá trị nhỏ nhất lên $10M</td>
+<td>200K</td>
+<td>200K</td>
+<td>316K</td>
+<td>854K</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="thống-kê-bền-vững-2" class="level4">
+<h4 class="anchored" data-anchor-id="thống-kê-bền-vững-2">Thống kê bền vững</h4>
+<p>Trung vị và IQR bền vững (Robust statistics) hơn với độ lệch và các giá trị ngoại lệ so với trung bình và độ lệch chuẩn. Do đó,</p>
+<ul>
+<li>đối với các phân phối bị lệch, thường hữu ích hơn khi sử dụng trung vị và IQR để mô tả trung tâm và độ phân tán</li>
+<li>đối với các phân phối đối xứng, thường hữu ích hơn khi sử dụng trung bình và độ lệch chuẩn để mô tả trung tâm và độ phân tán</li>
+</ul>
+<p><strong>Nếu muốn ước tính thu nhập hộ gia đình điển hình của một sinh viên, bạn sẽ quan tâm nhiều hơn đến thu nhập trung bình hay trung vị?</strong></p>
+</section>
+<section id="trung-bình-so-với-trung-vị" class="level4">
+<h4 class="anchored" data-anchor-id="trung-bình-so-với-trung-vị">Trung bình so với trung vị</h4>
+<ul>
+<li>Nếu phân phối đối xứng, trung tâm thường được định nghĩa là trung bình: trung bình <span class="math inline">\(\approx\)</span> trung vị</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/mean_med/sym.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<ul>
+<li>Nếu phân phối bị lệch hoặc có các giá trị ngoại lệ cực đoan, trung tâm thường được định nghĩa là trung vị
+<ul>
+<li>Lệch phải: trung bình <span class="math inline">\(&gt;\)</span> trung vị</li>
+<li>Lệch trái: trung bình <span class="math inline">\(&lt;\)</span> trung vị</li>
+</ul></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/mean_med/rs.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/mean_med/ls.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="luyện-tập-1" class="level4">
+<h4 class="anchored" data-anchor-id="luyện-tập-1">✍ Luyện tập</h4>
+<p><strong>Điều nào sau đây có khả năng đúng nhất đối với phân phối tỷ lệ thời gian thực sự dành cho việc ghi chép trong lớp so với trên Facebook, Twitter, v.v.?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/notes_perc/notes_perc_hist.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<ul>
+<li><em>trung vị: 80%</em></li>
+<li><em>trung bình: 76%</em></li>
+</ul>
+<ol type="1">
+<li>trung bình &gt; trung vị</li>
+<li>trung bình &lt; trung vị</li>
+<li>trung bình <span class="math inline">\(\approx\)</span> trung vị</li>
+<li>không thể biết được</li>
+</ol>
+</section>
+</section>
+<section id="biến-đổi-dữ-liệu" class="level3">
+<h3 class="anchored" data-anchor-id="biến-đổi-dữ-liệu">Biến đổi dữ liệu</h3>
+<section id="dữ-liệu-cực-kỳ-lệch" class="level4">
+<h4 class="anchored" data-anchor-id="dữ-liệu-cực-kỳ-lệch">Dữ liệu cực kỳ lệch</h4>
+<p>Khi dữ liệu cực kỳ lệch, biến đổi dữ liệu (Transforming data) có thể giúp việc xây dựng mô hình dễ dàng hơn. Một phép biến đổi phổ biến là biến đổi log (log transformation).</p>
+<p>Biểu đồ tần suất bên trái cho thấy phân phối số lượng trận bóng rổ sinh viên đã tham dự. Biểu đồ tần suất bên phải cho thấy phân phối log của số trận đã tham dự.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/basket_games/basket_games_hist.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-1_numerical_data/figures/basket_games/basket_games_hist_log.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="ưu-và-nhược-điểm-của-các-phép-biến-đổi" class="level4">
+<h4 class="anchored" data-anchor-id="ưu-và-nhược-điểm-của-các-phép-biến-đổi">Ưu và nhược điểm của các phép biến đổi</h4>
+<ul>
+<li>Dữ liệu bị lệch dễ xây dựng mô hình hơn khi chúng được biến đổi vì các giá trị ngoại lệ có xu hướng trở nên ít nổi bật hơn nhiều sau một phép biến đổi thích hợp.</li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>số trận</th>
+<th>70</th>
+<th>50</th>
+<th>25</th>
+<th><span class="math inline">\(\cdots\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>log(số trận)</td>
+<td>4,25</td>
+<td>3,91</td>
+<td>3,22</td>
+<td><span class="math inline">\(\cdots\)</span></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Tuy nhiên, kết quả phân tích theo đơn vị log của biến được đo lường có thể khó diễn giải.</li>
+</ul>
+<p><strong>Kỳ vọng những biến nào khác sẽ bị lệch cực đoan?</strong></p>
+</section>
+</section>
+<section id="dữ-liệu-bản-đồ" class="level3">
+<h3 class="anchored" data-anchor-id="dữ-liệu-bản-đồ">Dữ liệu bản đồ</h3>
+<section id="bản-đồ-cường-độ" class="level4">
+<h4 class="anchored" data-anchor-id="bản-đồ-cường-độ">Bản đồ cường độ</h4>
+<p><strong>Những quy luật nào rõ rệt trong sự thay đổi dân số giữa năm 2000 và 2010?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="http://projects.nytimes.com/census/2010/map"><img src="2-1_numerical_data/figures/change_in_pop_intensity.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a></p>
+</figure>
+</div>
+</section>
+</section>
+</section>
+<section id="dữ-liệu-định-danh" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="dữ-liệu-định-danh"><span class="header-section-number">3.2</span> Dữ liệu định danh</h2>
+<section id="bảng-ngẫu-nhiên-và-biểu-đồ-cột" class="level3">
+<h3 class="anchored" data-anchor-id="bảng-ngẫu-nhiên-và-biểu-đồ-cột">Bảng ngẫu nhiên và biểu đồ cột</h3>
+<section id="bảng-ngẫu-nhiên" class="level4">
+<h4 class="anchored" data-anchor-id="bảng-ngẫu-nhiên">Bảng ngẫu nhiên</h4>
+<p>Một bảng tóm tắt dữ liệu cho hai biến định danh (categorical data) được gọi là bảng ngẫu nhiên (Contingency tables).</p>
+<p>Bảng ngẫu nhiên bên dưới cho thấy sự phân bổ về khả năng sống sót và độ tuổi của hành khách trên tàu Titanic.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th></th>
+<th>Sống sót</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>Tử vong</td>
+<td>Sống sót</td>
+<td>Tổng</td>
+</tr>
+<tr class="even">
+<td><strong>giới tính</strong></td>
+<td>Người lớn</td>
+<td>1438</td>
+<td>654</td>
+<td>2092</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Trẻ em</td>
+<td>52</td>
+<td>57</td>
+<td>109</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Tổng</td>
+<td>1490</td>
+<td>711</td>
+<td>2201</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="biểu-đồ-cột" class="level4">
+<h4 class="anchored" data-anchor-id="biểu-đồ-cột">Biểu đồ cột</h4>
+<p>Biểu đồ cột (bar plots) là một cách phổ biến để hiển thị một biến định danh duy nhất. Biểu đồ cột hiển thị tỷ lệ thay vì tần suất được gọi là biểu đồ cột tần suất tương đối (relative frequency bar plot).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-2_categorical_data/figures/titanic_age_survival/titanic_bar.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-2_categorical_data/figures/titanic_age_survival/titanic_rel_bar.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p><strong>Biểu đồ cột khác với biểu đồ tần suất như thế nào?</strong></p>
+<p>Biểu đồ cột được sử dụng để hiển thị phân phối của các biến định danh, biểu đồ tần suất được sử dụng cho các biến số. Trục x trong biểu đồ tần suất là một trục số, do đó thứ tự của các cột không thể thay đổi. Trong biểu đồ cột, các danh mục có thể được liệt kê theo bất kỳ thứ tự nào (mặc dù một số cách sắp xếp có ý nghĩa hơn những cách khác, đặc biệt đối với các <em>biến thứ tự</em> (<em>ordinal variables</em>).)</p>
+</section>
+</section>
+<section id="tỷ-lệ-hàng-và-tỷ-lệ-cột" class="level3">
+<h3 class="anchored" data-anchor-id="tỷ-lệ-hàng-và-tỷ-lệ-cột">Tỷ lệ hàng và tỷ lệ cột</h3>
+<section id="chọn-tỷ-lệ-thích-hợp" class="level4">
+<h4 class="anchored" data-anchor-id="chọn-tỷ-lệ-thích-hợp">Chọn tỷ lệ thích hợp</h4>
+<p><strong>Có vẻ như có mối liên hệ nào giữa độ tuổi và khả năng sống sót của hành khách trên tàu Titanic không?</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th></th>
+<th>Sống sót</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>Tử vong</td>
+<td>Sống sót</td>
+<td>Tổng</td>
+</tr>
+<tr class="even">
+<td><strong>Tuổi</strong></td>
+<td>Người lớn</td>
+<td>1438</td>
+<td>654</td>
+<td>2092</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Trẻ em</td>
+<td>52</td>
+<td>57</td>
+<td>109</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Tổng</td>
+<td>1490</td>
+<td>711</td>
+<td>2201</td>
+</tr>
+</tbody>
+</table>
+<p>Để trả lời câu hỏi này, kiểm tra tỷ lệ hàng (row proportions):</p>
+<ul>
+<li>% Người lớn sống sót: 654 / 2092 <span class="math inline">\(\approx 0,31\)</span></li>
+<li>% Trẻ em sống sót: 57 / 109 <span class="math inline">\(\approx 0,52\)</span></li>
+</ul>
+</section>
+</section>
+<section id="sử-dụng-biểu-đồ-cột-với-hai-biến" class="level3">
+<h3 class="anchored" data-anchor-id="sử-dụng-biểu-đồ-cột-với-hai-biến">Sử dụng biểu đồ cột với hai biến</h3>
+<section id="biểu-đồ-cột-với-hai-biến" class="level4">
+<h4 class="anchored" data-anchor-id="biểu-đồ-cột-với-hai-biến">Biểu đồ cột với hai biến</h4>
+<ul>
+<li>Biểu đồ cột chồng (Stacked bar plot): Hiển thị đồ họa thông tin bảng ngẫu nhiên, cho các số đếm.</li>
+<li>Biểu đồ cột cạnh nhau (Side-by-side bar plot): Hiển thị cùng một thông tin bằng cách đặt các cột cạnh nhau, thay vì chồng lên nhau.</li>
+<li>Biểu đồ cột chồng chuẩn hóa (Standardized stacked bar plot): Hiển thị đồ họa thông tin bảng ngẫu nhiên, cho các tỷ lệ.</li>
+</ul>
+<p><strong>Sự khác biệt giữa ba hình ảnh trực quan hóa hiển thị bên dưới là gì?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-2_categorical_data/figures/titanic_age_survival/titanic_seg_bar.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-2_categorical_data/figures/titanic_age_survival/titanic_seg_bar_dodge.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-2_categorical_data/figures/titanic_age_survival/titanic_rel_seg_bar.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="biểu-đồ-mosaic" class="level3">
+<h3 class="anchored" data-anchor-id="biểu-đồ-mosaic">Biểu đồ Mosaic</h3>
+<p><strong>Sự khác biệt giữa hai hình ảnh trực quan hóa hiển thị bên dưới là gì?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-2_categorical_data/figures/titanic_age_survival/titanic_rel_seg_bar.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-2_categorical_data/figures/titanic_age_survival/titanic_mosaic.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="biểu-đồ-tròn" class="level3">
+<h3 class="anchored" data-anchor-id="biểu-đồ-tròn">Biểu đồ tròn</h3>
+<p><strong>Bạn có thể cho biết bộ nào chiếm tỷ lệ thấp nhất trong các loài động vật có vú không?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-2_categorical_data/figures/mammal_pie_chart/mammal_pie_chart.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-2_categorical_data/figures/mammal_pie_chart/mammal_pie_chart_legend.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p>Dữ liệu từ <a href="http://www.bucknell.edu/msw3" class="uri">http://www.bucknell.edu/msw3</a>.</p>
+</section>
+<section id="so-sánh-dữ-liệu-số-giữa-các-nhóm" class="level3">
+<h3 class="anchored" data-anchor-id="so-sánh-dữ-liệu-số-giữa-các-nhóm">So sánh dữ liệu số giữa các nhóm</h3>
+<section id="biểu-đồ-hộp-cạnh-nhau" class="level4">
+<h4 class="anchored" data-anchor-id="biểu-đồ-hộp-cạnh-nhau">Biểu đồ hộp cạnh nhau</h4>
+<p><strong>Có vẻ như có mối quan hệ giữa năm học và số lượng câu lạc bộ mà sinh viên tham gia không?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-2_categorical_data/figures/year_clubs/year_clubs.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+</section>
+</section>
+<section id="hệ-số-tương-quan" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="hệ-số-tương-quan"><span class="header-section-number">3.3</span> Hệ số tương quan</h2>
+<p>Có khá nhiều hệ số đo sự tương quan giữa hai biến số định lượng <span class="math inline">\(x\)</span> và <span class="math inline">\(y\)</span>.</p>
+<section id="hệ-số-tương-quan-pearson" class="level3">
+<h3 class="anchored" data-anchor-id="hệ-số-tương-quan-pearson">Hệ số tương quan Pearson</h3>
+<p>Hệ số tương quan Pearson được tính như sau:</p>
+<p><span class="math display">\[ r = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{(n-1)s_x s_y}, \]</span></p>
+<p>trong đó <span class="math inline">\(x_i\)</span> và <span class="math inline">\(y_i\)</span> là các giá trị của hai biến số, <span class="math inline">\(\bar{x}\)</span> và <span class="math inline">\(\bar{y}\)</span> là trung bình của hai biến số, <span class="math inline">\(s_x\)</span> và <span class="math inline">\(s_y\)</span> là độ lệch chuẩn của hai biến số, và <span class="math inline">\(n\)</span> là kích thước mẫu.</p>
+<p><strong>Ý nghĩa</strong></p>
+<ul>
+<li>Nếu <span class="math inline">\(r \approx 1\)</span>, hai biến số có tương quan dương mạnh. Ví dụ: chiều cao và cân nặng của con người.</li>
+<li>Nếu <span class="math inline">\(r \approx -1\)</span>, hai biến số có tương quan âm mạnh. Ví dụ: số giờ học và số lỗi sai trong bài thi.</li>
+<li>Nếu <span class="math inline">\(r \approx 0\)</span>, hai biến số không có tương quan. Ví dụ: chiều cao và trình độ học vấn.</li>
+</ul>
+</section>
+<section id="hệ-số-spearman" class="level3">
+<h3 class="anchored" data-anchor-id="hệ-số-spearman">Hệ số Spearman</h3>
+<p>Hệ số tương quan Spearman là một thước đo thống kê về mối quan hệ đơn điệu giữa hai biến số. Nó không yêu cầu mối quan hệ tuyến tính, chỉ cần mối quan hệ đơn điệu.</p>
+<p>Hệ số tương quan Spearman được tính như sau:</p>
+<p><span class="math display">\[ \rho = 1 - \frac{6 \sum d_i^2}{n(n^2 - 1)}, \]</span></p>
+<p>trong đó <span class="math inline">\(d_i\)</span> là sự khác biệt về hạng (rank) giữa hai biến số, và <span class="math inline">\(n\)</span> là kích thước mẫu.</p>
+<p><strong>Ý nghĩa</strong></p>
+<ul>
+<li>Nếu <span class="math inline">\(\rho \approx 1\)</span>, hai biến số có tương quan đơn điệu dương mạnh.</li>
+<li>Nếu <span class="math inline">\(\rho \approx -1\)</span>, hai biến số có tương quan đơn điệu âm mạnh.</li>
+<li>Nếu <span class="math inline">\(\rho \approx 0\)</span>, hai biến số không có tương quan đơn điệu.</li>
+</ul>
+</section>
+<section id="hệ-số-tương-quan-kendall" class="level3">
+<h3 class="anchored" data-anchor-id="hệ-số-tương-quan-kendall">Hệ số tương quan Kendall</h3>
+<p>Hệ số tương quan Kendall là một thước đo thống kê mức độ đồng biến thứ hạng giữa hai biến.</p>
+<p>Hệ số tương quan Kendall được tính như sau:</p>
+<p><span class="math display">\[ \tau = \frac{\text{số cặp đồng hạng} - \text{số cặp nghịch hạng}}{\frac{n(n-1)}{2}}, \]</span></p>
+<p>trong đó <span class="math inline">\(n\)</span> là kích thước mẫu.</p>
+<p><strong>Ý nghĩa</strong></p>
+<ul>
+<li>Nếu <span class="math inline">\(\tau \approx 1\)</span>, hai biến số có tương quan đơn điệu dương mạnh.</li>
+<li>Nếu <span class="math inline">\(\tau \approx -1\)</span>, hai biến số có tương quan đơn điệu âm mạnh.</li>
+<li>Nếu <span class="math inline">\(\tau \approx 0\)</span>, hai biến số không có tương quan đơn điệu.</li>
+</ul>
+</section>
+<section id="so-sánh-ba-hệ-số-tương-quan" class="level3">
+<h3 class="anchored" data-anchor-id="so-sánh-ba-hệ-số-tương-quan">So sánh ba hệ số tương quan</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Hệ số</th>
+<th>Dựa trên</th>
+<th>Đo cái gì</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Pearson</td>
+<td>giá trị thực</td>
+<td>quan hệ tuyến tính</td>
+</tr>
+<tr class="even">
+<td>Spearman</td>
+<td>rank</td>
+<td>quan hệ đơn điệu</td>
+</tr>
+<tr class="odd">
+<td>Kendall</td>
+<td>cặp thứ hạng</td>
+<td>mức độ đồng thuận thứ tự</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="case-study-phân-biệt-đối-xử-theo-giới-tính" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="case-study-phân-biệt-đối-xử-theo-giới-tính"><span class="header-section-number">3.4</span> Case Study: Phân biệt đối xử theo giới tính</h2>
+<section id="mô-tả-nghiên-cứu-và-dữ-liệu" class="level3">
+<h3 class="anchored" data-anchor-id="mô-tả-nghiên-cứu-và-dữ-liệu">Mô tả nghiên cứu và dữ liệu</h3>
+<section id="phân-biệt-đối-xử-theo-giới-tính" class="level4">
+<h4 class="anchored" data-anchor-id="phân-biệt-đối-xử-theo-giới-tính">Phân biệt đối xử theo giới tính</h4>
+<ul>
+<li>Năm 1972, như một phần của nghiên cứu về phân biệt đối xử theo giới tính (Gender discrimination), 48 nam giám sát viên ngân hàng được cấp cùng một hồ sơ nhân sự và được yêu cầu đánh giá xem người đó có nên được thăng chức lên vị trí quản lý chi nhánh vốn được mô tả là “công việc thường nhật” hay không.</li>
+<li>Các hồ sơ giống hệt nhau ngoại trừ việc một nửa số giám sát viên nhận hồ sơ ghi người đó là nam trong khi nửa còn lại nhận hồ sơ ghi người đó là nữ.</li>
+<li>Việc giám sát viên nào nhận được đơn đăng ký “nam” và người nào nhận đơn “nữ” đã được xác định ngẫu nhiên.</li>
+<li>Trong số 48 hồ sơ được xem xét, 35 hồ sơ được thăng chức.</li>
+<li>Nghiên cứu đang kiểm tra xem liệu phụ nữ có bị phân biệt đối xử bất công hay không.</li>
+</ul>
+<p><strong>Đây là nghiên cứu quan sát (observational study) hay thực nghiệm (experiment)?</strong></p>
+<p><em>Thực nghiệm</em></p>
+<p>B.Rosen và T. Jerdee (1974), “Influence of sex role stereotypes on personnel decisions”, J.Applied Psychology, 59:9-14.</p>
+</section>
+<section id="dữ-liệu" class="level4">
+<h4 class="anchored" data-anchor-id="dữ-liệu">Dữ liệu</h4>
+<p><strong>Nhìn thoáng qua ban đầu, có vẻ như có mối liên hệ giữa việc thăng chức và giới tính không?</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th></th>
+<th>Thăng chức</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>Được thăng chức</td>
+<td>Không thăng chức</td>
+<td>Tổng</td>
+</tr>
+<tr class="even">
+<td>Giới tính</td>
+<td>Nam</td>
+<td>21</td>
+<td>3</td>
+<td>24</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Nữ</td>
+<td>14</td>
+<td>10</td>
+<td>24</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Tổng</td>
+<td>35</td>
+<td>13</td>
+<td>48</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>% nam giới được thăng chức: 21 / 24 = 0,875</strong></li>
+<li><strong>% nữ giới được thăng chức: 14 / 24 = 0,583</strong></li>
+</ul>
+</section>
+<section id="luyện-tập-2" class="level4">
+<h4 class="anchored" data-anchor-id="luyện-tập-2">✍ Luyện tập</h4>
+<p><strong>Chúng ta thấy sự khác biệt gần 30% (chính xác là 29,2%) giữa tỷ lệ hồ sơ nam và nữ được thăng chức. Dựa trên thông tin này, điều nào dưới đây là đúng?</strong></p>
+<ol type="1">
+<li>Nếu chúng ta lặp lại thực nghiệm, chúng ta chắc chắn sẽ thấy nhiều hồ sơ nữ được thăng chức hơn. Đây chỉ là một sự ngẫu nhiên.</li>
+<li>Việc thăng chức phụ thuộc vào giới tính, nam giới có nhiều khả năng được thăng chức hơn, và do đó có sự phân biệt đối xử theo giới tính đối với phụ nữ trong các quyết định thăng chức. (<em>Có thể</em>)</li>
+<li>Sự khác biệt về tỷ lệ hồ sơ nam và nữ được thăng chức là do ngẫu nhiên, đây không phải là bằng chứng của sự phân biệt đối xử theo giới tính đối với phụ nữ trong các quyết định thăng chức. (<em>Có thể</em>)</li>
+<li>Phụ nữ kém năng lực hơn nam giới, và đây là lý do tại sao ít nữ giới được thăng chức hơn.</li>
+</ol>
+</section>
+</section>
+<section id="các-tuyên-bố-cạnh-tranh" class="level3">
+<h3 class="anchored" data-anchor-id="các-tuyên-bố-cạnh-tranh">Các tuyên bố cạnh tranh</h3>
+<section id="hai-tuyên-bố-cạnh-tranh" class="level4">
+<h4 class="anchored" data-anchor-id="hai-tuyên-bố-cạnh-tranh">Hai tuyên bố cạnh tranh</h4>
+<ol type="1">
+<li>“Không có chuyện gì xảy ra cả.” Việc thăng chức và giới tính là độc lập, không có phân biệt đối xử theo giới tính, sự khác biệt quan sát được về tỷ lệ chỉ đơn giản là do ngẫu nhiên. <span class="math inline">\(\rightarrow\)</span> Giả thuyết không (Null hypothesis)</li>
+<li>“Có chuyện gì đó đang diễn ra.” Việc thăng chức và giới tính là phụ thuộc, có sự phân biệt đối xử theo giới tính, sự khác biệt quan sát được về tỷ lệ không phải do ngẫu nhiên. <span class="math inline">\(\rightarrow\)</span> Giả thuyết đối (Alternative hypothesis)</li>
+</ol>
+</section>
+<section id="một-phiên-tòa-như-một-kiểm-định-giả-thuyết" class="level4">
+<h4 class="anchored" data-anchor-id="một-phiên-tòa-như-một-kiểm-định-giả-thuyết">Một phiên tòa như một kiểm định giả thuyết</h4>
+<ul>
+<li>Kiểm định giả thuyết (Hypothesis testing) rất giống như một phiên tòa xét xử.</li>
+<li><span class="math inline">\(H_0\)</span>: Bị cáo vô tội</li>
+<li><span class="math inline">\(H_A\)</span>: Bị cáo có tội</li>
+<li>Sau đó chúng ta trình bày bằng chứng - thu thập dữ liệu.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-3_gender_discrimination/figures/trial.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p>Hình ảnh từ <a href="http://www.nwherald.com/_internal/cimg!0/oo1il4sf8zzaqbboq25oevvbg99wpot" class="uri">http://www.nwherald.com/_internal/cimg!0/oo1il4sf8zzaqbboq25oevvbg99wpot</a>.</p>
+<ul>
+<li><p>Sau đó chúng ta đánh giá bằng chứng - “Liệu những dữ liệu này có khả năng xảy ra do ngẫu nhiên nếu giả thuyết không là đúng không?”</p>
+<ul>
+<li>Nếu chúng rất khó có khả năng xảy ra, thì bằng chứng sẽ làm dấy lên nghi ngờ hợp lý trong tâm trí chúng ta về giả thuyết không.</li>
+</ul></li>
+<li><p>Cuối cùng chúng ta phải đưa ra quyết định. Khó xảy ra ở mức nào là đủ?</p></li>
+<li><p>Nếu bằng chứng không đủ mạnh để bác bỏ giả định vô tội, bồi thẩm đoàn sẽ đưa ra phán quyết “không có tội”.</p>
+<ul>
+<li>Bồi thẩm đoàn không nói rằng bị cáo vô tội, chỉ là không có đủ bằng chứng để kết tội.</li>
+<li>Trên thực tế, bị cáo có thể vô tội, nhưng bồi thẩm đoàn không có cách nào để chắc chắn.</li>
+</ul></li>
+<li><p>Nói theo cách thống kê, chúng ta chưa đủ bằng chứng để bác bỏ giả thuyết không.</p>
+<ul>
+<li>Chúng ta không bao giờ tuyên bố giả thuyết không là đúng, bởi vì chúng ta đơn giản là không biết nó có đúng hay không.</li>
+<li>Do đó chúng ta không bao giờ “chấp nhận giả thuyết không”.</li>
+</ul></li>
+<li><p>Trong một phiên tòa, nghĩa vụ chứng minh thuộc về bên công tố.</p></li>
+<li><p>Trong một kiểm định giả thuyết, nghĩa vụ chứng minh thuộc về tuyên bố bất thường.</p></li>
+<li><p>Giả thuyết không là trạng thái bình thường của sự việc (hiện trạng), vì vậy giả thuyết đối mới là điều chúng ta coi là bất thường và cần thu thập bằng chứng.</p></li>
+</ul>
+</section>
+<section id="tóm-tắt-khuôn-khổ-kiểm-định-giả-thuyết" class="level4">
+<h4 class="anchored" data-anchor-id="tóm-tắt-khuôn-khổ-kiểm-định-giả-thuyết">Tóm tắt: khuôn khổ kiểm định giả thuyết</h4>
+<ul>
+<li>Chúng ta bắt đầu với một giả thuyết không (<span class="math inline">\(H_0\)</span>) đại diện cho hiện trạng.</li>
+<li>Chúng ta cũng có một giả thuyết đối (<span class="math inline">\(H_A\)</span>) đại diện cho câu hỏi nghiên cứu của chúng ta, tức là những gì chúng ta đang kiểm tra.</li>
+<li>Chúng ta thực hiện kiểm định giả thuyết dưới giả định rằng giả thuyết không là đúng, thông qua mô phỏng (simulation) (hôm nay) hoặc các phương pháp lý thuyết (về sau trong khóa học).</li>
+<li>Nếu kết quả kiểm định cho thấy dữ liệu không cung cấp bằng chứng thuyết phục cho giả thuyết đối, chúng ta giữ nguyên giả thuyết không. Nếu có, thì chúng ta bác bỏ giả thuyết không để ủng hộ giả thuyết đối.</li>
+</ul>
+</section>
+</section>
+<section id="kiểm-định-thông-qua-mô-phỏng" class="level3">
+<h3 class="anchored" data-anchor-id="kiểm-định-thông-qua-mô-phỏng">Kiểm định thông qua mô phỏng</h3>
+<section id="mô-phỏng-thực-nghiệm" class="level4">
+<h4 class="anchored" data-anchor-id="mô-phỏng-thực-nghiệm">Mô phỏng thực nghiệm…</h4>
+<p>… dưới giả định về tính độc lập, tức là để mọi thứ cho sự ngẫu nhiên.</p>
+<p>Nếu kết quả từ các mô phỏng dựa trên mô hình ngẫu nhiên (chance model) trông giống như dữ liệu thực tế, thì chúng ta có thể xác định rằng sự khác biệt giữa tỷ lệ hồ sơ được thăng chức giữa nam và nữ chỉ đơn giản là do ngẫu nhiên (việc thăng chức và giới tính là độc lập).</p>
+<p>Nếu kết quả từ các mô phỏng dựa trên mô hình ngẫu nhiên không giống với dữ liệu, thì chúng ta có thể xác định rằng sự khác biệt giữa tỷ lệ hồ sơ được thăng chức giữa nam và nữ không phải do ngẫu nhiên, mà là do tác động thực sự của giới tính (việc thăng chức và giới tính là phụ thuộc).</p>
+</section>
+<section id="hoạt-động-ứng-dụng-mô-phỏng-thực-nghiệm" class="level4">
+<h4 class="anchored" data-anchor-id="hoạt-động-ứng-dụng-mô-phỏng-thực-nghiệm">Hoạt động ứng dụng: mô phỏng thực nghiệm</h4>
+<p>Sử dụng một bộ bài tây để mô phỏng thực nghiệm này.</p>
+<ol type="1">
+<li>Để một quân bài hình người đại diện cho <em>không thăng chức</em> và một quân bài không phải hình người đại diện cho <em>được thăng chức</em>. Coi quân Át (A) là bài hình người.
+<ul>
+<li>Loại bỏ các quân Joker.</li>
+<li>Lấy ra 3 quân Át <span class="math inline">\(\rightarrow\)</span> có chính xác 13 quân bài hình người còn lại trong bộ bài (các quân hình người: A, K, Q, J).</li>
+<li>Lấy ra một quân bài số <span class="math inline">\(\rightarrow\)</span> có chính xác 35 quân bài số (không hình người) còn lại trong bộ bài (các quân số: 2-10).</li>
+</ul></li>
+<li>Tráo bài và chia chúng thành hai nhóm có kích thước 24, đại diện cho nam và nữ.</li>
+<li>Đếm và ghi lại có bao nhiêu hồ sơ trong mỗi nhóm được thăng chức (các quân bài số).</li>
+<li>Tính tỷ lệ hồ sơ được thăng chức trong mỗi nhóm và lấy hiệu số (nam - nữ), và ghi lại giá trị này.</li>
+<li>Lặp lại các bước 2 - 4 nhiều lần.**</li>
+</ol>
+</section>
+<section id="bước-1" class="level4">
+<h4 class="anchored" data-anchor-id="bước-1">Bước 1</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-3_gender_discrimination/figures/step1.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="bước-2---4" class="level4">
+<h4 class="anchored" data-anchor-id="bước-2---4">Bước 2 - 4</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-3_gender_discrimination/figures/step2.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="kiểm-tra-tính-độc-lập" class="level3">
+<h3 class="anchored" data-anchor-id="kiểm-tra-tính-độc-lập">Kiểm tra tính độc lập</h3>
+<section id="luyện-tập-3" class="level4">
+<h4 class="anchored" data-anchor-id="luyện-tập-3">✍ Luyện tập</h4>
+<p><strong>Kết quả mô phỏng bạn vừa thực hiện có cung cấp bằng chứng thuyết phục về sự phân biệt đối xử giới tính đối với phụ nữ không, tức là sự phụ thuộc giữa giới tính và các quyết định thăng chức?</strong></p>
+<ol type="1">
+<li>Không, dữ liệu không cung cấp bằng chứng thuyết phục cho giả thuyết đối, do đó chúng ta không thể bác bỏ giả thuyết không về tính độc lập giữa giới tính và các quyết định thăng chức. Sự khác biệt quan sát được giữa hai tỷ lệ là do ngẫu nhiên.</li>
+<li>Có, dữ liệu cung cấp bằng chứng thuyết phục cho giả thuyết đối về sự phân biệt đối xử giới tính đối với phụ nữ trong các quyết định thăng chức. Sự khác biệt quan sát được giữa hai tỷ lệ là do tác động thực sự của giới tính.</li>
+</ol>
+</section>
+<section id="mô-phỏng-bằng-phần-mềm" class="level4">
+<h4 class="anchored" data-anchor-id="mô-phỏng-bằng-phần-mềm">Mô phỏng bằng phần mềm</h4>
+<p>Các mô phỏng này rất tẻ nhạt và chậm nếu chạy bằng phương pháp đã mô tả trước đó. Trong thực tế, chúng ta sử dụng phần mềm để tạo các mô phỏng. Biểu đồ chấm bên dưới hiển thị phân phối của các hiệu số tỷ lệ thăng chức mô phỏng dựa trên 100 lần mô phỏng.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2-3_gender_discrimination/figures/discRandDotPlot/discRandDotPlot.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const tocLinks = document.querySelectorAll("nav#TOC a[data-scroll-target]");
+  if (tocLinks.length === 0) return;
+
+  const sections = Array.from(tocLinks).map(link => {
+    const target = link.getAttribute("data-scroll-target");
+    if (target.startsWith("#")) {
+      return document.getElementById(decodeURI(target.slice(1)));
+    } else {
+      return document.querySelector(decodeURI(target));
+    }
+  });
+
+  function updateActive() {
+    let activeIndex = 0;
+    // Find the section closest to the top of the viewport
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        // If the section top has scrolled past the top offset (120px for navbar)
+        if (rect.top <= 120) {
+          activeIndex = i;
+        }
+      }
+    }
+
+    // Update active class
+    tocLinks.forEach((link, idx) => {
+      if (idx === activeIndex) {
+        link.classList.add("active");
+        
+        // Ensure parent lists are expanded (prevent Quarto from auto-collapsing active submenus)
+        let parent = link.parentElement;
+        while (parent && parent !== document.getElementById("TOC")) {
+          if (parent.tagName === "UL") {
+            parent.classList.remove("collapse");
+          }
+          parent = parent.parentElement;
+        }
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  }
+
+  // Bind to window scroll and resize events
+  window.addEventListener("scroll", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  window.addEventListener("resize", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  
+  // Initial runs to align state
+  updateActive();
+  setTimeout(updateActive, 100);
+  setTimeout(updateActive, 500);
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./slide-2-vn.html" class="pagination-link" aria-label="Các kỹ thuật thu thập dữ liệu">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Các kỹ thuật thu thập dữ liệu</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./slide-research-vn.html" class="pagination-link" aria-label="Phương pháp nghiên cứu">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Phương pháp nghiên cứu</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

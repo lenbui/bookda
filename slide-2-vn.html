@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; Các kỹ thuật thu thập dữ liệu – Phân tích dữ liệu</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./slide-3-vn.html" rel="next">
+<link href="./slide-1-vn.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fa9e0952a64697c55f958ad13d4b0b73.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+    window.MathJax = {
+        tex: {
+            macros: {
+                E: "{\\mathbb{E}}",
+                P: "{\\mathbb{P}}",
+                Var: "{\\mathrm{Var}}"
+            }
+        }
+    };
+</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Phân tích dữ liệu</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./slide-2-vn.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Các kỹ thuật thu thập dữ liệu</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Giới thiệu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-0-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Các yêu cầu về môn học</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-1-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Giới thiệu về phân tích dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-2-vn.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Các kỹ thuật thu thập dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-3-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Phân tích mô tả dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-research-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Phương pháp nghiên cứu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-inferences-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cơ sở suy diễn thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-hypo-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Kiểm định giả thuyết thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-bn-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Mô hình đồ thị</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-causal-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Phân tích nhân quả</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-simple-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hồi quy tuyến tính</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-multi-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Hồi quy đa biến và hồi quy logistic</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-mc-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Phương pháp mô phỏng Monte Carlo</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#thu-thập-dữ-liệu-sơ-cấp-primary-data" id="toc-thu-thập-dữ-liệu-sơ-cấp-primary-data" class="nav-link active" data-scroll-target="#thu-thập-dữ-liệu-sơ-cấp-primary-data"><span class="header-section-number">2.1</span> Thu thập dữ liệu sơ cấp (Primary Data)</a></li>
+  <li><a href="#thu-thập-dữ-liệu-thứ-cấp-secondary-data" id="toc-thu-thập-dữ-liệu-thứ-cấp-secondary-data" class="nav-link" data-scroll-target="#thu-thập-dữ-liệu-thứ-cấp-secondary-data"><span class="header-section-number">2.2</span> Thu thập dữ liệu thứ cấp (Secondary Data)</a></li>
+  <li><a href="#thu-thập-dữ-liệu-tự-động-system-generated" id="toc-thu-thập-dữ-liệu-tự-động-system-generated" class="nav-link" data-scroll-target="#thu-thập-dữ-liệu-tự-động-system-generated"><span class="header-section-number">2.3</span> Thu thập dữ liệu tự động (System-generated)</a></li>
+  <li><a href="#thu-thập-dữ-liệu-tổng-hợp-synthetic-data" id="toc-thu-thập-dữ-liệu-tổng-hợp-synthetic-data" class="nav-link" data-scroll-target="#thu-thập-dữ-liệu-tổng-hợp-synthetic-data"><span class="header-section-number">2.4</span> Thu thập dữ liệu tổng hợp (Synthetic Data)</a></li>
+  <li><a href="#nguồn-lực-cộng-đồng-crowdsourcing" id="toc-nguồn-lực-cộng-đồng-crowdsourcing" class="nav-link" data-scroll-target="#nguồn-lực-cộng-đồng-crowdsourcing"><span class="header-section-number">2.5</span> Nguồn lực cộng đồng (Crowdsourcing)</a></li>
+  <li><a href="#kết-hợp-nhiều-nguồn" id="toc-kết-hợp-nhiều-nguồn" class="nav-link" data-scroll-target="#kết-hợp-nhiều-nguồn"><span class="header-section-number">2.6</span> Kết hợp nhiều nguồn</a></li>
+  <li><a href="#tóm-tắt" id="toc-tóm-tắt" class="nav-link" data-scroll-target="#tóm-tắt"><span class="header-section-number">2.7</span> Tóm tắt</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Các kỹ thuật thu thập dữ liệu</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="thu-thập-dữ-liệu-sơ-cấp-primary-data" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="thu-thập-dữ-liệu-sơ-cấp-primary-data"><span class="header-section-number">2.1</span> Thu thập dữ liệu sơ cấp (Primary Data)</h2>
+<p>Dữ liệu được thu thập trực tiếp từ nguồn ban đầu.</p>
+<section id="khảo-sát-survey-questionnaire" class="level3">
+<h3 class="anchored" data-anchor-id="khảo-sát-survey-questionnaire">Khảo sát (Survey / Questionnaire)</h3>
+<ul>
+<li><p>Google Form, paper form</p></li>
+<li><p>Thu thập ý kiến, hành vi, đặc điểm</p></li>
+<li><p>Có thể là:</p>
+<ul>
+<li>Câu hỏi đóng (multiple choice)</li>
+<li>Câu hỏi mở</li>
+</ul></li>
+<li><p><strong>Ưu</strong>: dễ mở rộng, chi phí thấp</p></li>
+<li><p><strong>Nhược</strong>: bias, người trả lời không trung thực</p></li>
+</ul>
+</section>
+<section id="phỏng-vấn-interview" class="level3">
+<h3 class="anchored" data-anchor-id="phỏng-vấn-interview">Phỏng vấn (Interview)</h3>
+<ul>
+<li><p>1-1 hoặc nhóm (focus group)</p></li>
+<li><p>Có thể:</p>
+<ul>
+<li>Structured (cố định)</li>
+<li>Semi-structured</li>
+<li>Unstructured</li>
+</ul></li>
+<li><p><strong>Ưu</strong>: sâu, hiểu ngữ cảnh</p></li>
+<li><p><strong>Nhược</strong>: tốn thời gian, khó scale</p></li>
+</ul>
+</section>
+<section id="quan-sát-observation" class="level3">
+<h3 class="anchored" data-anchor-id="quan-sát-observation">Quan sát (Observation)</h3>
+<ul>
+<li><p>Quan sát hành vi thực tế (offline hoặc online)</p></li>
+<li><p>Ví dụ:</p>
+<ul>
+<li>Theo dõi user dùng app</li>
+<li>Ghi log hành vi</li>
+</ul></li>
+<li><p><strong>Ưu</strong>: ít bias hơn self-report</p></li>
+<li><p><strong>Nhược</strong>: khó đo biến ẩn (intention)</p></li>
+</ul>
+</section>
+<section id="thực-nghiệm-experiment" class="level3">
+<h3 class="anchored" data-anchor-id="thực-nghiệm-experiment">Thực nghiệm (Experiment)</h3>
+<ul>
+<li>Ví dụ: A/B testing, RCT</li>
+<li>Có can thiệp vào biến X để xem ảnh hưởng lên Y</li>
+<li><strong>Ưu</strong>: mạnh về <strong>nhân quả (causal inference)</strong></li>
+<li><strong>Nhược</strong>: tốn chi phí, cần thiết kế tốt</li>
+</ul>
+</section>
+</section>
+<section id="thu-thập-dữ-liệu-thứ-cấp-secondary-data" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="thu-thập-dữ-liệu-thứ-cấp-secondary-data"><span class="header-section-number">2.2</span> Thu thập dữ liệu thứ cấp (Secondary Data)</h2>
+<p>Dữ liệu có sẵn, thu thập lại để sử dụng.</p>
+<section id="dataset-công-khai" class="level3">
+<h3 class="anchored" data-anchor-id="dataset-công-khai">Dataset công khai</h3>
+<ul>
+<li>Kaggle, UCI, dữ liệu của chính phủ</li>
+<li><strong>Ưu</strong>: nhanh, miễn phí</li>
+<li><strong>Nhược</strong>: không đúng bài toán 100%</li>
+</ul>
+</section>
+<section id="web-scraping" class="level3">
+<h3 class="anchored" data-anchor-id="web-scraping">Web scraping</h3>
+<ul>
+<li>Crawl dữ liệu từ website</li>
+<li>Ví dụ:
+<ul>
+<li>Giá sản phẩm</li>
+<li>Review người dùng</li>
+</ul></li>
+<li><strong>Nhược</strong>:
+<ul>
+<li>Vấn đề pháp lý</li>
+<li>Dữ liệu không sạch</li>
+</ul></li>
+</ul>
+</section>
+<section id="api" class="level3">
+<h3 class="anchored" data-anchor-id="api">API</h3>
+<ul>
+<li><p>Lấy dữ liệu từ dịch vụ:</p>
+<ul>
+<li>Google Maps API</li>
+<li>Twitter API</li>
+</ul></li>
+<li><p><strong>Ưu</strong>: có cấu trúc tốt</p></li>
+<li><p><strong>Nhược</strong>: rate limit, cần key</p></li>
+</ul>
+</section>
+</section>
+<section id="thu-thập-dữ-liệu-tự-động-system-generated" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="thu-thập-dữ-liệu-tự-động-system-generated"><span class="header-section-number">2.3</span> Thu thập dữ liệu tự động (System-generated)</h2>
+<section id="log-dữ-liệu" class="level3">
+<h3 class="anchored" data-anchor-id="log-dữ-liệu">Log dữ liệu</h3>
+<ul>
+<li>Click, time-on-page, event tracking</li>
+</ul>
+</section>
+<section id="sensor-iot" class="level3">
+<h3 class="anchored" data-anchor-id="sensor-iot">Sensor / IoT</h3>
+<ul>
+<li>GPS, nhiệt độ, camera</li>
+<li><strong>Ưu</strong>: real-time, scale lớn</li>
+<li><strong>Nhược</strong>: noisy, cần xử lý nhiều</li>
+</ul>
+</section>
+</section>
+<section id="thu-thập-dữ-liệu-tổng-hợp-synthetic-data" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="thu-thập-dữ-liệu-tổng-hợp-synthetic-data"><span class="header-section-number">2.4</span> Thu thập dữ liệu tổng hợp (Synthetic Data)</h2>
+<ul>
+<li><p>Tạo dữ liệu bằng:</p>
+<ul>
+<li>Mô phỏng (Simulation)</li>
+<li>Mô hình sinh dữ liệu (Generative model)</li>
+</ul></li>
+<li><p><strong>Ưu</strong>:</p>
+<ul>
+<li>Không lo bảo mật</li>
+<li>Tăng dữ liệu cho ML</li>
+</ul></li>
+<li><p><strong>Nhược</strong>:</p>
+<ul>
+<li>Có thể sai lệch so với phân phối thực</li>
+</ul></li>
+</ul>
+</section>
+<section id="nguồn-lực-cộng-đồng-crowdsourcing" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="nguồn-lực-cộng-đồng-crowdsourcing"><span class="header-section-number">2.5</span> Nguồn lực cộng đồng (Crowdsourcing)</h2>
+<ul>
+<li>Thu thập từ cộng đồng</li>
+<li>Ví dụ: Gán nhãn dữ liệu (Amazon Mechanical Turk)</li>
+<li><strong>Ưu</strong>: scale lớn</li>
+<li><strong>Nhược</strong>: chất lượng không đồng đều</li>
+</ul>
+</section>
+<section id="kết-hợp-nhiều-nguồn" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="kết-hợp-nhiều-nguồn"><span class="header-section-number">2.6</span> Kết hợp nhiều nguồn</h2>
+<ul>
+<li><p>Kết hợp:</p>
+<ul>
+<li>Khảo sát + log dữ liệu</li>
+<li>API + web scraping</li>
+</ul></li>
+<li><p>Đây là cách phổ biến trong thực tế ML</p></li>
+</ul>
+</section>
+<section id="tóm-tắt" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="tóm-tắt"><span class="header-section-number">2.7</span> Tóm tắt</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 42%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Nhóm</th>
+<th>Phương pháp</th>
+<th>Khi nên dùng</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Primary</td>
+<td>Survey, Interview, Experiment</td>
+<td>Khi cần dữ liệu đúng mục tiêu</td>
+</tr>
+<tr class="even">
+<td>Secondary</td>
+<td>Dataset, API, scraping</td>
+<td>Khi cần nhanh</td>
+</tr>
+<tr class="odd">
+<td>System</td>
+<td>Logs, sensors</td>
+<td>Khi làm web/app</td>
+</tr>
+<tr class="even">
+<td>Synthetic</td>
+<td>Simulation, GAN</td>
+<td>Khi thiếu dữ liệu</td>
+</tr>
+<tr class="odd">
+<td>Crowd</td>
+<td>Labeling</td>
+<td>Khi cần gán nhãn</td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const tocLinks = document.querySelectorAll("nav#TOC a[data-scroll-target]");
+  if (tocLinks.length === 0) return;
+
+  const sections = Array.from(tocLinks).map(link => {
+    const target = link.getAttribute("data-scroll-target");
+    if (target.startsWith("#")) {
+      return document.getElementById(decodeURI(target.slice(1)));
+    } else {
+      return document.querySelector(decodeURI(target));
+    }
+  });
+
+  function updateActive() {
+    let activeIndex = 0;
+    // Find the section closest to the top of the viewport
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        // If the section top has scrolled past the top offset (120px for navbar)
+        if (rect.top <= 120) {
+          activeIndex = i;
+        }
+      }
+    }
+
+    // Update active class
+    tocLinks.forEach((link, idx) => {
+      if (idx === activeIndex) {
+        link.classList.add("active");
+        
+        // Ensure parent lists are expanded (prevent Quarto from auto-collapsing active submenus)
+        let parent = link.parentElement;
+        while (parent && parent !== document.getElementById("TOC")) {
+          if (parent.tagName === "UL") {
+            parent.classList.remove("collapse");
+          }
+          parent = parent.parentElement;
+        }
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  }
+
+  // Bind to window scroll and resize events
+  window.addEventListener("scroll", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  window.addEventListener("resize", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  
+  // Initial runs to align state
+  updateActive();
+  setTimeout(updateActive, 100);
+  setTimeout(updateActive, 500);
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./slide-1-vn.html" class="pagination-link" aria-label="Giới thiệu về phân tích dữ liệu">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Giới thiệu về phân tích dữ liệu</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./slide-3-vn.html" class="pagination-link" aria-label="Phân tích mô tả dữ liệu">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Phân tích mô tả dữ liệu</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>11&nbsp; Phương pháp mô phỏng Monte Carlo – Phân tích dữ liệu</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./slide-multi-reg-vn.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fa9e0952a64697c55f958ad13d4b0b73.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+    window.MathJax = {
+        tex: {
+            macros: {
+                E: "{\\mathbb{E}}",
+                P: "{\\mathbb{P}}",
+                Var: "{\\mathrm{Var}}"
+            }
+        }
+    };
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Phân tích dữ liệu</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./slide-mc-vn.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Phương pháp mô phỏng Monte Carlo</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Giới thiệu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-0-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Các yêu cầu về môn học</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-1-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Giới thiệu về phân tích dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-2-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Các kỹ thuật thu thập dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-3-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Phân tích mô tả dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-research-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Phương pháp nghiên cứu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-inferences-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cơ sở suy diễn thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-hypo-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Kiểm định giả thuyết thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-bn-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Mô hình đồ thị</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-causal-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Phân tích nhân quả</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-simple-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hồi quy tuyến tính</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-multi-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Hồi quy đa biến và hồi quy logistic</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-mc-vn.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Phương pháp mô phỏng Monte Carlo</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#một-số-khái-niệm" id="toc-một-số-khái-niệm" class="nav-link active" data-scroll-target="#một-số-khái-niệm"><span class="header-section-number">11.1</span> Một số khái niệm</a></li>
+  <li><a href="#mô-hình-hóa-hệ-thống" id="toc-mô-hình-hóa-hệ-thống" class="nav-link" data-scroll-target="#mô-hình-hóa-hệ-thống"><span class="header-section-number">11.2</span> Mô hình hóa hệ thống</a></li>
+  <li><a href="#phương-pháp-mô-phỏng" id="toc-phương-pháp-mô-phỏng" class="nav-link" data-scroll-target="#phương-pháp-mô-phỏng"><span class="header-section-number">11.3</span> Phương pháp mô phỏng</a></li>
+  <li><a href="#phương-pháp-mô-phỏng-monte-carlo" id="toc-phương-pháp-mô-phỏng-monte-carlo" class="nav-link" data-scroll-target="#phương-pháp-mô-phỏng-monte-carlo"><span class="header-section-number">11.4</span> Phương pháp mô phỏng Monte Carlo</a></li>
+  <li><a href="#bài-tập" id="toc-bài-tập" class="nav-link" data-scroll-target="#bài-tập"><span class="header-section-number">11.5</span> ✏️ Bài tập</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Phương pháp mô phỏng Monte Carlo</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="một-số-khái-niệm" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="một-số-khái-niệm"><span class="header-section-number">11.1</span> Một số khái niệm</h2>
+<ul>
+<li><p>Đối tượng (<em>object</em>) là tất cả những sự vật, sự kiện mà hoạt động của con người có liên quan tới.</p></li>
+<li><p>Hệ thống (<em>system</em>) là tập hợp các đối tượng (con người, máy móc), sự kiện mà giữa chúng có những mối quan hệ nhất định.</p></li>
+<li><p>Trạng thái của hệ thống (<em>state of system</em>) là tập hợp các tham số, biến số dùng để mô tả hệ thống tại một thời điểm và trong điều kiện nhất định.</p></li>
+<li><p>Mô hình (<em>model</em>) là một sơ đồ phản ánh đối tượng, con người dùng sơ đồ đó để nghiên cứu, thực nghiệm nhằm tìm ra quy luật hoạt động của đối tượng hay nói cách khác mô hình là đối tượng thay thế của đối tượng gốc để nghiên cứu về đối tượng gốc.</p></li>
+<li><p>Mô hình hóa (<em>modeling</em>) là thay thế đối tượng gốc bằng một mô hình nhằm các thu nhận thông tin quan trọng về đối tượng bằng cách tiến hành các thực nghiệm trên mô hình. Lý thuyết xây dựng mô hình và nghiên cứu mô hình để hiểu biết về đối tượng gốc gọi lý thuyết mô hình hóa. Nếu các quá trình xảy ra trong mô hình đồng nhất (theo các chỉ tiêu định trước) với các quá trình xảy ra trong đối tượng gốc thì người ta nói rằng mô hình đồng nhất với đối tượng. Lúc này người ta có thể tiến hành các thực nghiệm trên mô hình để thu nhận thông tin về đối tượng.</p></li>
+<li><p>Mô phỏng (<em>simulation</em>, <em>imitation</em>) là phương pháp mô hình hóa dựa trên việc xây dựng mô hình số (<em>numerical model</em>) và dùng phương pháp số (<em>numerical method</em>) để tìm các lời giải. Chính vì vậy máy tính số là công cụ hữu hiệu và duy nhất để thực hiện việc mô phỏng hệ thống.</p></li>
+</ul>
+<p>Lý thuyết cũng như thực nghiệm đã chứng minh rằng, chỉ có thể xây dựng được mô hình gần đúng với đối tượng mà thôi, vì trong quá trình mô hình hóa bao giờ cũng phải chấp nhận một số giả thiết nhằm giảm bớt độ phức tạp của mô hình, để mô hình có thể ứng dụng thuận tiện trong thực tế. Mặc dù vậy, mô hình hóa luôn luôn là một phương pháp hữu hiệu để con người nghiên cứu đối tượng, nhận biết các quá trình, các quy luật tự nhiên. Đặc biệt, ngày nay với sự trợ giúp đắc lực của khoa học kỹ thuật, nhất là khoa học máy tính và công nghệ thông tin, người ta đã phát triển các phương pháp mô hình hóa cho phép xây dựng các mô hình ngày càng gần với đối tượng nghiên cứu, đồng thời việc thu nhận, lựa chọn, xử lý các thông tin về mô hình rất thuận tiện, nhanh chóng và chính xác. Chính vì vậy, mô hình hóa là một phương pháp nghiên cứu khoa học mà tất cả những người làm khoa học đều phải nghiên cứu và ứng dụng vào thực tiễn hoạt động của mình.</p>
+</section>
+<section id="mô-hình-hóa-hệ-thống" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="mô-hình-hóa-hệ-thống"><span class="header-section-number">11.2</span> Mô hình hóa hệ thống</h2>
+<section id="tại-sao-cần-mô-hình-hóa-hệ-thống" class="level3">
+<h3 class="anchored" data-anchor-id="tại-sao-cần-mô-hình-hóa-hệ-thống">Tại sao cần mô hình hóa hệ thống</h3>
+<ol type="1">
+<li><p>Khi nghiên cứu trên hệ thống thực gặp nhiều khó khăn do nhiều nguyên nhân</p>
+<ul>
+<li><p>Giá thành nghiên cứu trên hệ thống thực quá đắt.</p></li>
+<li><p>Nghiên cứu trên hệ thống thực đòi hỏi thời gian quá dài.</p></li>
+<li><p>Nghiên cứu trên hệ thực ảnh hưởng đến sản xuất hoặc gây nguy hiểm cho người và thiết bị.</p></li>
+<li><p>Trong một số trường hợp không cho phép làm thực nghiệm trên hệ thống thực.</p></li>
+</ul></li>
+<li><p>Phương pháp mô hình hóa cho phép đánh giá hệ thống khi thay đổi tham số hoặc cấu trúc của hệ thống cũng như đánh giá phản ứng của hệ thống khi thay đổi tín hiệu điều khiển. Những số liệu này dùng để thiết kế hệ thống hoặc lựa chọn thông số tối ưu để vận hành hệ thống.</p></li>
+<li><p>Phương pháp mô hình hóa cho phép nghiên cứu hệ thống ngay cả khi chưa có hệ thống thực</p></li>
+</ol>
+<p>Mô hình phải đạt được hai tính chất cơ bản sau:</p>
+<ul>
+<li><p>Tính đồng nhất: mô hình phải đồng nhất với đối tượng mà nó phản ánh theo những tiêu chuẩn định trước.</p></li>
+<li><p>Tính thực dụng: có khả năng sử dụng mô hình để nghiên cứu hệ thống.</p></li>
+</ul>
+</section>
+<section id="các-loại-mô-hình-hóa-hệ-thống" class="level3">
+<h3 class="anchored" data-anchor-id="các-loại-mô-hình-hóa-hệ-thống">Các loại mô hình hóa hệ thống</h3>
+<p>Có hai loại mô hình, <em>mô hình vật lý</em> và <em>mô hình toán học</em>.</p>
+<ul>
+<li><p>Mô hình vật lý là mô hình được cấu tạo bởi các phần tử vật lý. Các thuộc tính của đối tượng phản ánh các định luật vật lý xảy ra trong mô hình. Mô hình vật lý bao gồm <em>mô hình thu nhỏ</em> và <em>mô hình tương tự</em>.</p></li>
+<li><p>Mô hình toán học thuộc loại mô hình trừu tượng. Các thuộc tính được phản ánh bằng các biểu thức, phương trình toán học. Mô hình toán học được chia thành <em>mô hình giải tích</em> và <em>mô hình số</em>. Mô hình số được xây dựng bằng các chương trình chạy trên máy tính. Ngày nay, nhờ sự phát triển của kỹ thuật máy tính và công nghệ thông tin, người ta đã xây dựng được các mô hình số có thể mô phỏng được quá trình hoạt động của đối tượng thực. Những mô hình loại này được gọi là <em>mô hình mô phỏng</em>.</p></li>
+</ul>
+</section>
+</section>
+<section id="phương-pháp-mô-phỏng" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="phương-pháp-mô-phỏng"><span class="header-section-number">11.3</span> Phương pháp mô phỏng</h2>
+<div class="defn*">
+<p>Mô phỏng là quá trình xây dựng mô hình toán học của hệ thống thực và sau đó tiến hành tính toán thực nghiệm trên mô hình để mô tả, giải thích và dự đoán hành vi của hệ thống thực</p>
+</div>
+<p>Phương pháp mô phỏng được đề xuất vào những năm 80 của thế kỷ 20. Từ đó đến nay phương pháp mô phỏng đã được nghiên cứu, hoàn thiện, và ứng dụng thành công vào nhiều lĩnh vực khác nhau như lĩnh vực khoa học kỹ thuật, khoa học xã hội, kinh tế, y tế… Sau đây trình bày một số lĩnh vực mà phương pháp mô phỏng đã được ứng dụng và phát huy được ưu thế của mình.</p>
+<ul>
+<li><p>Phân tích và thiết kế hệ thống sản xuất, lập kế hoạch sản xuất.</p></li>
+<li><p>Đánh giá phẩn cứng, phần mềm của hệ thống máy tính.</p></li>
+<li><p>Quản lý và xác định chính sách sự trữ mua sắm vật tư của hệ thống kho vật tư, nguyên liệu.</p></li>
+<li><p>Phân tích và đánh giá hệ thống phòng thủ quân sự, xác định chiến lược phòng thủ, tấn công.</p></li>
+<li><p>Phân tích và thiết kế hệ thống thông tin liên lạc, đánh giá khả năng làm việc của mạng thông tin.</p></li>
+<li><p>Phân tích và thiết kế các hệ thống giao thông như đường sắt, đường bộ, hàng không, cảng biển.</p></li>
+<li><p>Đánh giá, phân tích và thiết kế các cơ sở dịch vụ như bệnh viện, bưu điện, nhà hàng, siêu thị.</p></li>
+<li><p>Phân tích hệ thống kinh tế, tài chính.</p></li>
+<li><p>Dự báo thời tiết.</p></li>
+<li><p>Mô phỏng hoạt động của các máy gia tốc, vụ nổ hạt nhân.</p></li>
+<li><p>Lập trình trò chơi (<em>game programming</em>), học tăng cường (<em>reinforcement learning</em>).</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/61D__Teaching_DataAnalysis_book_pictures_da-mc-apps.svg" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption> </figcaption>
+</figure>
+</div>
+<p>Phương pháp mô phỏng được ứng dụng vào các giai đoạn khác nhau của việc nghiên cứu, thiết kế và vận hành các hệ thống như sau:</p>
+<ul>
+<li><p>Phương pháp mô phỏng được ứng dụng vào giai đoạn nghiên cứu, khảo sát hệ thống trước khi tiến hành thiết kế nhằm xác định độ nhạy của hệ thống đối với sự thay đổi cấu trúc và tham số của hệ thống.</p></li>
+<li><p>Phương pháp mô phỏng được ứng dụng vào giai đoạn thiết kế hệ thống để phân tích và tổng hợp các phương án thiết kế hệ thống, lựa chọn cấu trúc hệ thống thỏa mãn các chỉ tiêu cho trước.</p></li>
+<li><p>Phương pháp mô phỏng được ứng dụng vào giai đoạn vận hành hệ thống để đánh giá khả năng hoạt động, giải bài toán vận hành tối ưu, chẩn đoán các trạng thái đặc biệt của hệ thống.</p></li>
+</ul>
+</section>
+<section id="phương-pháp-mô-phỏng-monte-carlo" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="phương-pháp-mô-phỏng-monte-carlo"><span class="header-section-number">11.4</span> Phương pháp mô phỏng Monte Carlo</h2>
+<p>Phương pháp Monte Carlo được xây dựng dựa trên nền tảng</p>
+<ul>
+<li><p><strong>Các số ngẫu nhiên</strong> (<em>random numbers</em>): đây là nền tảng quan trọng, góp phần hình thành nên “thương hiệu” của phương pháp. Các số ngẫu nhiên không chỉ được sử dụng trong việc mô phỏng lại các hiện tượng ngẫu nhiên xảy ra trong thực tế mà còn được sử dụng để lấy mẫu ngẫu nhiên của một phân bố nào đó, chẳng hạn như trong tính toán các tích phân số.</p></li>
+<li><p><strong>Luật số lớn</strong> (<em>law of large numbers</em>): luật này đảm bảo rằng khi ta chọn ngẫu nhiên các giá trị (mẫu thử) trong một dãy các giá trị (quần thể), kích thước dãy mẫu thử càng lớn thì các đặc trưng thống kê (trung bình, phương sai,...) của mẫu thử càng “gần” với các đặc trưng thống kê của quần thể. Luật số lớn rất quan trọng đối với phương pháp Monte Carlo vì nó đảm bảo cho sự ổn định của các giá trị trung bình của các biến ngẫu nhiên khi số phép thử đủ lớn.</p></li>
+<li><p><strong>Định lý giới hạn trung tâm</strong> (<em>central limit theorem</em>): định lý này phát biểu rằng dưới một số điều kiện cụ thể, trung bình số học của một lượng đủ lớn các phép lặp của các biến ngẫu nhiên độc lập (independent random variables) sẽ được xấp xỉ theo phân bố chuẩn (normal distrbution). Do phương pháp Monte Carlo là một chuỗi các phép thử được lặp lại nên định lý giới hạn trung tâm sẽ giúp chúng ta dễ dàng xấp xỉ được trung bình và phương sai của các kết quả thu được từ phương pháp.</p></li>
+</ul>
+<section id="các-loại-số-ngẫu-nhiên" class="level3">
+<h3 class="anchored" data-anchor-id="các-loại-số-ngẫu-nhiên">Các loại số ngẫu nhiên</h3>
+<p>Có 3 loại số ngẫu nhiên chính</p>
+<ul>
+<li><p>Số ngẫu nhiên thực (<em>real random number</em>): các đại lượng của các hiện tượng ngẫu nhiên trong thế giới tự nhiên.</p></li>
+<li><p>Số gần ngẫu nhiên (<em>quasi</em>-<em>random number</em>): các đại lượng có phân bố tốt (có sự không nhất quán thấp).</p></li>
+<li><p>Số giả ngẫu nhiên (<em>pseudo</em>-<em>random number</em>): các đại lượng mà phân bố của nó vượt qua được các kiểm tra về tính ngẫu nhiên.</p></li>
+</ul>
+<p>Có hai điều chúng ta cần lưu ý khi mô phỏng các số ngẫu nhiên</p>
+<ul>
+<li><p>Máy tính không thể tạo ra các dãy số ngẫu nhiên thật sự mà chỉ là các số giả ngẫu nhiên.</p></li>
+<li><p>Bản thân các số không phải là ngẫu nhiên mà chỉ có dãy số mới có thể được xem là ngẫu nhiên</p></li>
+</ul>
+<p>Một dãy số ngẫu nhiên tốt phải hội tụ đầy đủ các yếu tố sau đây</p>
+<ul>
+<li><p>Chu kì lặp lại phải dài tức là việc gieo số ngẫu nhiên phải tạo ra được nhiều số trước khi lặp lại dãy số cũ của nó để cho không có phần nào của dãy bị trùng trong tính toán.</p></li>
+<li><p>Các số được tạo ra phải hướng tới phân bố đều, tức là một dãy số bất kì gồm vài trăm số phải hướng tới phân bố đồng nhất trong toàn vùng khảo sát.</p></li>
+<li><p>Các số không tương quan với nhau, tức là các số trong dãy phải độc lập về mặt thống kê với các số trước nó.</p></li>
+<li><p>Thuật toán phải nhanh, tức là thời gian máy tính tạo ra số ngẫu nhiên phải nhỏ.</p></li>
+</ul>
+<p>Các số giả ngẫu nhiên trong phương pháp Monte Carlo chỉ cần tỏ ra “đủ mức ngẫu nhiên”, nghĩa là tuân theo phân bố đều hay theo phân bố định trước, khi số lượng của chúng lớn.</p>
+</section>
+<section id="phương-pháp-tạo-số-giả-ngẫu-nhiên-và-lấy-mẫu" class="level3">
+<h3 class="anchored" data-anchor-id="phương-pháp-tạo-số-giả-ngẫu-nhiên-và-lấy-mẫu">Phương pháp tạo số giả ngẫu nhiên và lấy mẫu</h3>
+<section id="phương-pháp-đồng-dư-tuyến-tính" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="phương-pháp-đồng-dư-tuyến-tính">Phương pháp đồng dư tuyến tính</h4>
+<p>Để tạo ra dãy số giả ngẫu nhiên độc lập từ một phân phối đều <span class="math inline">\(X_{1},X_{2},...,X_{n}\sim\mathcal{U}(0,1)\)</span>, ta sử dụng thuật toán sau</p>
+<div class="tcolorbox">
+<ol type="1">
+<li><p>Khởi tạo hạt (<em>seed</em>) <span class="math inline">\(x_{0}\)</span></p></li>
+<li><p>Lặp <span class="math inline">\(i=1...n\)</span>, tính <span class="math inline">\(x_{i}\)</span> bằng công thức truy hồi <span class="math display">\[x_{i}=(ax_{i-1}+c)\bmod m\]</span></p></li>
+<li><p>Chuẩn hóa giá trị bằng <span class="math inline">\(x_{i}/m,i=1...n\)</span></p></li>
+</ol>
+<ul>
+<li>Các giá trị đề xuất <span class="math inline">\(m=2^{32}\)</span>, <span class="math inline">\(a=1\,664\,525\)</span> và <span class="math inline">\(c=1\,013\,904\,223\)</span></li>
+</ul>
+</div>
+<p>Thực sự đây không phải là một thuật toán tạo số ngẫu nhiên tốt nhất nhưng ưu điểm của thuật toán này là đơn giản, dễ sử dụng, tính toán nhanh và dãy số ngẫu nhiên do nó tạo ra là khá tốt.</p>
+<p>Ta có thể thấy rằng trong dãy số được tạo ra bởi phương pháp này mỗi số chỉ có thể xuất hiện duy nhất một lần trước khi dãy bị lặp lại.</p>
+<p>Để tạo ra số ngẫu nhiên từ phân phối chuẩn <span class="math inline">\(\mathcal{N}(0,1)\)</span> ta sử dụng thuật toán</p>
+<div class="tcolorbox">
+<ol type="1">
+<li><p>Tạo số ngẫu nhiên <span class="math inline">\(u_{1},u_{2}\sim\mathcal{U}(0,1)\)</span></p></li>
+<li><p>Tính <span class="math inline">\(\theta=2\pi u_{1}\)</span> và <span class="math inline">\(r=\sqrt{-2\ln(u_{2})}\)</span></p></li>
+<li><p>Tính <span class="math inline">\(x=r\cos(\theta)\)</span> và <span class="math inline">\(y=r\sin(\theta)\)</span> là các đại lượng ngẫu nhiên độc lập của phân phối <span class="math inline">\(\mathcal{N}(0,1)\)</span></p></li>
+</ol>
+</div>
+</section>
+<section id="phương-pháp-biến-đổi-ngược-inverse-transform-method" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="phương-pháp-biến-đổi-ngược-inverse-transform-method">Phương pháp biến đổi ngược (inverse transform method)</h4>
+<p>Giả sử ta cần tạo giá trị của một biến ngẫu nhiên rời rạc <span class="math inline">\(X\)</span> có hàm phân bố xác suất <span class="math display">\[p_{i}=P(X=x_{i}),\qquad i=0,1,...\]</span></p>
+<p>Gọi <span class="math inline">\(F\)</span> là hàm phân phối tích lũy</p>
+<div class="tcolorbox">
+<ol type="1">
+<li><p>Tạo số ngẫu nhiên <span class="math inline">\(u\sim\mathcal{U}(0,1)\)</span></p></li>
+<li><p>Chọn <span class="math inline">\(X=x_{i}\)</span> nếu <span class="math inline">\(F(x_{i-1})\leq u&lt;F(x_{i})\)</span></p></li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/62D__Teaching_DataAnalysis_book_pictures_da-inverse-method.svg" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption> </figcaption>
+</figure>
+</div>
+</div>
+<div class="example*">
+<p>Tạo một biến Poisson ngẫu nhiên với tham số <span class="math inline">\(\lambda\)</span> <span class="math display">\[p_{i}=P(X=i)=\dfrac{\lambda^{i}}{i!}e^{-\lambda},\quad i=0,1,...\]</span></p>
+<ol type="1">
+<li><p>Tạo số ngẫu nhiên <span class="math inline">\(u\sim\mathcal{U}(0,1)\)</span></p></li>
+<li><p><span class="math inline">\(i=0,\alpha=e^{-\lambda},F=\alpha\)</span></p></li>
+<li><p>Nếu <span class="math inline">\(u&lt;F\)</span> thì</p>
+<p>Chọn <span class="math inline">\(X=i\)</span> và dừng</p>
+<p>ngược lại</p>
+<p><span class="math inline">\(i=i+1,\alpha=\dfrac{\lambda\alpha}{i},F=F+\alpha\)</span> và lặp lại (c)</p></li>
+</ol>
+</div>
+</section>
+<section id="phương-pháp-bác-bỏ-acceptance-rejection-method" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="phương-pháp-bác-bỏ-acceptance-rejection-method">Phương pháp bác bỏ (acceptance-rejection method)</h4>
+<p>Giả sử ta cần tạo giá trị của một biến ngẫu <span class="math inline">\(X\sim p(x)\)</span></p>
+<ul>
+<li><p><span class="math inline">\(p(x)\)</span> là <em>phân phối mục tiêu</em></p></li>
+<li><p><span class="math inline">\(q(x)\)</span> là <em>phân phối dễ lấy mẫu</em></p></li>
+<li><p><span class="math inline">\(M\)</span> là hằng số sao cho <span class="math inline">\(\forall x\in\mathcal{X},p(x)\leq Mq(x)\)</span></p></li>
+</ul>
+<div class="tcolorbox">
+<ol type="1">
+<li><p>Tạo số ngẫu nhiên <span class="math inline">\(x\sim q(x)\)</span></p></li>
+<li><p>Tạo số ngẫu nhiên <span class="math inline">\(u\sim\mathcal{U}(0,Mq(x))\)</span></p></li>
+<li><p>Nếu <span class="math inline">\(u&lt;p(x)\)</span> thì chọn <span class="math inline">\(x\)</span>; ngược lại bác bỏ <span class="math inline">\(x\)</span></p></li>
+</ol>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/63D__Teaching_DataAnalysis_book_pictures_sampling-reject.svg" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption> </figcaption>
+</figure>
+</div>
+</section>
+<section id="phương-pháp-importance-sampling" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="phương-pháp-importance-sampling">Phương pháp importance sampling</h4>
+<p>Đây là một phương pháp ước lượng giá trị kỳ vọng (hoặc các đại lượng thống kê quan tâm) của hàm <span class="math inline">\(f(x)\)</span> trong đó <span class="math inline">\(x\)</span> có phân phối <span class="math inline">\(p\)</span>. Tuy nhiên, Thay vì lấy mẫu từ <span class="math inline">\(p\)</span>, chúng ta sẽ tính kết quả từ việc lấy mẫu từ phân phối <span class="math inline">\(q\)</span>. Phương pháp này thường được xem là một kĩ thuật giảm phương sai trong lấy mẫu Monte Carlo.</p>
+<p>Ta đã biết rằng kì vọng của <span class="math inline">\(f(x)\)</span> được tính theo công thức <span class="math display">\[\mathbb{E}_{x\sim p}[f(x)]=\int f(x)p(x)dx\]</span></p>
+<p>Thay vì lấy mẫu biến <span class="math inline">\(x\)</span> từ phân bố <span class="math inline">\(p\)</span>, ta sẽ đi lấy mẫu theo một phân bố <span class="math inline">\(q\)</span> đơn giản hơn, khi đó kì vọng của <span class="math inline">\(f(x)\)</span> được tính lại theo công thức <span class="math display">\[\begin{aligned}
+\mathbb{E}_{x\sim p}[f(x)] &amp; =\int f(x)p(x)dx\nonumber \\
+&amp; =\int f(x)\frac{p(x)}{q(x)}q(x)dx\nonumber \\
+&amp; =\mathbb{E}_{x\sim q}\left[f(x)\frac{p(x)}{q(x)}\right]
+\end{aligned}\]</span></p>
+</section>
+</section>
+<section id="phương-pháp-monte-carlo" class="level3">
+<h3 class="anchored" data-anchor-id="phương-pháp-monte-carlo">Phương pháp Monte Carlo</h3>
+<p>Các thành phần chính của phương pháp mô phỏng Monte Carlo gồm có</p>
+<ul>
+<li><p>Hàm mật độ xác suất (<em>probability density function</em> - PDF): một hệ vật lý (hay toán học) phải được mô tả bằng một bộ các PDF.</p></li>
+<li><p>Nguồn phát số ngẫu nhiên (<em>random number generator</em> - RNG): Tạo ra các số ngẫu nhiên theo các phân phối PDF.</p></li>
+<li><p>Ghi nhận (<em>scoring</em>): dữ liệu đầu ra phải được tích luỹ trong các khoảng giá trị của đại lượng cần quan tâm.</p></li>
+<li><p>Ước lượng sai số (<em>error estimation</em>): ước lượng sai số thống kê (phương sai) theo số phép thử và theo đại lượng quan tâm.</p></li>
+</ul>
+<p>Để tăng hiệu quả cho phương pháp Monte Carlo, chúng ta có thể sử dụng</p>
+<ul>
+<li><p>Các kĩ thuật giảm phương sai (<em>variance reduction technique</em>): các phương pháp nhằm giảm phương sai của đáp số được ước lượng để giảm thời gian tính toán của mô phỏng Monte Carlo.</p></li>
+<li><p>Song song hoá (<em>parallelization</em>) và vector hoá (<em>vectorization</em>): các thuật toán cho phép phương pháp Monte Carlo được thực thi một cách hiệu quả trên một cấu trúc máy tính hiệu năng cao.</p></li>
+</ul>
+<div class="example*">
+<p>Ước lượng kỳ vọng của mặt xúc xắc</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/64D__Teaching_DataAnalysis_book_pictures_mc-dice.svg" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption> </figcaption>
+</figure>
+</div>
+</div>
+<div class="example*">
+<p>Tính giá trị <span class="math inline">\(\pi\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/65D__Teaching_DataAnalysis_book_pictures_mc-pi.svg" class="img-fluid figure-img" style="width:30.0%"></p>
+<figcaption> </figcaption>
+</figure>
+</div>
+<ul>
+<li><p>Sử dụng phân phối đều <span class="math inline">\(\mathcal{U}\)</span> để tạo ra các điểm ngẫu nhiên nằm trong hình vuông</p></li>
+<li><p>Tính tỉ số <span class="math display">\[\pi\approx4\times\frac{\text{số điểm nằm trong hình tròn}}{\text{số điểm nằm trong hình vuông}}\]</span></p></li>
+</ul>
+</div>
+<div class="problem*">
+<p>Công ty A đang xem xét việc thuê một thiết bị hiện đại dùng trong sản xuất. Hợp đồng thuê một năm là 400000 đô la và không thể hủy bỏ sớm. Công ty đang đánh giá liệu <em>mức sản xuất</em> hàng năm và mức tiết kiệm trong <em>bảo trì</em>, <em>lao động</em> và <em>nguyên vật liệu</em> có đủ bù đắp cho việc thuê máy này không? Từ các chuyên gia về kinh tế, công ty có được các thông tin sau</p>
+<ul>
+<li><p>Tiết kiệm bảo trì (<em>MS</em>): 10-20 USD mỗi đơn vị sản phẩm</p></li>
+<li><p>Tiết kiệm lao động (<em>LS</em>): 2-8 USD mỗi đơn vị sản phẩm</p></li>
+<li><p>Tiết kiệm nguyên vật liệu (<em>RMS</em>): 3-9 USD mỗi đơn vị sản phẩm</p></li>
+<li><p>Mức sản xuất (<em>PL</em>): 15000-35000 đơn vị sản phẩm mỗi năm</p></li>
+</ul>
+<p><strong>Lưu ý</strong>: tất cả các biến đều có phân phối chuẩn và có khoảng tin cậy là 90%</p>
+<p>Như vậy, ta có tiết kiệm trong một năm là <span class="math display">\[\text{Tiết kiệm hàng năm}=(MS+LS+RMS)\times PL\]</span></p>
+<p>Sử dụng phương pháp Monte Carlo chạy mô phỏng</p>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/66D__Teaching_DataAnalysis_book_pictures_da-mc-sim.svg" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption> </figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="bài-tập" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="bài-tập"><span class="header-section-number">11.5</span> ✏️ Bài tập</h2>
+<div class="xca">
+<p>Giải các bài tập xác suất bằng phương pháp Monte Carlo</p>
+</div>
+<div class="xca">
+<p>Giả sử bạn đang quản lý dự án liên quan đến việc tạo ra module e-learning. Việc tạo ra module e-learning bao gồm ba công việc (task) theo <em>tuần tự</em>: viết nội dung, tạo đồ họa, và tích hợp các yếu tố đa phương tiện. Dựa trên kinh nghiệm chuyên môn ta có ước lượng thời gian hoàn thành cho từng công việc như sau</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;"><strong>Công việc</strong></th>
+<th style="text-align: center;"><strong>trường hợp tốt nhất</strong></th>
+<th style="text-align: center;"><strong>khả thi nhất</strong></th>
+<th style="text-align: center;"><strong>trường hợp xấu nhất</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">viết nội dung</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">làm hình ảnh</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">tích hợp</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">6</td>
+</tr>
+</tbody>
+</table>
+<p>Hãy xác định khả năng hoàn thành dự án trong 17 ngày?</p>
+</div>
+<div class="xca">
+<p>Giả sử bạn đang kinh doanh một dịch vụ dựa trên đăng ký trực tuyến.</p>
+<ul>
+<li><p>Phí đăng ký là 10 đô la mỗi tháng cho mỗi người dùng và có thể bị hủy bỏ bất kỳ tháng nào.</p></li>
+<li><p>Hiện tại đang có 10000 người dùng.</p></li>
+<li><p>Doanh thu định kỳ hàng tháng là <span class="math display">\[\text{số người dùng}\times\text{phí đăng ký}.\]</span></p></li>
+<li><p>Chi phí duy trì dịch vụ hàng năm là cố định ở mức 1 triệu đô la mỗi năm bất kể người dùng. Bảng dưới đây là tỉ lệ tăng trưởng người dùng từng tháng (có thể tăng hoặc giảm) trong 5 năm qua</p></li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><strong>Year</strong></th>
+<th style="text-align: center;"><strong>Jan</strong></th>
+<th style="text-align: center;"><strong>Feb</strong></th>
+<th style="text-align: center;"><strong>Mar</strong></th>
+<th style="text-align: center;"><strong>Apr</strong></th>
+<th style="text-align: center;"><strong>May</strong></th>
+<th style="text-align: center;"><strong>Jun</strong></th>
+<th style="text-align: center;"><strong>Jul</strong></th>
+<th style="text-align: center;"><strong>Aug</strong></th>
+<th style="text-align: center;"><strong>Sep</strong></th>
+<th style="text-align: center;"><strong>Oct</strong></th>
+<th style="text-align: center;"><strong>Nov</strong></th>
+<th style="text-align: center;"><strong>Dec</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">2016</td>
+<td style="text-align: center;">-2.0%</td>
+<td style="text-align: center;">3.5%</td>
+<td style="text-align: center;">0.5%</td>
+<td style="text-align: center;">2.2%</td>
+<td style="text-align: center;">1.9%</td>
+<td style="text-align: center;">2.8%</td>
+<td style="text-align: center;">2.2%</td>
+<td style="text-align: center;">0.2%</td>
+<td style="text-align: center;">5.0%</td>
+<td style="text-align: center;">3.0%</td>
+<td style="text-align: center;">3.6%</td>
+<td style="text-align: center;">-4.6%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2017</td>
+<td style="text-align: center;">-11.4%</td>
+<td style="text-align: center;">4.7%</td>
+<td style="text-align: center;">-3.1%</td>
+<td style="text-align: center;">-3.9%</td>
+<td style="text-align: center;">-4.3%</td>
+<td style="text-align: center;">-1.4%</td>
+<td style="text-align: center;">-4.5%</td>
+<td style="text-align: center;">4.4%</td>
+<td style="text-align: center;">7.7%</td>
+<td style="text-align: center;">10.3%</td>
+<td style="text-align: center;">2.3%</td>
+<td style="text-align: center;">-1.4%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2018</td>
+<td style="text-align: center;">1.3%</td>
+<td style="text-align: center;">-5.8%</td>
+<td style="text-align: center;">5.2%</td>
+<td style="text-align: center;">-8.6%</td>
+<td style="text-align: center;">-4.1%</td>
+<td style="text-align: center;">-1.5%</td>
+<td style="text-align: center;">2.4%</td>
+<td style="text-align: center;">-2.7%</td>
+<td style="text-align: center;">-3.3%</td>
+<td style="text-align: center;">-0.6%</td>
+<td style="text-align: center;">6.0%</td>
+<td style="text-align: center;">-3.7%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2019</td>
+<td style="text-align: center;">0.0%</td>
+<td style="text-align: center;">1.1%</td>
+<td style="text-align: center;">2.8%</td>
+<td style="text-align: center;">0.3%</td>
+<td style="text-align: center;">9.6%</td>
+<td style="text-align: center;">-6.7%</td>
+<td style="text-align: center;">1.0%</td>
+<td style="text-align: center;">-1.3%</td>
+<td style="text-align: center;">-4.3%</td>
+<td style="text-align: center;">-3.0%</td>
+<td style="text-align: center;">-1.2%</td>
+<td style="text-align: center;">-8.3%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2020</td>
+<td style="text-align: center;">-7.9%</td>
+<td style="text-align: center;">-0.2%</td>
+<td style="text-align: center;">0.9%</td>
+<td style="text-align: center;">1.0%</td>
+<td style="text-align: center;">-4.6%</td>
+<td style="text-align: center;">2.0%</td>
+<td style="text-align: center;">-0.9%</td>
+<td style="text-align: center;">7.3%</td>
+<td style="text-align: center;">-4.5%</td>
+<td style="text-align: center;">-7.9%</td>
+<td style="text-align: center;">-4.1%</td>
+<td style="text-align: center;">5.6%</td>
+</tr>
+</tbody>
+</table>
+<p>Bạn kỳ vọng 12 tháng trong năm tới sẽ <em>giống</em> với bất kỳ tháng nào trong 60 tháng trước đó. Hãy xác định khả năng lãi khi tiếp tục vận hành dịch vụ này trong năm tới hay không?</p>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const tocLinks = document.querySelectorAll("nav#TOC a[data-scroll-target]");
+  if (tocLinks.length === 0) return;
+
+  const sections = Array.from(tocLinks).map(link => {
+    const target = link.getAttribute("data-scroll-target");
+    if (target.startsWith("#")) {
+      return document.getElementById(decodeURI(target.slice(1)));
+    } else {
+      return document.querySelector(decodeURI(target));
+    }
+  });
+
+  function updateActive() {
+    let activeIndex = 0;
+    // Find the section closest to the top of the viewport
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        // If the section top has scrolled past the top offset (120px for navbar)
+        if (rect.top <= 120) {
+          activeIndex = i;
+        }
+      }
+    }
+
+    // Update active class
+    tocLinks.forEach((link, idx) => {
+      if (idx === activeIndex) {
+        link.classList.add("active");
+        
+        // Ensure parent lists are expanded (prevent Quarto from auto-collapsing active submenus)
+        let parent = link.parentElement;
+        while (parent && parent !== document.getElementById("TOC")) {
+          if (parent.tagName === "UL") {
+            parent.classList.remove("collapse");
+          }
+          parent = parent.parentElement;
+        }
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  }
+
+  // Bind to window scroll and resize events
+  window.addEventListener("scroll", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  window.addEventListener("resize", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  
+  // Initial runs to align state
+  updateActive();
+  setTimeout(updateActive, 100);
+  setTimeout(updateActive, 500);
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./slide-multi-reg-vn.html" class="pagination-link" aria-label="Hồi quy đa biến và hồi quy logistic">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Hồi quy đa biến và hồi quy logistic</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

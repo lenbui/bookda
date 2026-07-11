@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5&nbsp; Cơ sở suy diễn thống kê – Phân tích dữ liệu</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./slide-hypo-vn.html" rel="next">
+<link href="./slide-research-vn.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fa9e0952a64697c55f958ad13d4b0b73.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+    window.MathJax = {
+        tex: {
+            macros: {
+                E: "{\\mathbb{E}}",
+                P: "{\\mathbb{P}}",
+                Var: "{\\mathrm{Var}}"
+            }
+        }
+    };
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Phân tích dữ liệu</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./slide-inferences-vn.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cơ sở suy diễn thống kê</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Giới thiệu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-0-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Các yêu cầu về môn học</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-1-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Giới thiệu về phân tích dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-2-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Các kỹ thuật thu thập dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-3-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Phân tích mô tả dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-research-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Phương pháp nghiên cứu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-inferences-vn.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cơ sở suy diễn thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-hypo-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Kiểm định giả thuyết thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-bn-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Mô hình đồ thị</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-causal-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Phân tích nhân quả</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-simple-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hồi quy tuyến tính</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-multi-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Hồi quy đa biến và hồi quy logistic</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-mc-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Phương pháp mô phỏng Monte Carlo</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#ước-lượng-điểm-và-độ-biến-thiên-mẫu" id="toc-ước-lượng-điểm-và-độ-biến-thiên-mẫu" class="nav-link active" data-scroll-target="#ước-lượng-điểm-và-độ-biến-thiên-mẫu"><span class="header-section-number">5.1</span> Ước lượng điểm và độ biến thiên mẫu</a></li>
+  <li><a href="#khoảng-tin-cậy-cho-một-tỷ-lệ" id="toc-khoảng-tin-cậy-cho-một-tỷ-lệ" class="nav-link" data-scroll-target="#khoảng-tin-cậy-cho-một-tỷ-lệ"><span class="header-section-number">5.2</span> Khoảng tin cậy cho một tỷ lệ</a></li>
+  <li><a href="#kiểm-định-giả-thuyết-cho-một-tỷ-lệ" id="toc-kiểm-định-giả-thuyết-cho-một-tỷ-lệ" class="nav-link" data-scroll-target="#kiểm-định-giả-thuyết-cho-một-tỷ-lệ"><span class="header-section-number">5.3</span> Kiểm định giả thuyết cho một tỷ lệ</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cơ sở suy diễn thống kê</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="ước-lượng-điểm-và-độ-biến-thiên-mẫu" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="ước-lượng-điểm-và-độ-biến-thiên-mẫu"><span class="header-section-number">5.1</span> Ước lượng điểm và độ biến thiên mẫu</h2>
+<section id="ước-lượng-điểm-và-sai-số" class="level3">
+<h3 class="anchored" data-anchor-id="ước-lượng-điểm-và-sai-số">Ước lượng điểm và sai số</h3>
+<ul>
+<li><p>Chúng ta thường quan tâm đến các <strong>tham số quần thể</strong> (population parameters).</p></li>
+<li><p>Rất khó để thu thập dữ liệu trên toàn bộ quần thể, vì vậy chúng ta sử dụng các <strong>thống kê mẫu</strong> (sample statistics) làm các <strong>ước lượng điểm</strong> (point estimates) cho các tham số quần thể chưa biết mà chúng ta quan tâm.</p></li>
+<li><p><strong>Sai số</strong> (Error) trong ước lượng = sự khác biệt giữa tham số quần thể và thống kê mẫu.</p></li>
+<li><p><strong>Độ chệch</strong> (Bias) là xu hướng hệ thống dẫn đến việc ước lượng cao hơn hoặc thấp hơn tham số thực của quần thể.</p></li>
+<li><p><strong>Sai số mẫu</strong> (Sampling error) mô tả mức độ một ước lượng có xu hướng thay đổi từ mẫu này sang mẫu khác.</p></li>
+<li><p>Phần lớn thống kê tập trung vào việc hiểu và định lượng sai số mẫu, và <strong>kích thước mẫu</strong> (sample size) rất hữu ích trong việc định lượng sai số này.</p></li>
+</ul>
+<p><strong>Giả sử chúng ta lấy mẫu ngẫu nhiên 1.000 người lớn từ mỗi bang ở Hoa Kỳ. Bạn kỳ vọng giá trị trung bình mẫu về chiều cao của họ sẽ giống nhau, hơi khác nhau hay rất khác nhau?</strong></p>
+<p><em>Không giống nhau, nhưng chỉ hơi khác nhau.</em></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-1_point_est_sampling_var/figures/pew/pew1.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-1_point_est_sampling_var/figures/pew/pew2.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-1_point_est_sampling_var/figures/pew/pew3.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<section id="sai-số-biên" class="level4">
+<h4 class="anchored" data-anchor-id="sai-số-biên">Sai số biên</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-1_point_est_sampling_var/figures/pew/pew4.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<ul>
+<li><p>41% <span class="math inline">\(\pm\)</span> 2.9%: Chúng tôi tin tưởng 95% rằng có 38.1% đến 43.9% công chúng tin rằng những người trẻ tuổi, thay vì những người trung niên hoặc cao tuổi, đang gặp khó khăn nhất trong nền kinh tế hiện nay.</p></li>
+<li><p>49% <span class="math inline">\(\pm\)</span> 4.4%: Chúng tôi tin tưởng 95% rằng có 44.6% đến 53.4% những người từ 18-34 tuổi đã chấp nhận một công việc họ không muốn chỉ để chi trả các hóa đơn.</p></li>
+</ul>
+</section>
+<section id="luyện-tập" class="level4">
+<h4 class="anchored" data-anchor-id="luyện-tập">✍ Luyện tập</h4>
+<p><strong>Giả sử tỷ lệ người trưởng thành ở Mỹ ủng hộ việc mở rộng năng lượng mặt trời là p = 0.88, đây là tham số chúng ta quan tâm. Một người trưởng thành ở Mỹ được chọn ngẫu nhiên có nhiều khả năng hay ít khả năng ủng hộ việc mở rộng năng lượng mặt trời hơn?</strong></p>
+<p><em>Nhiều khả năng hơn.</em></p>
+<p><strong>Giả sử rằng bạn không có quyền truy cập vào toàn bộ quần thể người trưởng thành ở Mỹ, một kịch bản rất dễ xảy ra. Để ước tính tỷ lệ người trưởng thành ở Mỹ ủng hộ việc mở rộng năng lượng mặt trời, bạn có thể lấy mẫu từ quần thể và sử dụng tỷ lệ mẫu của mình như là dự đoán tốt nhất cho tỷ lệ quần thể chưa biết.</strong></p>
+<ul>
+<li><p>Lấy mẫu, có thay thế, 1.000 người trưởng thành ở Mỹ từ quần thể, và ghi lại xem họ có ủng hộ việc mở rộng năng lượng mặt trời hay không.</p></li>
+<li><p>Tìm tỷ lệ mẫu.</p></li>
+<li><p>Vẽ đồ thị phân phối của các tỷ lệ mẫu thu được bởi các thành viên trong lớp.</p></li>
+</ul>
+</section>
+<section id="phân-phối-mẫu" class="level4">
+<h4 class="anchored" data-anchor-id="phân-phối-mẫu">Phân phối mẫu</h4>
+<p>Giả sử bạn lặp lại quy trình này nhiều lần và thu được nhiều giá trị <span class="math inline">\(\hat{p}\)</span>. Phân phối này được gọi là một <strong>phân phối mẫu</strong> (sampling distribution).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-1_point_est_sampling_var/figures/solar-power/solar-power-sampling.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p><strong>Hình dạng và tâm của phân phối này là gì? Dựa trên phân phối này, bạn nghĩ tỷ lệ thực của quần thể là bao nhiêu?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-1_point_est_sampling_var/figures/solar-power/solar-power-sampling.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p><em>Phân phối này đơn đỉnh (unimodal) và gần như đối xứng. Một dự đoán hợp lý cho tỷ lệ thực của quần thể là tâm của phân phối này, xấp xỉ 0.88.</em></p>
+</section>
+<section id="các-phân-phối-mẫu-không-bao-giờ-được-quan-sát-trực-tiếp" class="level4">
+<h4 class="anchored" data-anchor-id="các-phân-phối-mẫu-không-bao-giờ-được-quan-sát-trực-tiếp">Các phân phối mẫu không bao giờ được quan sát trực tiếp</h4>
+<ul>
+<li><p>Trong các ứng dụng thực tế, chúng ta không bao giờ thực sự quan sát được phân phối mẫu, tuy nhiên sẽ rất hữu ích nếu luôn nghĩ về một ước lượng điểm là đến từ một phân phối giả định như vậy.</p></li>
+<li><p>Hiểu về phân phối mẫu sẽ giúp chúng ta đặc trưng hóa và hiểu được ý nghĩa của các ước lượng điểm mà chúng ta quan sát được.</p></li>
+</ul>
+</section>
+</section>
+<section id="định-lý-giới-hạn-trung-tâm" class="level3">
+<h3 class="anchored" data-anchor-id="định-lý-giới-hạn-trung-tâm">Định lý giới hạn trung tâm</h3>
+<p><strong>Định lý giới hạn trung tâm (Central limit theorem)</strong></p>
+<p>Các tỷ lệ mẫu sẽ có phân phối xấp xỉ chuẩn với giá trị trung bình bằng tỷ lệ quần thể, <span class="math inline">\(p\)</span>, và sai số chuẩn (standard error) bằng <span class="math inline">\(\sqrt{\frac{p~(1-p)}{n}}\)</span>. <span class="math display">\[ \hat{p} \sim N \left( mean = p, SE = \sqrt{\frac{p~(1-p)}{n}} \right) \]</span></p>
+<ul>
+<li><p>Không phải ngẫu nhiên mà phân phối mẫu chúng ta thấy trước đó lại đối xứng và tập trung tại tỷ lệ thực của quần thể.</p></li>
+<li><p>Chúng ta sẽ không đi sâu vào chứng minh chi tiết tại sao <span class="math inline">\(SE = \sqrt{\frac{p~(1-p)}{n}}\)</span>, nhưng lưu ý rằng khi <span class="math inline">\(n\)</span> tăng thì <span class="math inline">\(SE\)</span> giảm.</p>
+<ul>
+<li>Khi <span class="math inline">\(n\)</span> tăng, các mẫu sẽ cho ra các giá trị <span class="math inline">\(\hat{p}\)</span> nhất quán hơn, tức là độ biến thiên giữa các <span class="math inline">\(\hat{p}\)</span> sẽ thấp hơn.</li>
+</ul></li>
+</ul>
+<section id="điều-kiện-áp-dụng-clt" class="level4">
+<h4 class="anchored" data-anchor-id="điều-kiện-áp-dụng-clt">Điều kiện áp dụng CLT</h4>
+<p>Một số điều kiện nhất định phải được đáp ứng để CLT có thể áp dụng:</p>
+<ol type="1">
+<li><p><strong>Tính độc lập (Independence):</strong> Các quan sát trong mẫu phải độc lập. Điều này khó kiểm chứng, nhưng sẽ có khả năng cao hơn nếu</p>
+<ul>
+<li>sử dụng phương pháp lấy mẫu/phân bổ ngẫu nhiên</li>
+</ul></li>
+<li><p><strong>Kích thước mẫu (Sample size):</strong> Nên có ít nhất 10 thành công dự kiến và 10 thất bại dự kiến trong mẫu quan sát được. Điều này khó kiểm chứng nếu bạn không biết tỷ lệ quần thể (hoặc không thể giả định một giá trị cho nó). Trong những trường hợp đó, chúng ta xem xét số lượng thành công và thất bại quan sát được phải đạt ít nhất là 10.</p></li>
+</ol>
+</section>
+</section>
+<section id="áp-dụng-định-lý-giới-hạn-trung-tâm-vào-bối-cảnh-thực-tế" class="level3">
+<h3 class="anchored" data-anchor-id="áp-dụng-định-lý-giới-hạn-trung-tâm-vào-bối-cảnh-thực-tế">Áp dụng Định lý giới hạn trung tâm vào bối cảnh thực tế</h3>
+<section id="khi-p-chưa-biết" class="level4">
+<h4 class="anchored" data-anchor-id="khi-p-chưa-biết">Khi <span class="math inline">\(p\)</span> chưa biết</h4>
+<ul>
+<li><p>CLT phát biểu rằng <span class="math inline">\(SE = \sqrt{\frac{p~(1-p)}{n}}\)</span>, với điều kiện <span class="math inline">\(np\)</span> và <span class="math inline">\(n(1-p)\)</span> ít nhất là 10, tuy nhiên chúng ta thường không biết giá trị của <span class="math inline">\(p\)</span>, tỷ lệ quần thể.</p></li>
+<li><p>Trong những trường hợp này, chúng ta thay thế <span class="math inline">\(p\)</span> bằng <span class="math inline">\(\hat{p}\)</span>.</p></li>
+</ul>
+</section>
+</section>
+<section id="thêm-chi-tiết-về-định-lý-giới-hạn-trung-tâm" class="level3">
+<h3 class="anchored" data-anchor-id="thêm-chi-tiết-về-định-lý-giới-hạn-trung-tâm">Thêm chi tiết về Định lý giới hạn trung tâm</h3>
+<section id="khi-p-thấp" class="level4">
+<h4 class="anchored" data-anchor-id="khi-p-thấp">Khi <span class="math inline">\(p\)</span> thấp</h4>
+<p><strong>Giả sử chúng ta có một quần thể mà tỷ lệ thực là</strong> <span class="math inline">\(p = 0.05\)</span>, và chúng ta lấy các mẫu ngẫu nhiên kích thước <span class="math inline">\(n = 50\)</span> từ quần thể này. Chúng ta tính tỷ lệ mẫu trong mỗi mẫu và vẽ đồ thị các tỷ lệ này. Bạn có kỳ vọng phân phối này sẽ gần như chuẩn không? Tại sao có hoặc tại sao không?</p>
+<p><em>Không, điều kiện thành công-thất bại không được đáp ứng (</em><span class="math inline">\(50 * 0.05 = 2.5\)</span>), do đó chúng ta không kỳ vọng phân phối mẫu sẽ gần như chuẩn.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-1_point_est_sampling_var/figures/sf/low-p.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p><strong>Điều gì xảy ra khi</strong> <span class="math inline">\(np\)</span> và/hoặc <span class="math inline">\(n(1-p) &lt; 10\)</span>?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-1_point_est_sampling_var/figures/clt_prop_grid/clt_prop_grid_1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-1_point_est_sampling_var/figures/clt_prop_grid/clt_prop_grid_2.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="khi-các-điều-kiện-không-được-đáp-ứng" class="level4">
+<h4 class="anchored" data-anchor-id="khi-các-điều-kiện-không-được-đáp-ứng">Khi các điều kiện không được đáp ứng</h4>
+<ul>
+<li><p>Khi <span class="math inline">\(np\)</span> hoặc <span class="math inline">\(n(1-p)\)</span> nhỏ, phân phối rời rạc hơn.</p></li>
+<li><p>Khi <span class="math inline">\(np\)</span> hoặc <span class="math inline">\(n(1-p) &lt; 10\)</span>, phân phối bị lệch (skewed) nhiều hơn.</p></li>
+<li><p>Cả <span class="math inline">\(np\)</span> và <span class="math inline">\(n(1-p)\)</span> càng lớn, phân phối càng gần với phân phối chuẩn.</p></li>
+<li><p>Khi cả <span class="math inline">\(np\)</span> và <span class="math inline">\(n(1-p)\)</span> đều rất lớn, tính rời rạc của phân phối hầu như không còn rõ rệt, và phân phối trông rất giống phân phối chuẩn.</p></li>
+</ul>
+</section>
+</section>
+<section id="mở-rộng-khung-làm-việc-cho-các-thống-kê-khác" class="level3">
+<h3 class="anchored" data-anchor-id="mở-rộng-khung-làm-việc-cho-các-thống-kê-khác">Mở rộng khung làm việc cho các thống kê khác</h3>
+<ul>
+<li>Chiến lược sử dụng một thống kê mẫu để ước lượng một tham số là rất phổ biến, và đó là chiến lược mà chúng ta có thể áp dụng cho các thống kê khác ngoài tỷ lệ.
+<ul>
+<li>Lấy một mẫu ngẫu nhiên sinh viên tại một trường đại học và hỏi họ tham gia bao nhiêu hoạt động ngoại khóa để ước tính số lượng hoạt động ngoại khóa trung bình mà tất cả sinh viên trong trường này quan tâm.</li>
+</ul></li>
+<li>Các nguyên tắc và ý tưởng chung từ chương này cũng áp dụng cho các tham số khác, ngay cả khi các chi tiết thay đổi một chút.</li>
+</ul>
+</section>
+</section>
+<section id="khoảng-tin-cậy-cho-một-tỷ-lệ" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="khoảng-tin-cậy-cho-một-tỷ-lệ"><span class="header-section-number">5.2</span> Khoảng tin cậy cho một tỷ lệ</h2>
+<section id="khoảng-tin-cậy" class="level4">
+<h4 class="anchored" data-anchor-id="khoảng-tin-cậy">Khoảng tin cậy</h4>
+<ul>
+<li><p>Một phạm vi các giá trị hợp lý cho tham số quần thể được gọi là một <strong>khoảng tin cậy</strong> (confidence interval).</p></li>
+<li><p>Việc chỉ sử dụng một thống kê mẫu để ước lượng một tham số giống như đánh cá trong một hồ nước đục bằng một chiếc lao, còn sử dụng một khoảng tin cậy giống như đánh cá bằng một chiếc lưới.</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-2_ci_prop/figures/spear.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p>Chúng ta có thể phóng lao vào nơi chúng ta thấy cá nhưng có khả năng sẽ trượt. Nếu chúng ta quăng lưới vào khu vực đó, chúng ta có cơ hội tốt để bắt được cá.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-2_ci_prop/figures/net.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<ul>
+<li>Nếu chúng ta báo cáo một ước lượng điểm, chúng ta có thể sẽ không trúng chính xác tham số quần thể. Nếu chúng ta báo cáo một phạm vi các giá trị hợp lý, chúng ta có cơ hội tốt để nắm bắt được tham số đó.</li>
+</ul>
+</section>
+<section id="xây-dựng-một-khoảng-tin-cậy-95" class="level3">
+<h3 class="anchored" data-anchor-id="xây-dựng-một-khoảng-tin-cậy-95">Xây dựng một khoảng tin cậy 95%</h3>
+<section id="cách-facebook-phân-loại-sở-thích-của-người-dùng" class="level4">
+<h4 class="anchored" data-anchor-id="cách-facebook-phân-loại-sở-thích-của-người-dùng">Cách Facebook phân loại sở thích của người dùng</h4>
+<p><strong>Hầu hết các trang web thương mại (ví dụ: các nền tảng mạng xã hội, các cơ quan thông tấn, các nhà bán lẻ trực tuyến) đều thu thập dữ liệu về hành vi của người dùng và sử dụng dữ liệu này để cung cấp nội dung, đề xuất và quảng cáo có mục tiêu. Để hiểu liệu người Mỹ có nghĩ rằng cuộc sống của họ phù hợp với cách mà các hệ thống phân loại dựa trên thuật toán xếp loại họ hay không, Pew Research đã hỏi một mẫu đại diện gồm 850 người dùng Facebook Mỹ về mức độ chính xác mà họ cảm nhận đối với danh sách các danh mục mà Facebook đã liệt kê cho họ trên trang về các sở thích giả định của họ thực sự đại diện cho họ và sở thích của họ. 67% số người trả lời nói rằng các danh mục được liệt kê là chính xác. Hãy ước tính tỷ lệ thực của những người dùng Facebook Mỹ nghĩ rằng Facebook phân loại sở thích của họ một cách chính xác.</strong></p>
+</section>
+<section id="cách-facebook-phân-loại-sở-thích-của-người-dùng-1" class="level4">
+<h4 class="anchored" data-anchor-id="cách-facebook-phân-loại-sở-thích-của-người-dùng-1">Cách Facebook phân loại sở thích của người dùng</h4>
+<p><span class="math display">\[ \hat{p} = 0.67 \qquad n = 850 \]</span></p>
+<p>Khoảng tin cậy 95% xấp xỉ được định nghĩa là <span class="math display">\[ ước~lượng~điểm \pm 1.96 \times SE \]</span></p>
+<p><span class="math display">\[ SE = \sqrt{\frac{p(1-p)}{n}} = \sqrt{\frac{0.67 \times 0.33}{850}} \approx 0.016 \]</span></p>
+<p><span class="math display">\[\begin{eqnarray*}
+\hat{p} \pm 1.96 \times SE &amp;=&amp; 0.67 \pm 1.96 \times 0.016 \\
+&amp;=&amp; (0.67 - 0.03, 0.67 + 0.03) \\
+&amp;=&amp; (0.64, 0.70)
+\end{eqnarray*}\]</span></p>
+<p><strong>Câu nào sau đây là cách diễn giải đúng về khoảng tin cậy này?</strong></p>
+<p>Chúng tôi tin tưởng 95% rằng</p>
+<ol type="1">
+<li>64% đến 67% người dùng Facebook Mỹ trong mẫu này nghĩ rằng Facebook phân loại sở thích của họ chính xác.</li>
+<li>64% đến 67% tất cả người dùng Facebook Mỹ nghĩ rằng Facebook phân loại sở thích của họ chính xác (Đáp án đúng)</li>
+<li>có 64% đến 67% khả năng một người dùng Facebook Mỹ được chọn ngẫu nhiên có sở thích được phân loại chính xác.</li>
+<li>có 64% đến 67% khả năng 95% sở thích của người dùng Facebook Mỹ được phân loại chính xác.</li>
+</ol>
+</section>
+<section id="tin-tưởng-95-có-nghĩa-là-gì" class="level4">
+<h4 class="anchored" data-anchor-id="tin-tưởng-95-có-nghĩa-là-gì">Tin tưởng 95% có nghĩa là gì?</h4>
+<ul>
+<li><p>Giả sử chúng ta lấy nhiều mẫu và xây dựng một khoảng tin cậy từ mỗi mẫu bằng cách sử dụng phương trình <span class="math inline">\(ước~lượng~điểm \pm 1.96 \times SE\)</span>.</p></li>
+<li><p>Khi đó khoảng 95% các khoảng tin cậy đó sẽ chứa tỷ lệ thực của quần thể (<span class="math inline">\(p\)</span>).</p></li>
+</ul>
+</section>
+<section id="độ-rộng-của-một-khoảng" class="level4">
+<h4 class="anchored" data-anchor-id="độ-rộng-của-một-khoảng">Độ rộng của một khoảng</h4>
+<p><strong>Nếu chúng ta muốn chắc chắn hơn rằng chúng ta nắm bắt được tham số quần thể, tức là tăng mức tin cậy của mình, chúng ta nên sử dụng một khoảng rộng hơn hay một khoảng hẹp hơn?</strong></p>
+<p><em>Một khoảng rộng hơn.</em></p>
+<p><strong>Bạn có thấy nhược điểm nào khi sử dụng một khoảng rộng hơn không?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-2_ci_prop/figures/garfield.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p><em>Nếu khoảng quá rộng, nó có thể không cung cấp nhiều thông tin.</em></p>
+</section>
+</section>
+<section id="thay-đổi-mức-tin-cậy" class="level3">
+<h3 class="anchored" data-anchor-id="thay-đổi-mức-tin-cậy">Thay đổi mức tin cậy</h3>
+<p><span class="math display">\[ ước~lượng~điểm \pm z^\star \times SE \]</span></p>
+<ul>
+<li><p>Trong một khoảng tin cậy, <span class="math inline">\(z^\star \times SE\)</span> được gọi là <strong>sai số biên</strong> (margin of error), và đối với một mẫu nhất định, sai số biên thay đổi khi mức tin cậy thay đổi.</p></li>
+<li><p>Để thay đổi mức tin cậy, chúng ta cần điều chỉnh <span class="math inline">\(z^\star\)</span> trong công thức trên.</p></li>
+<li><p>Các mức tin cậy thường được sử dụng trong thực tế là 90%, 95%, 98% và 99%.</p></li>
+<li><p>Đối với khoảng tin cậy 95%, <span class="math inline">\(z^\star = 1.96\)</span>.</p></li>
+<li><p>Tuy nhiên, bằng cách sử dụng phân phối chuẩn chuẩn hóa (standard normal) (<span class="math inline">\(z\)</span>), ta có thể tìm thấy <span class="math inline">\(z^\star\)</span> phù hợp cho bất kỳ mức tin cậy nào.</p></li>
+</ul>
+<p><strong>Điểm Z nào dưới đây là</strong> <span class="math inline">\(z^\star\)</span> phù hợp khi tính toán khoảng tin cậy 98%?</p>
+<ol type="1">
+<li><span class="math inline">\(Z = 2.05\)</span></li>
+<li><span class="math inline">\(Z = 1.96\)</span></li>
+<li><span class="math inline">\(Z = 2.33\)</span> (Đáp án đúng)</li>
+<li><span class="math inline">\(Z = -2.33\)</span></li>
+<li><span class="math inline">\(Z = -1.65\)</span></li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-2_ci_prop/figures/middle98/middle98.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="diễn-giải-các-khoảng-tin-cậy" class="level3">
+<h3 class="anchored" data-anchor-id="diễn-giải-các-khoảng-tin-cậy">Diễn giải các khoảng tin cậy</h3>
+<p>Các khoảng tin cậy …</p>
+<ul>
+<li><p>luôn nói về quần thể</p></li>
+<li><p>không phải là các phát biểu về xác suất</p></li>
+<li><p>chỉ nói về các tham số quần thể, không phải các quan sát riêng lẻ</p></li>
+<li><p>chỉ đáng tin cậy nếu thống kê mẫu làm cơ sở cho chúng là một ước lượng không chệch của tham số quần thể</p></li>
+</ul>
+</section>
+</section>
+<section id="kiểm-định-giả-thuyết-cho-một-tỷ-lệ" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="kiểm-định-giả-thuyết-cho-một-tỷ-lệ"><span class="header-section-number">5.3</span> Kiểm định giả thuyết cho một tỷ lệ</h2>
+<section id="khung-làm-việc-cho-kiểm-định-giả-thuyết" class="level3">
+<h3 class="anchored" data-anchor-id="khung-làm-việc-cho-kiểm-định-giả-thuyết">Khung làm việc cho kiểm định giả thuyết</h3>
+<section id="nhớ-lại-khi" class="level4">
+<h4 class="anchored" data-anchor-id="nhớ-lại-khi">Nhớ lại khi…</h4>
+<p>Thí nghiệm phân biệt đối xử giới tính:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Đề bạt (Promotion)</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Được đề bạt</td>
+<td>Không được đề bạt</td>
+<td>Tổng</td>
+</tr>
+<tr class="even">
+<td>Giới tính</td>
+<td>Nam</td>
+<td>21</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Nữ</td>
+<td>14</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Tổng</td>
+<td>35</td>
+<td>13</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[ \hat{p}_{nam} = 21 / 24 \approx 0.88 ~ \text{ và } ~ \hat{p}_{nữ} = 14 / 24 \approx 0.58 \]</span></p>
+<p>Các giải thích khả dĩ: * Đề bạt và giới tính là <strong>độc lập</strong>, không có phân biệt đối xử giới tính, sự khác biệt quan sát được về tỷ lệ chỉ đơn giản là do ngẫu nhiên. <span class="math inline">\(\rightarrow\)</span> giả thuyết không (null) - (không có gì đang diễn ra) * Đề bạt và giới tính là <strong>phụ thuộc</strong>, có phân biệt đối xử giới tính, sự khác biệt quan sát được về tỷ lệ không phải do ngẫu nhiên. <span class="math inline">\(\rightarrow\)</span> giả thuyết đối (alternative) - (có gì đó đang diễn ra)</p>
+</section>
+<section id="kết-quả" class="level4">
+<h4 class="anchored" data-anchor-id="kết-quả">Kết quả</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="5-3_ht_prop/figures/discRandDotPlot/discRandDotPlot.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p>Vì khá khó xảy ra việc thu được các kết quả như dữ liệu thực tế hoặc một kết quả cực đoan hơn trong các mô phỏng (tỷ lệ đề bạt ở nam cao hơn nữ 30% trở lên), chúng tôi đã quyết định bác bỏ giả thuyết không để ủng hộ giả thuyết đối.</p>
+</section>
+<section id="tóm-tắt-khung-làm-việc-cho-kiểm-định-giả-thuyết" class="level4">
+<h4 class="anchored" data-anchor-id="tóm-tắt-khung-làm-việc-cho-kiểm-định-giả-thuyết">Tóm tắt: khung làm việc cho kiểm định giả thuyết</h4>
+<ul>
+<li><p>Chúng ta bắt đầu với một <strong>giả thuyết không</strong> (<strong>null hypothesis</strong> - <span class="math inline">\(H_0\)</span>) đại diện cho hiện trạng (status quo).</p></li>
+<li><p>Chúng ta cũng có một <strong>giả thuyết đối</strong> (<strong>alternative hypothesis</strong> - <span class="math inline">\(H_A\)</span>) đại diện cho câu hỏi nghiên cứu của mình, tức là những gì chúng ta đang kiểm định.</p></li>
+<li><p>Chúng ta thực hiện kiểm định giả thuyết dưới giả định rằng giả thuyết không là đúng, thông qua mô phỏng hoặc các phương pháp truyền thống dựa trên định lý giới hạn trung tâm (sắp được trình bày…).</p></li>
+<li><p>Nếu kết quả kiểm định cho thấy dữ liệu không cung cấp bằng chứng thuyết phục cho giả thuyết đối, chúng ta giữ nguyên giả thuyết không. Nếu có, chúng ta bác bỏ giả thuyết không để ủng hộ giả thuyết đối.</p></li>
+</ul>
+<p>Chúng ta sẽ giới thiệu chính thức khung làm việc cho kiểm định giả thuyết bằng một ví dụ về việc kiểm định một khẳng định về giá trị trung bình của quần thể.</p>
+</section>
+</section>
+<section id="kiểm-định-các-giả-thuyết-sử-dụng-khoảng-tin-cậy" class="level3">
+<h3 class="anchored" data-anchor-id="kiểm-định-các-giả-thuyết-sử-dụng-khoảng-tin-cậy">Kiểm định các giả thuyết sử dụng khoảng tin cậy</h3>
+<p><strong>Trước đó, chúng ta đã tính toán khoảng tin cậy 95% cho tỷ lệ người dùng Facebook Mỹ nghĩ rằng Facebook phân loại sở thích của họ chính xác là từ 64% đến 67%. Dựa trên khoảng tin cậy này, liệu dữ liệu có ủng hộ giả thuyết rằng đa số người dùng Facebook Mỹ nghĩ rằng Facebook phân loại sở thích của họ chính xác hay không.</strong></p>
+<ul>
+<li><p>Các giả thuyết liên quan là:</p>
+<ul>
+<li><span class="math inline">\(H_0\)</span>: <span class="math inline">\(p = 0.50\)</span>: 50% người dùng Facebook Mỹ nghĩ rằng Facebook phân loại sở thích của họ chính xác</li>
+<li><span class="math inline">\(H_A\)</span>: <span class="math inline">\(p &gt; 0.50\)</span>: Hơn 50% người dùng Facebook Mỹ nghĩ rằng Facebook phân loại sở thích của họ chính xác</li>
+</ul></li>
+<li><p>Giá trị không (null value) không nằm trong khoảng tin cậy <span class="math inline">\(\rightarrow\)</span> bác bỏ giả thuyết không.</p></li>
+<li><p>Đây là một cách tiếp cận nhanh chóng cho kiểm định giả thuyết, nhưng nó không cho chúng ta biết khả năng xảy ra của một số kết quả nhất định dưới giả thuyết không (giá trị p).</p></li>
+</ul>
+</section>
+<section id="sai-lầm-trong-quyết-định" class="level3">
+<h3 class="anchored" data-anchor-id="sai-lầm-trong-quyết-định">Sai lầm trong quyết định</h3>
+<section id="sai-lầm-trong-quyết-định-1" class="level4">
+<h4 class="anchored" data-anchor-id="sai-lầm-trong-quyết-định-1">Sai lầm trong quyết định</h4>
+<ul>
+<li><p>Các kiểm định giả thuyết không phải là không có sai sót.</p></li>
+<li><p>Trong hệ thống tòa án, những người vô tội đôi khi bị kết án sai và những kẻ có tội đôi khi được tự do.</p></li>
+<li><p>Tương tự như vậy, chúng ta cũng có thể đưa ra quyết định sai lầm trong các kiểm định giả thuyết thống kê.</p></li>
+<li><p>Sự khác biệt là chúng ta có các công cụ cần thiết để định lượng tần suất chúng ta mắc sai lầm trong thống kê.</p></li>
+</ul>
+<p>Có hai giả thuyết cạnh tranh: giả thuyết không và giả thuyết đối. Trong một kiểm định giả thuyết, chúng ta đưa ra quyết định về giả thuyết nào có thể đúng, nhưng lựa chọn của chúng ta có thể sai.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Quyết định</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>không bác bỏ <span class="math inline">\(H_0\)</span></td>
+<td>bác bỏ <span class="math inline">\(H_0\)</span></td>
+</tr>
+<tr class="even">
+<td>Sự thật: <span class="math inline">\(H_0\)</span> đúng</td>
+<td><span class="math inline">\(\checkmark\)</span></td>
+<td>Sai lầm loại 1</td>
+</tr>
+<tr class="odd">
+<td>Sự thật: <span class="math inline">\(H_A\)</span> đúng</td>
+<td>Sai lầm loại 2</td>
+<td><span class="math inline">\(\checkmark\)</span></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p><strong>Sai lầm loại 1</strong> (Type 1 Error) là bác bỏ giả thuyết không khi <span class="math inline">\(H_0\)</span> thực sự đúng.</p></li>
+<li><p><strong>Sai lầm loại 2</strong> (Type 2 Error) là không bác bỏ giả thuyết không khi <span class="math inline">\(H_A\)</span> thực sự đúng.</p></li>
+<li><p>Chúng ta (hầu như) không bao giờ biết liệu <span class="math inline">\(H_0\)</span> hay <span class="math inline">\(H_A\)</span> đúng, nhưng chúng ta cần xem xét tất cả các khả năng.</p></li>
+</ul>
+</section>
+<section id="kiểm-định-giả-thuyết-giống-như-một-phiên-tòa" class="level4">
+<h4 class="anchored" data-anchor-id="kiểm-định-giả-thuyết-giống-như-một-phiên-tòa">Kiểm định giả thuyết giống như một phiên tòa</h4>
+<p>Nếu chúng ta lại nghĩ về một kiểm định giả thuyết như một phiên tòa hình sự thì việc đóng khung phán quyết theo các giả thuyết không và đối là điều hợp lý: <span class="math display">\[\begin{align*}
+H_0&amp;:\text{ Bị cáo vô tội} \\
+H_A&amp;:\text{ Bị cáo có tội}
+\end{align*}\]</span></p>
+<p>Loại sai lầm nào đang được mắc phải trong các trường hợp sau đây?</p>
+<ul>
+<li><p>Tuyên bố bị cáo vô tội trong khi họ thực sự có tội: <strong>Sai lầm loại 2</strong></p></li>
+<li><p>Tuyên bố bị cáo có tội trong khi họ thực sự vô tội: <strong>Sai lầm loại 1</strong></p></li>
+</ul>
+<p>Bạn nghĩ sai lầm nào là tồi tệ hơn? “thà để mười kẻ có tội trốn thoát còn hơn để một người vô tội phải chịu khổ” – William Blackstone</p>
+</section>
+<section id="tỷ-lệ-sai-lầm-loại-1" class="level4">
+<h4 class="anchored" data-anchor-id="tỷ-lệ-sai-lầm-loại-1">Tỷ lệ sai lầm loại 1</h4>
+<ul>
+<li><p>Theo quy tắc chung, chúng ta bác bỏ <span class="math inline">\(H_0\)</span> khi giá trị p nhỏ hơn 0.05, tức là chúng ta sử dụng một <strong>mức ý nghĩa</strong> (significance level) là 0.05, <span class="math inline">\(\alpha = 0.05\)</span>.</p></li>
+<li><p>Điều này có nghĩa là, đối với những trường hợp mà <span class="math inline">\(H_0\)</span> thực sự đúng, chúng ta không muốn bác bỏ nó một cách sai lầm quá 5% số lần đó.</p></li>
+<li><p>Nói cách khác, khi sử dụng mức ý nghĩa 5%, có khoảng 5% khả năng mắc sai lầm loại 1 nếu giả thuyết không là đúng. <span class="math display">\[ P(\text{Sai lầm loại 1 | $H_0$ đúng}) = \alpha \]</span></p></li>
+<li><p>Đây là lý do tại sao chúng ta ưu tiên các giá trị nhỏ của <span class="math inline">\(\alpha\)</span> – việc tăng <span class="math inline">\(\alpha\)</span> sẽ làm tăng tỷ lệ sai lầm loại 1.</p></li>
+</ul>
+</section>
+</section>
+<section id="kiểm-định-chính-thức-sử-dụng-giá-trị-p" class="level3">
+<h3 class="anchored" data-anchor-id="kiểm-định-chính-thức-sử-dụng-giá-trị-p">Kiểm định chính thức sử dụng giá trị p</h3>
+<section id="các-danh-mục-sở-thích-trên-facebook" class="level4">
+<h4 class="anchored" data-anchor-id="các-danh-mục-sở-thích-trên-facebook">Các danh mục sở thích trên Facebook</h4>
+<p><strong>Cùng cuộc khảo sát đó đã hỏi 850 người trả lời về mức độ thoải mái của họ khi Facebook tạo ra một danh sách các danh mục cho họ. 41% số người trả lời cho biết họ thấy thoải mái. Liệu những dữ liệu này có cung cấp bằng chứng thuyết phục rằng tỷ lệ người dùng Facebook Mỹ thấy thoải mái với việc Facebook tạo ra danh sách các danh mục sở thích là khác 50% hay không?</strong></p>
+</section>
+<section id="thiết-lập-các-giả-thuyết" class="level4">
+<h4 class="anchored" data-anchor-id="thiết-lập-các-giả-thuyết">Thiết lập các giả thuyết</h4>
+<ul>
+<li><p><strong>Tham số quan tâm</strong> là tỷ lệ của <strong>tất cả</strong> người dùng Facebook Mỹ thấy thoải mái với việc Facebook tạo ra các danh mục sở thích cho họ.</p></li>
+<li><p>Có thể có hai giải thích tại sao tỷ lệ mẫu của chúng ta thấp hơn 0.50 (thiểu số).</p>
+<ul>
+<li>Tỷ lệ thực của quần thể khác 0.50.</li>
+<li>Tỷ lệ thực của quần thể là 0.50, và sự khác biệt giữa tỷ lệ thực của quần thể và tỷ lệ mẫu chỉ đơn giản là do độ biến thiên mẫu tự nhiên.</li>
+</ul></li>
+</ul>
+</section>
+<section id="thiết-lập-các-giả-thuyết-1" class="level4">
+<h4 class="anchored" data-anchor-id="thiết-lập-các-giả-thuyết-1">Thiết lập các giả thuyết</h4>
+<ul>
+<li><p>Chúng ta bắt đầu với giả định rằng 50% người dùng Facebook Mỹ thấy thoải mái với việc Facebook tạo ra các danh mục sở thích cho họ <span class="math display">\[ H_0:~p = 0.50 \]</span></p></li>
+<li><p>Chúng ta kiểm định khẳng định rằng tỷ lệ người dùng Facebook Mỹ thấy thoải mái với việc Facebook tạo ra các danh mục sở thích cho họ là khác 50% <span class="math display">\[ H_A:~p \ne 0.50 \]</span></p></li>
+</ul>
+</section>
+<section id="các-danh-mục-sở-thích-trên-facebook---điều-kiện" class="level4">
+<h4 class="anchored" data-anchor-id="các-danh-mục-sở-thích-trên-facebook---điều-kiện">Các danh mục sở thích trên Facebook - điều kiện</h4>
+<p><strong>Điều nào sau đây <em>không</em> phải là một điều kiện cần được đáp ứng để tiến hành kiểm định giả thuyết này?</strong></p>
+<ol type="1">
+<li><p>Những người trả lời trong mẫu phải độc lập với nhau về việc họ có cảm thấy thoải mái hay không với việc sở thích của họ bị Facebook phân loại.</p></li>
+<li><p>Việc lấy mẫu phải được thực hiện một cách ngẫu nhiên.</p></li>
+<li><p>Kích thước mẫu phải nhỏ hơn 10% quần thể của tất cả người dùng Facebook Mỹ.</p></li>
+<li><p>Nên có ít nhất 30 người trả lời trong mẫu. (Đáp án đúng)</p></li>
+<li><p>Nên có ít nhất 10 thành công dự kiến và 10 thất bại dự kiến.</p></li>
+</ol>
+</section>
+<section id="thống-kê-kiểm-định" class="level4">
+<h4 class="anchored" data-anchor-id="thống-kê-kiểm-định">Thống kê kiểm định</h4>
+<p>Để đánh giá xem giá trị trung bình mẫu quan sát được có bất thường đối với phân phối mẫu theo giả thuyết hay không, chúng ta xác định xem nó cách giá trị không bao nhiêu sai số chuẩn, giá trị này còn được gọi là <strong>thống kê kiểm định</strong> (test statistic).</p>
+<p><span class="math display">\[ \hat{p} \sim N \left( \mu = 0.50, SE = \sqrt{\frac{0.50 \times 0.50}{850} }  \right) \]</span></p>
+<p><span class="math display">\[ Z = \frac{0.41 - 0.50}{0.0171} = -5.26 \]</span></p>
+<p><strong>Tỷ lệ mẫu cách giá trị theo giả thuyết 5.26 lần sai số chuẩn. Điều này có được coi là thấp một cách bất thường không? Tức là kết quả có ý nghĩa thống kê (statistically significant) không?</strong></p>
+<p><em>Có, và chúng ta có thể định lượng mức độ bất thường của nó bằng cách sử dụng giá trị p (p-value).</em></p>
+</section>
+<section id="giá-trị-p" class="level4">
+<h4 class="anchored" data-anchor-id="giá-trị-p">Giá trị p</h4>
+<ul>
+<li><p>Sau đó, chúng ta sử dụng thống kê kiểm định này để tính toán <strong>giá trị p</strong> (<strong>p-value</strong>), xác suất quan sát được dữ liệu ít nhất là thuận lợi cho giả thuyết đối như tập dữ liệu hiện tại của chúng ta, nếu giả thuyết không là đúng.</p></li>
+<li><p>Nếu giá trị p <strong>thấp</strong> (thấp hơn mức ý nghĩa <span class="math inline">\(\alpha\)</span>, thường là 5%), chúng ta nói rằng sẽ rất khó xảy ra việc quan sát được dữ liệu nếu giả thuyết không là đúng, và do đó <strong>bác bỏ</strong> <span class="math inline">\(H_0\)</span>.</p></li>
+<li><p>Nếu giá trị p <strong>cao</strong> (cao hơn <span class="math inline">\(\alpha\)</span>), chúng ta nói rằng có khả năng quan sát được dữ liệu ngay cả khi giả thuyết không là đúng, và do đó <strong>không bác bỏ</strong> <span class="math inline">\(H_0\)</span>.</p></li>
+</ul>
+</section>
+<section id="các-danh-mục-sở-thích-trên-facebook---giá-trị-p" class="level4">
+<h4 class="anchored" data-anchor-id="các-danh-mục-sở-thích-trên-facebook---giá-trị-p">Các danh mục sở thích trên Facebook - giá trị p</h4>
+<p><strong>Giá trị p (p-value):</strong> xác suất quan sát được dữ liệu ít nhất là thuận lợi cho <span class="math inline">\(H_A\)</span> như tập dữ liệu hiện tại của chúng ta (một tỷ lệ mẫu thấp hơn 0.41), nếu trên thực tế <span class="math inline">\(H_0\)</span> là đúng (tỷ lệ thực của quần thể là 0.50).</p>
+<p><span class="math display">\[ P(\hat{p} &lt; 0.41~\text{ hoặc }~\hat{p} &gt; 0.59~|~p = 0.50) = P(|Z| &gt; 5.26) &lt; 0.0001 \]</span></p>
+</section>
+<section id="các-danh-mục-sở-thích-trên-facebook---đưa-ra-quyết-định" class="level4">
+<h4 class="anchored" data-anchor-id="các-danh-mục-sở-thích-trên-facebook---đưa-ra-quyết-định">Các danh mục sở thích trên Facebook - Đưa ra quyết định</h4>
+<ul>
+<li><p>Giá trị p &lt; 0.0001</p>
+<ul>
+<li>Nếu 50% tất cả người dùng FB Mỹ thấy thoải mái với việc FB tạo ra các danh mục sở thích này, thì có chưa đến 0.01% khả năng quan sát được một mẫu ngẫu nhiên gồm 850 người dùng Facebook Mỹ mà 41% trở xuống hoặc 59% trở lên thấy thoải mái với điều đó.</li>
+<li>Xác suất khá thấp để nghĩ rằng tỷ lệ mẫu quan sát được, hoặc một kết quả cực đoan hơn, có khả năng xảy ra do ngẫu nhiên.</li>
+</ul></li>
+<li><p>Vì giá trị p thấp (thấp hơn 5%), chúng ta <strong>bác bỏ</strong> <span class="math inline">\(H_0\)</span>.</p></li>
+<li><p>Dữ liệu cung cấp bằng chứng thuyết phục rằng tỷ lệ người dùng FB Mỹ thấy thoải mái với việc FB tạo ra danh sách các danh mục sở thích cho họ là khác 50%.</p></li>
+<li><p>Sự khác biệt giữa giá trị không là 0.50 và tỷ lệ mẫu quan sát được là 0.41 <strong>không phải do ngẫu nhiên</strong> hay độ biến thiên mẫu.</p></li>
+</ul>
+</section>
+</section>
+<section id="chọn-một-mức-ý-nghĩa" class="level3">
+<h3 class="anchored" data-anchor-id="chọn-một-mức-ý-nghĩa">Chọn một mức ý nghĩa</h3>
+<ul>
+<li><p>Mặc dù mức truyền thống là 0.05, nhưng việc điều chỉnh mức ý nghĩa dựa trên ứng dụng cụ thể là điều hữu ích.</p></li>
+<li><p>Chọn một mức nhỏ hơn hoặc lớn hơn 0.05 tùy thuộc vào hậu quả của bất kỳ kết luận nào rút ra từ kiểm định.</p></li>
+<li><p>Nếu việc mắc Sai lầm loại 1 là nguy hiểm hoặc đặc biệt tốn kém, chúng nên chọn một mức ý nghĩa nhỏ (ví dụ: 0.01). Trong kịch bản này, chúng ta muốn rất thận trọng trong việc bác bỏ giả thuyết không, vì vậy chúng ta yêu cầu bằng chứng rất mạnh mẽ ủng hộ <span class="math inline">\(H_A\)</span> trước khi bác bỏ <span class="math inline">\(H_0\)</span>.</p></li>
+<li><p>Nếu Sai lầm loại 2 tương đối nguy hiểm hơn hoặc tốn kém hơn nhiều so với Sai lầm loại 1, thì chúng ta nên chọn một mức ý nghĩa cao hơn (ví dụ: 0.10). Ở đây chúng ta muốn thận trọng về việc không bác bỏ được <span class="math inline">\(H_0\)</span> khi giả thuyết không thực sự sai.</p></li>
+</ul>
+</section>
+<section id="kiểm-định-giả-thuyết-một-phía-so-với-hai-phía" class="level3">
+<h3 class="anchored" data-anchor-id="kiểm-định-giả-thuyết-một-phía-so-với-hai-phía">Kiểm định giả thuyết một phía so với hai phía</h3>
+<ul>
+<li><p>Trong các kiểm định giả thuyết hai phía (two sided), chúng ta quan tâm đến việc liệu <span class="math inline">\(p\)</span> nằm trên hay dưới một giá trị không <span class="math inline">\(p_0\)</span> nào đó: <span class="math inline">\(H_A: p \ne p_0\)</span>.</p></li>
+<li><p>Trong các kiểm định giả thuyết một phía (one sided), chúng ta quan tâm đến việc <span class="math inline">\(p\)</span> khác với giá trị không <span class="math inline">\(p_0\)</span> theo một hướng (và không phải hướng kia):</p>
+<ul>
+<li>Nếu việc phát hiện tham số quần thể nhỏ hơn <span class="math inline">\(p_0\)</span> mới có giá trị, thì <span class="math inline">\(H_A: p &lt; p_0\)</span>.</li>
+<li>Nếu việc phát hiện tham số quần thể lớn hơn <span class="math inline">\(p_0\)</span> mới có giá trị, thì <span class="math inline">\(H_A: p &gt; p_0\)</span>.</li>
+</ul></li>
+<li><p>Các kiểm định hai phía thường phù hợp hơn vì chúng ta thường cũng muốn phát hiện xem liệu dữ liệu có đi theo hướng ngược lại rõ rệt với giả thuyết đối của mình hay không.</p></li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const tocLinks = document.querySelectorAll("nav#TOC a[data-scroll-target]");
+  if (tocLinks.length === 0) return;
+
+  const sections = Array.from(tocLinks).map(link => {
+    const target = link.getAttribute("data-scroll-target");
+    if (target.startsWith("#")) {
+      return document.getElementById(decodeURI(target.slice(1)));
+    } else {
+      return document.querySelector(decodeURI(target));
+    }
+  });
+
+  function updateActive() {
+    let activeIndex = 0;
+    // Find the section closest to the top of the viewport
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        // If the section top has scrolled past the top offset (120px for navbar)
+        if (rect.top <= 120) {
+          activeIndex = i;
+        }
+      }
+    }
+
+    // Update active class
+    tocLinks.forEach((link, idx) => {
+      if (idx === activeIndex) {
+        link.classList.add("active");
+        
+        // Ensure parent lists are expanded (prevent Quarto from auto-collapsing active submenus)
+        let parent = link.parentElement;
+        while (parent && parent !== document.getElementById("TOC")) {
+          if (parent.tagName === "UL") {
+            parent.classList.remove("collapse");
+          }
+          parent = parent.parentElement;
+        }
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  }
+
+  // Bind to window scroll and resize events
+  window.addEventListener("scroll", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  window.addEventListener("resize", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  
+  // Initial runs to align state
+  updateActive();
+  setTimeout(updateActive, 100);
+  setTimeout(updateActive, 500);
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./slide-research-vn.html" class="pagination-link" aria-label="Phương pháp nghiên cứu">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Phương pháp nghiên cứu</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./slide-hypo-vn.html" class="pagination-link" aria-label="Kiểm định giả thuyết thống kê">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Kiểm định giả thuyết thống kê</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

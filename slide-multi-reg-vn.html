@@ -1,0 +1,4260 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>10&nbsp; Hồi quy đa biến và hồi quy logistic – Phân tích dữ liệu</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./slide-mc-vn.html" rel="next">
+<link href="./slide-simple-reg-vn.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fa9e0952a64697c55f958ad13d4b0b73.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+    window.MathJax = {
+        tex: {
+            macros: {
+                E: "{\\mathbb{E}}",
+                P: "{\\mathbb{P}}",
+                Var: "{\\mathrm{Var}}"
+            }
+        }
+    };
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Phân tích dữ liệu</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./slide-multi-reg-vn.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Hồi quy đa biến và hồi quy logistic</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Giới thiệu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-0-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Các yêu cầu về môn học</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-1-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Giới thiệu về phân tích dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-2-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Các kỹ thuật thu thập dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-3-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Phân tích mô tả dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-research-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Phương pháp nghiên cứu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-inferences-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cơ sở suy diễn thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-hypo-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Kiểm định giả thuyết thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-bn-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Mô hình đồ thị</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-causal-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Phân tích nhân quả</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-simple-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hồi quy tuyến tính</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-multi-reg-vn.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Hồi quy đa biến và hồi quy logistic</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-mc-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Phương pháp mô phỏng Monte Carlo</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#giới-thiệu-về-hồi-quy-đa-biến" id="toc-giới-thiệu-về-hồi-quy-đa-biến" class="nav-link active" data-scroll-target="#giới-thiệu-về-hồi-quy-đa-biến"><span class="header-section-number">10.1</span> Giới thiệu về hồi quy đa biến</a></li>
+  <li><a href="#lựa-chọn-mô-hình" id="toc-lựa-chọn-mô-hình" class="nav-link" data-scroll-target="#lựa-chọn-mô-hình"><span class="header-section-number">10.2</span> Lựa chọn mô hình</a></li>
+  <li><a href="#kiểm-tra-các-điều-kiện-của-mô-hình-bằng-đồ-thị" id="toc-kiểm-tra-các-điều-kiện-của-mô-hình-bằng-đồ-thị" class="nav-link" data-scroll-target="#kiểm-tra-các-điều-kiện-của-mô-hình-bằng-đồ-thị"><span class="header-section-number">10.3</span> Kiểm tra các điều kiện của mô hình bằng đồ thị</a></li>
+  <li><a href="#hồi-quy-logistic" id="toc-hồi-quy-logistic" class="nav-link" data-scroll-target="#hồi-quy-logistic"><span class="header-section-number">10.4</span> Hồi quy logistic</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Hồi quy đa biến và hồi quy logistic</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="giới-thiệu-về-hồi-quy-đa-biến" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="giới-thiệu-về-hồi-quy-đa-biến"><span class="header-section-number">10.1</span> Giới thiệu về hồi quy đa biến</h2>
+<section id="hồi-quy-đa-biến" class="level4">
+<h4 class="anchored" data-anchor-id="hồi-quy-đa-biến">Hồi quy đa biến</h4>
+<ul>
+<li>Hồi quy tuyến tính đơn biến (Simple linear regression): Lưỡng biến (Bivariate) - hai biến: <span class="math inline">\(y\)</span> và <span class="math inline">\(x\)</span></li>
+<li>Hồi quy tuyến tính đa biến (Multiple linear regression): Nhiều biến: <span class="math inline">\(y\)</span> và <span class="math inline">\(x_1, x_2, \cdots\)</span></li>
+</ul>
+</section>
+<section id="biến-chỉ-báo-và-biến-phân-loại-đóng-vai-trò-là-biến-dự-báo" class="level3">
+<h3 class="anchored" data-anchor-id="biến-chỉ-báo-và-biến-phân-loại-đóng-vai-trò-là-biến-dự-báo">Biến chỉ báo và biến phân loại đóng vai trò là biến dự báo</h3>
+<section id="nghèo-đói-và-khu-vực" class="level4">
+<h4 class="anchored" data-anchor-id="nghèo-đói-và-khu-vực">Nghèo đói và khu vực</h4>
+<p><span class="math display">\[ \widehat{poverty} = 11.17 + 0.38 \times west \]</span></p>
+<ul>
+<li>Biến giải thích (Explanatory variable): region, <em>mức tham chiếu (reference level):</em> east</li>
+<li><em>Hệ số chặn (Intercept):</em> Tỷ lệ nghèo đói trung bình ước tính ở các bang miền đông là 11,17%
+<ul>
+<li>Đây là giá trị chúng ta nhận được nếu thay 0 vào biến giải thích</li>
+</ul></li>
+<li><em>Hệ số góc (Slope):</em> Tỷ lệ nghèo đói trung bình ước tính ở các bang miền tây cao hơn 0,38% so với các bang miền đông.
+<ul>
+<li>Khi đó, tỷ lệ nghèo đói trung bình ước tính ở các bang miền tây là 11,17 + 0,38 = 11,55%.</li>
+<li>Đây là giá trị chúng ta nhận được nếu thay 1 vào biến giải thích</li>
+</ul></li>
+</ul>
+</section>
+<section id="nghèo-đói-và-khu-vực-1" class="level4">
+<h4 class="anchored" data-anchor-id="nghèo-đói-và-khu-vực-1">Nghèo đói và khu vực</h4>
+<p><strong>Khu vực nào (northeast, midwest, west, hoặc south) là mức tham chiếu?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>9.50</td>
+<td>0.87</td>
+<td>10.94</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>region4midwest</td>
+<td>0.03</td>
+<td>1.15</td>
+<td>0.02</td>
+<td>0.98</td>
+</tr>
+<tr class="odd">
+<td>region4west</td>
+<td>1.79</td>
+<td>1.13</td>
+<td>1.59</td>
+<td>0.12</td>
+</tr>
+<tr class="even">
+<td>region4south</td>
+<td>4.16</td>
+<td>1.07</td>
+<td>3.87</td>
+<td>0.00</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li>northeast (Đúng)</li>
+<li>midwest</li>
+<li>west</li>
+<li>south</li>
+<li>không thể xác định</li>
+</ol>
+</section>
+<section id="nghèo-đói-và-khu-vực-northeast-midwest-west-south" class="level4">
+<h4 class="anchored" data-anchor-id="nghèo-đói-và-khu-vực-northeast-midwest-west-south">Nghèo đói và khu vực (northeast, midwest, west, south)</h4>
+<p><strong>Khu vực nào (northeast, midwest, west, hoặc south) có tỷ lệ nghèo đói thấp nhất?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>9.50</td>
+<td>0.87</td>
+<td>10.94</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>region4midwest</td>
+<td>0.03</td>
+<td>1.15</td>
+<td>0.02</td>
+<td>0.98</td>
+</tr>
+<tr class="odd">
+<td>region4west</td>
+<td>1.79</td>
+<td>1.13</td>
+<td>1.59</td>
+<td>0.12</td>
+</tr>
+<tr class="even">
+<td>region4south</td>
+<td>4.16</td>
+<td>1.07</td>
+<td>3.87</td>
+<td>0.00</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li>northeast (Đúng)</li>
+<li>midwest</li>
+<li>west</li>
+<li>south</li>
+<li>không thể xác định</li>
+</ol>
+</section>
+</section>
+<section id="bao-gồm-và-đánh-giá-nhiều-biến-trong-một-mô-hình" class="level3">
+<h3 class="anchored" data-anchor-id="bao-gồm-và-đánh-giá-nhiều-biến-trong-một-mô-hình">Bao gồm và đánh giá nhiều biến trong một mô hình</h3>
+<section id="trọng-lượng-của-sách" class="level4">
+<h4 class="anchored" data-anchor-id="trọng-lượng-của-sách">Trọng lượng của sách</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>trọng lượng (g)</th>
+<th>thể tích (cm<span class="math inline">\(^3\)</span>)</th>
+<th>bìa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>800</td>
+<td>885</td>
+<td>hc</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>950</td>
+<td>1016</td>
+<td>hc</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>1050</td>
+<td>1125</td>
+<td>hc</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>350</td>
+<td>239</td>
+<td>hc</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>750</td>
+<td>701</td>
+<td>hc</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>600</td>
+<td>641</td>
+<td>hc</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>1075</td>
+<td>1228</td>
+<td>hc</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>250</td>
+<td>412</td>
+<td>pb</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>700</td>
+<td>953</td>
+<td>pb</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>650</td>
+<td>929</td>
+<td>pb</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>975</td>
+<td>1492</td>
+<td>pb</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>350</td>
+<td>419</td>
+<td>pb</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td>950</td>
+<td>1010</td>
+<td>pb</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td>425</td>
+<td>595</td>
+<td>pb</td>
+</tr>
+<tr class="odd">
+<td>15</td>
+<td>725</td>
+<td>1034</td>
+<td>pb</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-1_intro_mlr/figures/books/book.svg" class="img-fluid figure-img"></p>
+<figcaption>Hình ảnh cuốn sách</figcaption>
+</figure>
+</div>
+<p><strong>Biểu đồ phân tán (scatterplot) cho thấy mối quan hệ giữa trọng lượng và thể tích của các cuốn sách cũng như kết quả đầu ra của hồi quy. Câu nào dưới đây là đúng?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-1_intro_mlr/figures/books/weight_volume.svg" class="img-fluid figure-img"></p>
+<figcaption>Trọng lượng so với Thể tích</figcaption>
+</figure>
+</div>
+<ol type="1">
+<li>Trọng lượng của 80% các cuốn sách có thể được dự báo chính xác bằng mô hình này.</li>
+<li>Những cuốn sách có thể tích lớn hơn mức trung bình 10 cm<span class="math inline">\(^3\)</span> được kỳ vọng sẽ nặng hơn mức trung bình 7 g. (Đúng)</li>
+<li>Tương quan (correlation) giữa trọng lượng và thể tích là <span class="math inline">\(R = 0.80^2 = 0.64\)</span>.</li>
+<li>Mô hình đánh giá thấp trọng lượng của cuốn sách có thể tích lớn nhất.</li>
+</ol>
+</section>
+<section id="mô-hình-hóa-trọng-lượng-sách-sử-dụng-thể-tích" class="level4">
+<h4 class="anchored" data-anchor-id="mô-hình-hóa-trọng-lượng-sách-sử-dụng-thể-tích">Mô hình hóa trọng lượng sách sử dụng thể tích</h4>
+<pre class="output" contenteditable="true"><code>Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 107.67931   88.37758   1.218    0.245    
+volume        0.70864    0.09746   7.271 6.26e-06
+
+Residual standard error: 123.9 on 13 degrees of freedom
+Multiple R-squared: 0.8026, Adjusted R-squared: 0.7875 
+F-statistic: 52.87 on 1 and 13 DF,  p-value: 6.262e-06 </code></pre>
+</section>
+<section id="trọng-lượng-của-sách-bìa-cứng-và-bìa-mềm" class="level4">
+<h4 class="anchored" data-anchor-id="trọng-lượng-của-sách-bìa-cứng-và-bìa-mềm">Trọng lượng của sách bìa cứng và bìa mềm</h4>
+<p><strong>Bạn có thể xác định xu hướng trong mối quan hệ giữa thể tích và trọng lượng của sách bìa cứng (hardcover) và bìa mềm (paperback) không?</strong></p>
+<p><em>Sách bìa mềm thường có trọng lượng thấp hơn sách bìa cứng sau khi đã kiểm soát thể tích của sách.</em></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-1_intro_mlr/figures/books/weight_volume_cover.svg" class="img-fluid figure-img"></p>
+<figcaption>Trọng lượng so với Thể tích và Loại bìa</figcaption>
+</figure>
+</div>
+</section>
+<section id="mô-hình-hóa-trọng-lượng-sách-sử-dụng-thể-tích-và-loại-bìa" class="level4">
+<h4 class="anchored" data-anchor-id="mô-hình-hóa-trọng-lượng-sách-sử-dụng-thể-tích-và-loại-bìa">Mô hình hóa trọng lượng sách sử dụng thể tích và loại bìa</h4>
+<pre class="output" contenteditable="true"><code>Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  197.96284   59.19274   3.344 0.005841 ** 
+volume         0.71795    0.06153  11.669  6.6e-08 ***
+cover:pb    -184.04727   40.49420  -4.545 0.000672 ***
+
+Residual standard error: 78.2 on 12 degrees of freedom
+Multiple R-squared: 0.9275, Adjusted R-squared: 0.9154 
+F-statistic: 76.73 on 2 and 12 DF,  p-value: 1.455e-07 </code></pre>
+</section>
+<section id="xác-định-mức-tham-chiếu" class="level4">
+<h4 class="anchored" data-anchor-id="xác-định-mức-tham-chiếu">Xác định mức tham chiếu</h4>
+<p><strong>Dựa trên kết quả hồi quy dưới đây, mức nào của biến <code>cover</code> là mức tham chiếu? Lưu ý rằng <code>pb</code> là bìa mềm (paperback).</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>197.9628</td>
+<td>59.1927</td>
+<td>3.34</td>
+<td>0.0058</td>
+</tr>
+<tr class="even">
+<td>volume</td>
+<td>0.7180</td>
+<td>0.0615</td>
+<td>11.67</td>
+<td>0.0000</td>
+</tr>
+<tr class="odd">
+<td>cover:pb</td>
+<td>-184.0473</td>
+<td>40.4942</td>
+<td>-4.55</td>
+<td>0.0007</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li>bìa mềm (paperback)</li>
+<li>bìa cứng (hardcover) (Đúng)</li>
+</ol>
+</section>
+<section id="xác-định-mức-tham-chiếu-1" class="level4">
+<h4 class="anchored" data-anchor-id="xác-định-mức-tham-chiếu-1">Xác định mức tham chiếu</h4>
+<p><strong>Câu nào dưới đây mô tả đúng vai trò của các biến trong mô hình hồi quy này?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>197.9628</td>
+<td>59.1927</td>
+<td>3.34</td>
+<td>0.0058</td>
+</tr>
+<tr class="even">
+<td>volume</td>
+<td>0.7180</td>
+<td>0.0615</td>
+<td>11.67</td>
+<td>0.0000</td>
+</tr>
+<tr class="odd">
+<td>cover:pb</td>
+<td>-184.0473</td>
+<td>40.4942</td>
+<td>-4.55</td>
+<td>0.0007</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li>biến kết quả (response): trọng lượng, biến giải thích (explanatory): thể tích, bìa mềm</li>
+<li>biến kết quả: trọng lượng, biến giải thích: thể tích, bìa cứng</li>
+<li>biến kết quả: thể tích, biến giải thích: trọng lượng, loại bìa</li>
+<li>biến kết quả: trọng lượng, biến giải thích: thể tích, loại bìa (Đúng)</li>
+</ol>
+</section>
+<section id="mô-hình-tuyến-tính-linear-model" class="level4">
+<h4 class="anchored" data-anchor-id="mô-hình-tuyến-tính-linear-model">Mô hình tuyến tính (Linear model)</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>197.96</td>
+<td>59.19</td>
+<td>3.34</td>
+<td>0.01</td>
+</tr>
+<tr class="even">
+<td>volume</td>
+<td>0.72</td>
+<td>0.06</td>
+<td>11.67</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>cover:pb</td>
+<td>-184.05</td>
+<td>40.49</td>
+<td>-4.55</td>
+<td>0.00</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[ \widehat{weight} = 197.96 + 0.72~volume - 184.05~cover:pb \]</span></p>
+<ol type="1">
+<li>Đối với sách <strong>bìa cứng (hardcover)</strong>: thay 0 cho <code>cover</code> <span class="math display">\[\begin{eqnarray*}
+\widehat{weight} &amp;=&amp; 197.96 + 0.72~volume - 184.05 \times 0 \\
+&amp;=&amp; 197.96 + 0.72~volume
+\end{eqnarray*}\]</span></li>
+<li>Đối với sách <strong>bìa mềm (paperback)</strong>: thay 1 cho <code>cover</code> <span class="math display">\[\begin{eqnarray*}
+\widehat{weight} &amp;=&amp; 197.96 + 0.72~volume - 184.05 \times 1 \\
+&amp;=&amp; 13.91 + 0.72~volume
+\end{eqnarray*}\]</span></li>
+</ol>
+</section>
+<section id="trực-quan-hóa-mô-hình-tuyến-tính" class="level4">
+<h4 class="anchored" data-anchor-id="trực-quan-hóa-mô-hình-tuyến-tính">Trực quan hóa mô hình tuyến tính</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-1_intro_mlr/figures/books/weight_volume_cover_lines.svg" class="img-fluid figure-img"></p>
+<figcaption>Các đường hồi quy cho loại bìa</figcaption>
+</figure>
+</div>
+</section>
+<section id="giải-thích-các-hệ-số-hồi-quy" class="level4">
+<h4 class="anchored" data-anchor-id="giải-thích-các-hệ-số-hồi-quy">Giải thích các hệ số hồi quy</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>197.96</td>
+<td>59.19</td>
+<td>3.34</td>
+<td>0.01</td>
+</tr>
+<tr class="even">
+<td>volume</td>
+<td>0.72</td>
+<td>0.06</td>
+<td>11.67</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>cover:pb</td>
+<td>-184.05</td>
+<td>40.49</td>
+<td>-4.55</td>
+<td>0.00</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><em>Hệ số góc của volume:</em> <strong>Khi giữ các yếu tố khác không đổi</strong>, những cuốn sách có thể tích lớn hơn 1 cm<span class="math inline">\(^3\)</span> thường có trọng lượng nặng hơn khoảng 0,72 gram.</li>
+<li><em>Hệ số góc của cover:</em> <strong>Khi giữ các yếu tố khác không đổi</strong>, mô hình dự báo rằng sách bìa mềm nhẹ hơn sách bìa cứng 184 gram.</li>
+<li><em>Hệ số chặn (Intercept):</em> Sách bìa cứng không có thể tích được kỳ vọng có trọng lượng trung bình là 198 gram.
+<ul>
+<li>Rõ ràng, hệ số chặn không có ý nghĩa thực tế trong ngữ cảnh này. Nó chỉ phục vụ để điều chỉnh độ cao của đường thẳng.</li>
+</ul></li>
+</ul>
+</section>
+<section id="dự-báo" class="level4">
+<h4 class="anchored" data-anchor-id="dự-báo">Dự báo</h4>
+<p><strong>Cách tính nào sau đây là đúng cho trọng lượng dự báo của một cuốn sách bìa mềm có thể tích 600 cm<span class="math inline">\(^3\)</span>?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>197.96</td>
+<td>59.19</td>
+<td>3.34</td>
+<td>0.01</td>
+</tr>
+<tr class="even">
+<td>volume</td>
+<td>0.72</td>
+<td>0.06</td>
+<td>11.67</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>cover:pb</td>
+<td>-184.05</td>
+<td>40.49</td>
+<td>-4.55</td>
+<td>0.00</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li>197.96 + 0.72 * 600 - 184.05 * 1 (Đúng) <em><span class="math inline">\(= 445.91\)</span> gram</em></li>
+<li>184.05 + 0.72 * 600 - 197.96 * 1</li>
+<li>197.96 + 0.72 * 600 - 184.05 * 0</li>
+<li>197.96 + 0.72 * 1 - 184.05 * 600</li>
+</ol>
+</section>
+<section id="một-ví-dụ-khác-mô-hình-hóa-điểm-kiểm-tra-của-trẻ-em" class="level4">
+<h4 class="anchored" data-anchor-id="một-ví-dụ-khác-mô-hình-hóa-điểm-kiểm-tra-của-trẻ-em">Một ví dụ khác: Mô hình hóa điểm kiểm tra của trẻ em</h4>
+<p>Dự báo điểm kiểm tra nhận thức của trẻ em ba và bốn tuổi bằng cách sử dụng các đặc điểm của mẹ chúng. Dữ liệu từ một cuộc khảo sát phụ nữ Mỹ trưởng thành và con cái của họ - một mẫu phụ từ Khảo sát Thanh niên theo thời gian của Quốc gia (National Longitudinal Survey of Youth).</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>kid_score</th>
+<th>mom_hs</th>
+<th>mom_iq</th>
+<th>mom_work</th>
+<th>mom_age</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>65</td>
+<td>yes</td>
+<td>121.12</td>
+<td>yes</td>
+<td>27</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\vdots\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>115</td>
+<td>yes</td>
+<td>92.75</td>
+<td>yes</td>
+<td>27</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>98</td>
+<td>no</td>
+<td>107.90</td>
+<td>no</td>
+<td>18</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\vdots\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>434</td>
+<td>70</td>
+<td>yes</td>
+<td>91.25</td>
+<td>yes</td>
+<td>25</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="giải-thích-hệ-số-góc" class="level4">
+<h4 class="anchored" data-anchor-id="giải-thích-hệ-số-góc">Giải thích hệ số góc</h4>
+<p><strong>Giải thích nào là đúng cho hệ số góc của chỉ số IQ của mẹ?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>19.59</td>
+<td>9.22</td>
+<td>2.13</td>
+<td>0.03</td>
+</tr>
+<tr class="even">
+<td>mom_hs:yes</td>
+<td>5.09</td>
+<td>2.31</td>
+<td>2.20</td>
+<td>0.03</td>
+</tr>
+<tr class="odd">
+<td>mom_iq</td>
+<td>0.56</td>
+<td>0.06</td>
+<td>9.26</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>mom_work:yes</td>
+<td>2.54</td>
+<td>2.35</td>
+<td>1.08</td>
+<td>0.28</td>
+</tr>
+<tr class="odd">
+<td>mom_age</td>
+<td>0.22</td>
+<td>0.33</td>
+<td>0.66</td>
+<td>0.51</td>
+</tr>
+</tbody>
+</table>
+<p><em>Khi giữ các yếu tố khác không đổi, những đứa trẻ có mẹ có chỉ số IQ cao hơn một điểm thường có điểm số trung bình cao hơn 0,56 điểm.</em></p>
+</section>
+<section id="giải-thích-hệ-số-góc-1" class="level4">
+<h4 class="anchored" data-anchor-id="giải-thích-hệ-số-góc-1">Giải thích hệ số góc</h4>
+<p><strong>Giải thích nào là đúng cho hệ số chặn?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>19.59</td>
+<td>9.22</td>
+<td>2.13</td>
+<td>0.03</td>
+</tr>
+<tr class="even">
+<td>mom_hs:yes</td>
+<td>5.09</td>
+<td>2.31</td>
+<td>2.20</td>
+<td>0.03</td>
+</tr>
+<tr class="odd">
+<td>mom_iq</td>
+<td>0.56</td>
+<td>0.06</td>
+<td>9.26</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>mom_work:yes</td>
+<td>2.54</td>
+<td>2.35</td>
+<td>1.08</td>
+<td>0.28</td>
+</tr>
+<tr class="odd">
+<td>mom_age</td>
+<td>0.22</td>
+<td>0.33</td>
+<td>0.66</td>
+<td>0.51</td>
+</tr>
+</tbody>
+</table>
+<p><em>Những đứa trẻ có mẹ chưa học hết trung học phổ thông, không đi làm trong ba năm đầu đời của trẻ, có chỉ số IQ bằng 0 và 0 tuổi được kỳ vọng có điểm số trung bình là 19,59. Rõ ràng, hệ số chặn không có bất kỳ ý nghĩa nào trong ngữ cảnh này.</em></p>
+</section>
+<section id="giải-thích-hệ-số-góc-2" class="level4">
+<h4 class="anchored" data-anchor-id="giải-thích-hệ-số-góc-2">Giải thích hệ số góc</h4>
+<p><strong>Giải thích nào là đúng cho hệ số góc của <code>mom_work</code>?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>19.59</td>
+<td>9.22</td>
+<td>2.13</td>
+<td>0.03</td>
+</tr>
+<tr class="even">
+<td>mom_hs:yes</td>
+<td>5.09</td>
+<td>2.31</td>
+<td>2.20</td>
+<td>0.03</td>
+</tr>
+<tr class="odd">
+<td>mom_iq</td>
+<td>0.56</td>
+<td>0.06</td>
+<td>9.26</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>mom_work:yes</td>
+<td>2.54</td>
+<td>2.35</td>
+<td>1.08</td>
+<td>0.28</td>
+</tr>
+<tr class="odd">
+<td>mom_age</td>
+<td>0.22</td>
+<td>0.33</td>
+<td>0.66</td>
+<td>0.51</td>
+</tr>
+</tbody>
+</table>
+<p>Khi tất cả các yếu tố khác như nhau, những đứa trẻ có mẹ đi làm trong ba năm đầu đời của trẻ 1. được ước tính có điểm số thấp hơn 2,54 điểm 2. được ước tính có điểm số cao hơn 2,54 điểm (Đúng) so với những đứa trẻ có mẹ không đi làm.</p>
+</section>
+</section>
+<section id="hệ-số-xác-định-hiệu-chỉnh-r2-như-một-công-cụ-tốt-hơn-cho-hồi-quy-đa-biến" class="level3">
+<h3 class="anchored" data-anchor-id="hệ-số-xác-định-hiệu-chỉnh-r2-như-một-công-cụ-tốt-hơn-cho-hồi-quy-đa-biến">Hệ số xác định hiệu chỉnh <span class="math inline">\(R^2\)</span> như một công cụ tốt hơn cho hồi quy đa biến</h3>
+<section id="xem-lại-mô-hình-hóa-nghèo-đói" class="level4">
+<h4 class="anchored" data-anchor-id="xem-lại-mô-hình-hóa-nghèo-đói">Xem lại: Mô hình hóa nghèo đói</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-1_intro_mlr/figures/poverty/poverty.svg" class="img-fluid figure-img"></p>
+<figcaption>Dữ liệu nghèo đói</figcaption>
+</figure>
+</div>
+</section>
+<section id="dự-báo-nghèo-đói-sử-dụng-tỷ-lệ-chủ-hộ-là-nữ" class="level4">
+<h4 class="anchored" data-anchor-id="dự-báo-nghèo-đói-sử-dụng-tỷ-lệ-chủ-hộ-là-nữ">Dự báo nghèo đói sử dụng tỷ lệ % chủ hộ là nữ</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>3.31</td>
+<td>1.90</td>
+<td>1.74</td>
+<td>0.09</td>
+</tr>
+<tr class="even">
+<td>female_house</td>
+<td>0.69</td>
+<td>0.16</td>
+<td>4.32</td>
+<td>0.00</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-1_intro_mlr/figures/poverty/poverty_female_house.svg" class="img-fluid figure-img"></p>
+<figcaption>Nghèo đói so với chủ hộ nữ</figcaption>
+</figure>
+</div>
+<p><span class="math display">\[\begin{align*}
+R &amp;= 0.53 \\
+R^2 &amp;= 0.53^2 = 0.28
+\end{align*}\]</span></p>
+</section>
+<section id="một-cái-nhìn-khác-về-r2" class="level4">
+<h4 class="anchored" data-anchor-id="một-cái-nhìn-khác-về-r2">Một cái nhìn khác về <span class="math inline">\(R^2\)</span></h4>
+<p><span class="math inline">\(R^2\)</span> có thể được tính theo ba cách:</p>
+<ol type="1">
+<li>bình phương hệ số tương quan (correlation coefficient) của <span class="math inline">\(x\)</span> và <span class="math inline">\(y\)</span> (cách chúng ta vẫn hay tính)</li>
+<li>bình phương hệ số tương quan của <span class="math inline">\(y\)</span> và <span class="math inline">\(\hat{y}\)</span></li>
+<li>dựa trên định nghĩa: <span class="math display">\[ R^2 = \frac{\text{biến thiên được giải thích trong }y}{\text{tổng biến thiên trong }y} \]</span></li>
+</ol>
+<p>Sử dụng <em>ANOVA</em> chúng ta có thể tính toán biến thiên được giải thích và tổng biến thiên trong <span class="math inline">\(y\)</span>.</p>
+</section>
+<section id="tổng-bình-phương-sum-of-squares" class="level4">
+<h4 class="anchored" data-anchor-id="tổng-bình-phương-sum-of-squares">Tổng bình phương (Sum of squares)</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Df</th>
+<th>Tổng bình phương (Sum Sq)</th>
+<th>Bình phương trung bình (Mean Sq)</th>
+<th>giá trị F (F value)</th>
+<th>Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>female_house</td>
+<td>1</td>
+<td>132.57</td>
+<td>132.57</td>
+<td>18.68</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>Phần dư (Residuals)</td>
+<td>49</td>
+<td>347.68</td>
+<td>7.10</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>Tổng cộng (Total)</strong></td>
+<td><strong>50</strong></td>
+<td><strong>480.25</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[\begin{eqnarray*}
+\text{Tổng bình phương của $y$: } SS_{Total} &amp;=&amp; \sum(y - \bar{y})^2 = 480.25 \text{ $\rightarrow$ tổng biến thiên} \\
+\text{Tổng bình phương của phần dư: } SS_{Error} &amp;=&amp; \sum e_i^2 = 347.68 \text{ $\rightarrow$ biến thiên không được giải thích} \\
+\text{Tổng bình phương của $x$: } SS_{Model} &amp;=&amp; SS_{Total} - SS_{Error} \text{ $\rightarrow$ biến thiên được giải thích} \\
+&amp;=&amp; 480.25 - 347.68 = 132.57
+\end{eqnarray*}\]</span></p>
+<p><span class="math display">\[ R^2 = \frac{\text{biến thiên được giải thích}}{\text{tổng biến thiên}} = \frac{132.57}{480.25} = 0.28 \]</span></p>
+</section>
+<section id="tại-sao-phải-bận-tâm" class="level4">
+<h4 class="anchored" data-anchor-id="tại-sao-phải-bận-tâm">Tại sao phải bận tâm?</h4>
+<p><strong>Tại sao phải bận tâm với một cách tiếp cận khác để tính <span class="math inline">\(R^2\)</span> khi chúng ta đã có một cách hoàn hảo để tính nó bằng bình phương hệ số tương quan?</strong></p>
+<ul>
+<li><em>Đối với hồi quy tuyến tính đơn biến (single-predictor linear regression), việc có ba cách để tính cùng một giá trị có vẻ là thừa.</em></li>
+<li><em>Tuy nhiên, trong hồi quy tuyến tính đa biến (multiple linear regression), chúng ta không thể tính <span class="math inline">\(R^2\)</span> bằng bình phương tương quan giữa <span class="math inline">\(x\)</span> và <span class="math inline">\(y\)</span> vì chúng ta có nhiều biến <span class="math inline">\(x\)</span>.</em></li>
+<li><em>Và tiếp theo chúng ta sẽ tìm hiểu một thước đo khác về biến thiên được giải thích, hệ số xác định hiệu chỉnh (adjusted <span class="math inline">\(R^2\)</span>), yêu cầu sử dụng cách tiếp cận thứ ba, tỷ lệ giữa biến thiên được giải thích và không được giải thích.</em></li>
+</ul>
+</section>
+<section id="dự-báo-nghèo-đói-sử-dụng-tỷ-lệ-chủ-hộ-là-nữ-người-da-trắng" class="level4">
+<h4 class="anchored" data-anchor-id="dự-báo-nghèo-đói-sử-dụng-tỷ-lệ-chủ-hộ-là-nữ-người-da-trắng">Dự báo nghèo đói sử dụng tỷ lệ % chủ hộ là nữ + % người da trắng</h4>
+<p><em>Mô hình tuyến tính:</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>-2.58</td>
+<td>5.78</td>
+<td>-0.45</td>
+<td>0.66</td>
+</tr>
+<tr class="even">
+<td>female_house</td>
+<td>0.89</td>
+<td>0.24</td>
+<td>3.67</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>white</td>
+<td>0.04</td>
+<td>0.04</td>
+<td>1.08</td>
+<td>0.29</td>
+</tr>
+</tbody>
+</table>
+<p><em>ANOVA:</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Df</th>
+<th>Tổng bình phương (Sum Sq)</th>
+<th>Bình phương trung bình (Mean Sq)</th>
+<th>giá trị F (F value)</th>
+<th>Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>female_house</td>
+<td>1</td>
+<td>132.57</td>
+<td>132.57</td>
+<td>18.74</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>white</td>
+<td>1</td>
+<td>8.21</td>
+<td>8.21</td>
+<td>1.16</td>
+<td>0.29</td>
+</tr>
+<tr class="odd">
+<td>Phần dư (Residuals)</td>
+<td>48</td>
+<td>339.47</td>
+<td>7.07</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Tổng cộng (Total)</strong></td>
+<td><strong>50</strong></td>
+<td><strong>480.25</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[ R^2 = \frac{\text{biến thiên được giải thích}}{\text{tổng biến thiên}} = \frac{132.57 + 8.21}{480.25} = 0.29 \]</span></p>
+<p><strong>Việc thêm biến <code>white</code> vào mô hình có bổ sung thông tin giá trị nào mà <code>female_house</code> chưa cung cấp không?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-1_intro_mlr/figures/poverty/poverty.svg" class="img-fluid figure-img"></p>
+<figcaption>Dữ liệu nghèo đói</figcaption>
+</figure>
+</div>
+</section>
+<section id="cộng-tuyến-giữa-các-biến-giải-thích" class="level4">
+<h4 class="anchored" data-anchor-id="cộng-tuyến-giữa-các-biến-giải-thích">Cộng tuyến giữa các biến giải thích</h4>
+<p><em>nghèo đói so với % chủ hộ là nữ</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>3.31</td>
+<td>1.90</td>
+<td>1.74</td>
+<td>0.09</td>
+</tr>
+<tr class="even">
+<td>female_house</td>
+<td>0.69</td>
+<td>0.16</td>
+<td>4.32</td>
+<td>0.00</td>
+</tr>
+</tbody>
+</table>
+<p><em>nghèo đói so với % chủ hộ là nữ và % người da trắng</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>-2.58</td>
+<td>5.78</td>
+<td>-0.45</td>
+<td>0.66</td>
+</tr>
+<tr class="even">
+<td>female_house</td>
+<td>0.89</td>
+<td>0.24</td>
+<td>3.67</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>white</td>
+<td>0.04</td>
+<td>0.04</td>
+<td>1.08</td>
+<td>0.29</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Hai biến dự báo được gọi là cộng tuyến (collinear) khi chúng tương quan với nhau, và hiện tượng <em>cộng tuyến (collinearity)</em> này làm phức tạp việc ước lượng mô hình.
+<ul>
+<li><strong>Các biến dự báo cũng được gọi là các biến giải thích hoặc biến độc lập. Lý tưởng nhất, chúng nên độc lập với nhau.</strong></li>
+</ul></li>
+<li>Chúng ta không thích thêm các biến dự báo có liên quan với nhau vào mô hình, vì thường việc thêm một biến như vậy không mang lại ích lợi gì. Thay vào đó, chúng ta ưu tiên mô hình tốt nhất đơn giản nhất, tức là <em>mô hình tinh gọn (parsimonious model)</em>.</li>
+<li>Mặc dù không thể tránh khỏi sự cộng tuyến phát sinh trong dữ liệu quan sát (observational data), các thực nghiệm thường được thiết kế để ngăn chặn sự tương quan giữa các biến dự báo.</li>
+</ul>
+</section>
+<section id="r2-so-với-hệ-số-xác-định-hiệu-chỉnh-adjusted-r2" class="level4">
+<h4 class="anchored" data-anchor-id="r2-so-với-hệ-số-xác-định-hiệu-chỉnh-adjusted-r2"><span class="math inline">\(R^2\)</span> so với hệ số xác định hiệu chỉnh adjusted <span class="math inline">\(R^2\)</span></h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><span class="math inline">\(R^2\)</span></th>
+<th>Hệ số xác định hiệu chỉnh (Adjusted <span class="math inline">\(R^2\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Mô hình 1 (Đơn biến)</td>
+<td>0.28</td>
+<td>0.26</td>
+</tr>
+<tr class="even">
+<td>Mô hình 2 (Đa biến)</td>
+<td>0.29</td>
+<td>0.26</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Khi <strong>bất kỳ</strong> biến nào được thêm vào mô hình, <span class="math inline">\(R^2\)</span> đều tăng.</li>
+<li>Nhưng nếu biến được thêm vào không thực sự cung cấp bất kỳ thông tin mới nào, hoặc hoàn toàn không liên quan, adjusted <span class="math inline">\(R^2\)</span> sẽ không tăng.</li>
+</ul>
+</section>
+<section id="hệ-số-xác-định-hiệu-chỉnh-adjusted-r2" class="level4">
+<h4 class="anchored" data-anchor-id="hệ-số-xác-định-hiệu-chỉnh-adjusted-r2">Hệ số xác định hiệu chỉnh Adjusted <span class="math inline">\(R^2\)</span></h4>
+<p><strong>Hệ số xác định hiệu chỉnh Adjusted <span class="math inline">\(R^2\)</span></strong> <span class="math display">\[ R^2_{adj} = 1 - \left( \frac{ SS_{Error} }{ SS_{Total} } \times \frac{n - 1}{n - p - 1} \right) \]</span> trong đó <span class="math inline">\(n\)</span> là số lượng trường hợp (cases) và <span class="math inline">\(p\)</span> là số lượng biến dự báo (biến giải thích) trong mô hình.</p>
+<ul>
+<li>Vì <span class="math inline">\(p\)</span> không bao giờ âm, <span class="math inline">\(R^2_{adj}\)</span> sẽ luôn nhỏ hơn <span class="math inline">\(R^2\)</span>.</li>
+<li><span class="math inline">\(R^2_{adj}\)</span> áp dụng một hình phạt (penalty) cho số lượng biến dự báo được đưa vào mô hình.</li>
+<li>Do đó, chúng ta chọn các mô hình có <span class="math inline">\(R^2_{adj}\)</span> cao hơn các mô hình khác.</li>
+</ul>
+</section>
+<section id="tính-hệ-số-xác-định-hiệu-chỉnh-adjusted-r2" class="level4">
+<h4 class="anchored" data-anchor-id="tính-hệ-số-xác-định-hiệu-chỉnh-adjusted-r2">Tính hệ số xác định hiệu chỉnh adjusted <span class="math inline">\(R^2\)</span></h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Df</th>
+<th>Tổng bình phương (Sum Sq)</th>
+<th>Bình phương trung bình (Mean Sq)</th>
+<th>giá trị F (F value)</th>
+<th>Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>female_house</td>
+<td>1</td>
+<td>132.57</td>
+<td>132.57</td>
+<td>18.74</td>
+<td>0.0001</td>
+</tr>
+<tr class="even">
+<td>white</td>
+<td>1</td>
+<td>8.21</td>
+<td>8.21</td>
+<td>1.16</td>
+<td>0.2868</td>
+</tr>
+<tr class="odd">
+<td>Phần dư (Residuals)</td>
+<td>48</td>
+<td>339.47</td>
+<td>7.07</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Tổng cộng (Total)</strong></td>
+<td><strong>50</strong></td>
+<td><strong>480.25</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[\begin{eqnarray*}
+R^2_{adj} &amp;=&amp; 1 - \left( \frac{ SS_{Error} }{ SS_{Total} } \times \frac{n - 1}{n - p - 1} \right) \\
+&amp;=&amp; 1 - \left( \frac{ 339.47 }{ 480.25 } \times \frac{51 - 1}{51 - 2 - 1} \right) \\
+&amp;=&amp; 1 - \left( \frac{ 339.47 }{ 480.25 } \times \frac{50}{48} \right) \\
+&amp;=&amp; 1 - 0.74 \\
+&amp;=&amp; 0.26
+\end{eqnarray*}\]</span></p>
+</section>
+</section>
+</section>
+<section id="lựa-chọn-mô-hình" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="lựa-chọn-mô-hình"><span class="header-section-number">10.2</span> Lựa chọn mô hình</h2>
+<section id="xác-định-các-biến-trong-mô-hình-có-thể-không-hữu-ích" class="level3">
+<h3 class="anchored" data-anchor-id="xác-định-các-biến-trong-mô-hình-có-thể-không-hữu-ích">Xác định các biến trong mô hình có thể không hữu ích</h3>
+<section id="vẻ-đẹp-trong-lớp-học-beauty-in-the-classroom" class="level4">
+<h4 class="anchored" data-anchor-id="vẻ-đẹp-trong-lớp-học-beauty-in-the-classroom">Vẻ đẹp trong lớp học (Beauty in the classroom)</h4>
+<ul>
+<li>Dữ liệu: Đánh giá của sinh viên về vẻ đẹp và chất lượng giảng dạy của giảng viên cho 463 khóa học tại Đại học Texas.</li>
+<li>Các đánh giá được thực hiện vào cuối học kỳ, và các phán đoán về vẻ đẹp được thực hiện sau đó bởi sáu sinh viên không tham gia lớp học và không biết về các đánh giá khóa học (2 nữ sinh viên năm cuối, 2 nam sinh viên năm cuối, một nữ sinh viên năm đầu, một nam sinh viên năm đầu).</li>
+</ul>
+</section>
+<section id="đánh-giá-của-giáo-sư-so-với-vẻ-đẹp" class="level4">
+<h4 class="anchored" data-anchor-id="đánh-giá-của-giáo-sư-so-với-vẻ-đẹp">Đánh giá của giáo sư so với vẻ đẹp</h4>
+<p>Điểm đánh giá giáo sư (điểm càng cao càng tốt) so với điểm vẻ đẹp (điểm 0 có nghĩa là trung bình, điểm âm có nghĩa là dưới trung bình và điểm dương là trên trung bình):</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-2_model_select/figures/beauty/beauty_profeval.svg" class="img-fluid figure-img"></p>
+<figcaption>Điểm đánh giá so với Vẻ đẹp</figcaption>
+</figure>
+</div>
+<p><strong>Câu nào dưới đây là đúng dựa trên kết quả đầu ra của mô hình?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>4.19</td>
+<td>0.03</td>
+<td>167.24</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>beauty</td>
+<td>0.13</td>
+<td>0.03</td>
+<td>4.00</td>
+<td>0.00</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(R^2\)</span> = 0.0336</p>
+<ol type="1">
+<li>Mô hình dự báo đúng 3,36% điểm đánh giá của giáo sư.</li>
+<li>Vẻ đẹp không phải là một biến dự báo có ý nghĩa cho điểm đánh giá của giáo sư.</li>
+<li>Những giáo sư có điểm vẻ đẹp cao hơn mức trung bình 1 điểm thường có điểm đánh giá cao hơn 0,13 điểm. (Đúng)</li>
+<li>3,36% biến thiên trong điểm vẻ đẹp có thể được giải thích bằng điểm đánh giá của giáo sư.</li>
+<li>Hệ số tương quan có thể là <span class="math inline">\(\sqrt{0.0336} = 0.18\)</span> hoặc <span class="math inline">\(-0.18\)</span>, chúng ta không thể biết giá trị nào là đúng.</li>
+</ol>
+</section>
+<section id="phân-tích-khám-phá-exploratory-analysis" class="level4">
+<h4 class="anchored" data-anchor-id="phân-tích-khám-phá-exploratory-analysis">Phân tích khám phá (Exploratory analysis)</h4>
+<p><strong>Có đặc điểm nào thú vị không?</strong> <em>Ít giảng viên nữ có điểm vẻ đẹp rất thấp.</em></p>
+<p><strong>Đối với một điểm vẻ đẹp nhất định, các giáo sư nam được đánh giá cao hơn, thấp hơn hay tương đương với các giáo sư nữ?</strong> <em>Khó có thể trả lời chỉ dựa trên biểu đồ này.</em></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-2_model_select/figures/beauty/beauty_profeval_gender.svg" class="img-fluid figure-img"></p>
+<figcaption>Điểm đánh giá so với Vẻ đẹp và Giới tính</figcaption>
+</figure>
+</div>
+</section>
+<section id="đánh-giá-của-giáo-sư-so-với-vẻ-đẹp-giới-tính" class="level4">
+<h4 class="anchored" data-anchor-id="đánh-giá-của-giáo-sư-so-với-vẻ-đẹp-giới-tính">Đánh giá của giáo sư so với vẻ đẹp + giới tính</h4>
+<p><strong>Đối với một điểm vẻ đẹp nhất định, các giáo sư nam được đánh giá cao hơn, thấp hơn hay tương đương với các giáo sư nữ?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>4.09</td>
+<td>0.04</td>
+<td>107.85</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>beauty</td>
+<td>0.14</td>
+<td>0.03</td>
+<td>4.44</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>gender.male</td>
+<td>0.17</td>
+<td>0.05</td>
+<td>3.38</td>
+<td>0.00</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(R^2_{adj}\)</span> = 0.057</p>
+<ol type="1">
+<li>cao hơn (Đúng) <em><span class="math inline">\(\rightarrow\)</span> Khi giữ vẻ đẹp không đổi, các giáo sư nam được đánh giá trung bình cao hơn 0,17 điểm so với các giáo sư nữ.</em></li>
+<li>thấp hơn</li>
+<li>tương đương</li>
+</ol>
+</section>
+<section id="mô-hình-đầy-đủ-full-model" class="level4">
+<h4 class="anchored" data-anchor-id="mô-hình-đầy-đủ-full-model">Mô hình đầy đủ (Full model)</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>4.6282</td>
+<td>0.1720</td>
+<td>26.90</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>beauty</td>
+<td>0.1080</td>
+<td>0.0329</td>
+<td>3.28</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>gender.male</td>
+<td>0.2040</td>
+<td>0.0528</td>
+<td>3.87</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>age</td>
+<td>-0.0089</td>
+<td>0.0032</td>
+<td>-2.75</td>
+<td>0.01</td>
+</tr>
+<tr class="odd">
+<td>formal.yes</td>
+<td>0.1511</td>
+<td>0.0749</td>
+<td>2.02</td>
+<td>0.04</td>
+</tr>
+<tr class="even">
+<td>lower.yes</td>
+<td>0.0582</td>
+<td>0.0553</td>
+<td>1.05</td>
+<td>0.29</td>
+</tr>
+<tr class="odd">
+<td>native.non english</td>
+<td>-0.2158</td>
+<td>0.1147</td>
+<td>-1.88</td>
+<td>0.06</td>
+</tr>
+<tr class="even">
+<td>minority.yes</td>
+<td>-0.0707</td>
+<td>0.0763</td>
+<td>-0.93</td>
+<td>0.35</td>
+</tr>
+<tr class="odd">
+<td>students</td>
+<td>-0.0004</td>
+<td>0.0004</td>
+<td>-1.03</td>
+<td>0.30</td>
+</tr>
+<tr class="even">
+<td>tenure.tenure track</td>
+<td>-0.1933</td>
+<td>0.0847</td>
+<td>-2.28</td>
+<td>0.02</td>
+</tr>
+<tr class="odd">
+<td>tenure.tenured</td>
+<td>-0.1574</td>
+<td>0.0656</td>
+<td>-2.40</td>
+<td>0.02</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="các-giả-thuyết-hypotheses" class="level4">
+<h4 class="anchored" data-anchor-id="các-giả-thuyết-hypotheses">Các giả thuyết (Hypotheses)</h4>
+<p>Cũng giống như việc giải thích các hệ số góc có tính đến tất cả các biến khác trong mô hình, các giả thuyết để kiểm định ý nghĩa của một biến dự báo cũng tính đến tất cả các biến khác.</p>
+<ul>
+<li><span class="math inline">\(H_0: B_i = 0\)</span> khi các biến giải thích khác được đưa vào mô hình.</li>
+<li><span class="math inline">\(H_A: B_i \ne 0\)</span> khi các biến giải thích khác được đưa vào mô hình.</li>
+</ul>
+</section>
+<section id="đánh-giá-ý-nghĩa-các-biến-số-numerical-variables" class="level4">
+<h4 class="anchored" data-anchor-id="đánh-giá-ý-nghĩa-các-biến-số-numerical-variables">Đánh giá ý nghĩa: các biến số (numerical variables)</h4>
+<p><strong>Giá trị p (p-value) cho độ tuổi (age) là 0,01. Điều này cho thấy gì?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>…</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>age</td>
+<td>-0.0089</td>
+<td>0.0032</td>
+<td>-2.75</td>
+<td>0.01</td>
+</tr>
+<tr class="odd">
+<td>…</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li>Vì giá trị p là số dương, tuổi của giáo sư càng cao thì chúng ta càng kỳ vọng họ được đánh giá cao hơn.</li>
+<li>Nếu chúng ta giữ tất cả các biến khác trong mô hình, có bằng chứng mạnh mẽ cho thấy tuổi của giáo sư có liên quan đến điểm đánh giá của họ. (Đúng)</li>
+<li>Xác suất để hệ số góc thực sự của biến tuổi bằng 0 là 0,01.</li>
+<li>Có khoảng 1% khả năng hệ số góc thực sự của biến tuổi là -0,0089.</li>
+</ol>
+</section>
+<section id="đánh-giá-ý-nghĩa-các-biến-phân-loại-categorical-variables" class="level4">
+<h4 class="anchored" data-anchor-id="đánh-giá-ý-nghĩa-các-biến-phân-loại-categorical-variables">Đánh giá ý nghĩa: các biến phân loại (categorical variables)</h4>
+<p><strong>Biên chế (Tenure) là một biến phân loại có 3 mức: non tenure track (không trong lộ trình biên chế), tenure track (trong lộ trình biên chế), tenured (đã có biên chế). Dựa trên kết quả mô hình đã cho, câu nào dưới đây là sai?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>…</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>tenure.tenure track</td>
+<td>-0.1933</td>
+<td>0.0847</td>
+<td>-2.28</td>
+<td>0.02</td>
+</tr>
+<tr class="odd">
+<td>tenure.tenured</td>
+<td>-0.1574</td>
+<td>0.0656</td>
+<td>-2.40</td>
+<td>0.02</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li>Mức tham chiếu là non tenure track.</li>
+<li>Khi tất cả các yếu tố khác như nhau, các giáo sư trong lộ trình biên chế được đánh giá trung bình thấp hơn 0,19 điểm so với các giáo sư không trong lộ trình biên chế.</li>
+<li>Khi tất cả các yếu tố khác như nhau, các giáo sư đã có biên chế được đánh giá trung bình thấp hơn 0,16 điểm so với các giáo sư không trong lộ trình biên chế.</li>
+<li>Khi tất cả các yếu tố khác như nhau, có một sự khác biệt có ý nghĩa giữa điểm đánh giá trung bình của các giáo sư trong lộ trình biên chế và các giáo sư đã có biên chế. (Đúng)</li>
+</ol>
+</section>
+<section id="đánh-giá-ý-nghĩa" class="level4">
+<h4 class="anchored" data-anchor-id="đánh-giá-ý-nghĩa">Đánh giá ý nghĩa</h4>
+<p><strong>Biến dự báo nào dường như không đóng góp có ý nghĩa cho mô hình, tức là có thể không phải là các biến dự báo có ý nghĩa cho điểm đánh giá của giáo sư?</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị t (t value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>t<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>4.6282</td>
+<td>0.1720</td>
+<td>26.90</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>beauty</td>
+<td>0.1080</td>
+<td>0.0329</td>
+<td>3.28</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>gender.male</td>
+<td>0.2040</td>
+<td>0.0528</td>
+<td>3.87</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>age</td>
+<td>-0.0089</td>
+<td>0.0032</td>
+<td>-2.75</td>
+<td>0.01</td>
+</tr>
+<tr class="odd">
+<td>formal.yes</td>
+<td>0.1511</td>
+<td>0.0749</td>
+<td>2.02</td>
+<td>0.04</td>
+</tr>
+<tr class="even">
+<td>lower.yes</td>
+<td>0.0582</td>
+<td>0.0553</td>
+<td>1.05</td>
+<td>0.29</td>
+</tr>
+<tr class="odd">
+<td>native.non english</td>
+<td>-0.2158</td>
+<td>0.1147</td>
+<td>-1.88</td>
+<td>0.06</td>
+</tr>
+<tr class="even">
+<td>minority.yes</td>
+<td>-0.0707</td>
+<td>0.0763</td>
+<td>-0.93</td>
+<td>0.35</td>
+</tr>
+<tr class="odd">
+<td>students</td>
+<td>-0.0004</td>
+<td>0.0004</td>
+<td>-1.03</td>
+<td>0.30</td>
+</tr>
+<tr class="even">
+<td>tenure.tenure track</td>
+<td>-0.1933</td>
+<td>0.0847</td>
+<td>-2.28</td>
+<td>0.02</td>
+</tr>
+<tr class="odd">
+<td>tenure.tenured</td>
+<td>-0.1574</td>
+<td>0.0656</td>
+<td>-2.40</td>
+<td>0.02</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="hai-chiến-lược-lựa-chọn-mô-hình" class="level3">
+<h3 class="anchored" data-anchor-id="hai-chiến-lược-lựa-chọn-mô-hình">Hai chiến lược lựa chọn mô hình</h3>
+<section id="chiến-lược-lựa-chọn-mô-hình" class="level4">
+<h4 class="anchored" data-anchor-id="chiến-lược-lựa-chọn-mô-hình">Chiến lược lựa chọn mô hình</h4>
+<p><strong>Dựa trên những gì chúng ta đã học cho đến nay, một số cách nào bạn có thể nghĩ ra để xác định biến nào cần giữ lại trong mô hình và biến nào cần loại bỏ?</strong></p>
+</section>
+<section id="loại-bỏ-ngược" class="level4">
+<h4 class="anchored" data-anchor-id="loại-bỏ-ngược">Loại bỏ ngược</h4>
+<ol type="1">
+<li>Bắt đầu với mô hình đầy đủ (full model)</li>
+<li>Loại bỏ từng biến một và ghi lại <span class="math inline">\(R^2_{adj}\)</span> của mỗi mô hình nhỏ hơn</li>
+<li>Chọn mô hình có sự gia tăng cao nhất trong <span class="math inline">\(R^2_{adj}\)</span></li>
+<li>Lặp lại cho đến khi không có mô hình nào mang lại sự gia tăng trong <span class="math inline">\(R^2_{adj}\)</span></li>
+</ol>
+</section>
+<section id="loại-bỏ-ngược-1" class="level4">
+<h4 class="anchored" data-anchor-id="loại-bỏ-ngược-1">Loại bỏ ngược</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th></th>
+<th><span class="math inline">\(R^2_{adj}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Đầy đủ</strong></td>
+<td>beauty + gender + age + formal + lower + native + minority + students + tenure</td>
+<td><strong>0.0839</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Bước 1</strong></td>
+<td>gender + age + formal + lower + native + minority + students + tenure</td>
+<td>0.0642</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>beauty + age + formal + lower + native + minority + students + tenure</td>
+<td>0.0557</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>beauty + gender + formal + lower + native + minority + students + tenure</td>
+<td>0.0706</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>beauty + gender + age + lower + native + minority + students + tenure</td>
+<td>0.0777</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>beauty + gender + age + formal + native + minority + students + tenure</td>
+<td>0.0837</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>beauty + gender + age + formal + lower + minority + students + tenure</td>
+<td>0.0788</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>beauty + gender + age + formal + lower + native + students + tenure</td>
+<td><strong>0.0842</strong></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>beauty + gender + age + formal + lower + native + minority + tenure</td>
+<td>0.0838</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>beauty + gender + age + formal + lower + native + minority + students</td>
+<td>0.0733</td>
+</tr>
+<tr class="odd">
+<td><strong>Bước 2</strong></td>
+<td>gender + age + formal + lower + native + students + tenure</td>
+<td>0.0647</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>beauty + age + formal + lower + native + students + tenure</td>
+<td>0.0543</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>beauty + gender + formal + lower + native + students + tenure</td>
+<td>0.0708</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>beauty + gender + age + lower + native + students + tenure</td>
+<td>0.0776</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>beauty + gender + age + formal + native + students + tenure</td>
+<td><strong>0.0846</strong></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>beauty + gender + age + formal + lower + native + tenure</td>
+<td>0.0844</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>beauty + gender + age + formal + lower + native + students</td>
+<td>0.0725</td>
+</tr>
+<tr class="even">
+<td><strong>Bước 3</strong></td>
+<td>gender + age + formal + native + students + tenure</td>
+<td>0.0653</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>beauty + age + formal + native + students + tenure</td>
+<td>0.0534</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>beauty + gender + formal + native + students + tenure</td>
+<td>0.0707</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>beauty + gender + age + native + students + tenure</td>
+<td>0.0786</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>beauty + gender + age + formal + students + tenure</td>
+<td>0.0756</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>beauty + gender + age + formal + native + tenure</td>
+<td><strong>0.0855</strong></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>beauty + gender + age + formal + native + students</td>
+<td>0.0713</td>
+</tr>
+<tr class="odd">
+<td><strong>Bước 4</strong></td>
+<td>gender + age + formal + native + tenure</td>
+<td>0.0667</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>beauty + age + formal + native + tenure</td>
+<td>0.0553</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>beauty + gender + formal + native + tenure</td>
+<td>0.0723</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>beauty + gender + age + native + tenure</td>
+<td>0.0806</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>beauty + gender + age + formal + tenure</td>
+<td>0.0773</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>beauty + gender + age + formal + native</td>
+<td>0.0713</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hàm-step-trong-r" class="level4">
+<h4 class="anchored" data-anchor-id="hàm-step-trong-r">Hàm <code>step</code> trong R</h4>
+<p>Hàm <code>step</code> trong R thực hiện một quy trình loại bỏ ngược tương tự, tuy nhiên nó sử dụng một thước đo khác gọi là AIC (Akaike Information Criterion) thay vì adjusted <span class="math inline">\(R^2\)</span> để thực hiện lựa chọn mô hình.</p>
+<pre class="output" contenteditable="true"><code>Call:
+lm(formula = profevaluation ~ beauty + gender + age + formal + 
+    native + tenure, data = d)
+
+Coefficients:
+       (Intercept)              beauty          gendermale  
+          4.628435            0.105546            0.208079  
+               age           formalyes   nativenon english  
+         -0.008844            0.132422           -0.243003  
+tenuretenure track       tenuretenured  
+         -0.206784           -0.175967  </code></pre>
+<p>Mô hình tốt nhất: beauty + gender + age + formal + native + tenure</p>
+</section>
+<section id="lựa-chọn-tiến" class="level4">
+<h4 class="anchored" data-anchor-id="lựa-chọn-tiến">Lựa chọn tiến</h4>
+<ol type="1">
+<li>Bắt đầu với các phép hồi quy của biến kết quả so với từng biến giải thích</li>
+<li>Chọn mô hình có <span class="math inline">\(R^2_{adj}\)</span> cao nhất</li>
+<li>Thêm các biến còn lại từng biến một vào mô hình hiện có, và một lần nữa chọn mô hình có <span class="math inline">\(R^2_{adj}\)</span> cao nhất</li>
+<li>Lặp lại cho đến khi việc thêm bất kỳ biến còn lại nào cũng không dẫn đến <span class="math inline">\(R^2_{adj}\)</span> cao hơn</li>
+</ol>
+</section>
+</section>
+<section id="tiếp-cận-theo-giá-trị-p-một-sự-thay-thế-cho-hệ-số-xác-định-hiệu-chỉnh-adjusted-r2" class="level3">
+<h3 class="anchored" data-anchor-id="tiếp-cận-theo-giá-trị-p-một-sự-thay-thế-cho-hệ-số-xác-định-hiệu-chỉnh-adjusted-r2">Tiếp cận theo giá trị p, một sự thay thế cho hệ số xác định hiệu chỉnh adjusted <span class="math inline">\(R^2\)</span></h3>
+<section id="loại-bỏ-ngược-và-lựa-chọn-tiến" class="level4">
+<h4 class="anchored" data-anchor-id="loại-bỏ-ngược-và-lựa-chọn-tiến">Loại bỏ ngược và lựa chọn tiến</h4>
+<ul>
+<li>Loại bỏ ngược với cách tiếp cận giá trị p:
+<ol type="1">
+<li>Bắt đầu với mô hình đầy đủ</li>
+<li>Loại bỏ biến có giá trị p cao nhất và khớp lại mô hình nhỏ hơn</li>
+<li>Lặp lại cho đến khi tất cả các biến còn lại trong mô hình đều có ý nghĩa</li>
+</ol></li>
+<li>Lựa chọn tiến với cách tiếp cận giá trị p:
+<ol type="1">
+<li>Bắt đầu với các phép hồi quy của biến kết quả so với từng biến giải thích</li>
+<li>Chọn biến có giá trị p có ý nghĩa thấp nhất</li>
+<li>Thêm các biến còn lại từng biến một vào mô hình hiện có, và chọn biến có giá trị p có ý nghĩa thấp nhất</li>
+<li>Lặp lại cho đến khi không còn biến nào trong số các biến còn lại có giá trị p có ý nghĩa</li>
+</ol></li>
+</ul>
+</section>
+<section id="loại-bỏ-ngược-cách-tiếp-cận-giá-trị-p" class="level4">
+<h4 class="anchored" data-anchor-id="loại-bỏ-ngược-cách-tiếp-cận-giá-trị-p">Loại bỏ ngược: cách tiếp cận giá trị <span class="math inline">\(p\)</span></h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Bước</th>
+<th>Các biến được bao gồm &amp; giá trị p</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Đầy đủ</strong></td>
+<td>beauty</td>
+<td>gender male</td>
+<td>age</td>
+<td>formal yes</td>
+<td>lower yes</td>
+<td>native nonenglish</td>
+<td>minority yes</td>
+<td>students</td>
+<td>tenure track</td>
+<td>tenure tenured</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.01</td>
+<td>0.04</td>
+<td>0.29</td>
+<td>0.06</td>
+<td><strong>0.35</strong></td>
+<td>0.30</td>
+<td>0.02</td>
+<td>0.02</td>
+</tr>
+<tr class="odd">
+<td><strong>Bước 1</strong></td>
+<td>beauty</td>
+<td>gender male</td>
+<td>age</td>
+<td>formal yes</td>
+<td>lower yes</td>
+<td>native nonenglish</td>
+<td></td>
+<td>students</td>
+<td>tenure track</td>
+<td>tenure tenured</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.01</td>
+<td>0.04</td>
+<td><strong>0.38</strong></td>
+<td>0.03</td>
+<td></td>
+<td>0.34</td>
+<td>0.02</td>
+<td>0.01</td>
+</tr>
+<tr class="odd">
+<td><strong>Bước 2</strong></td>
+<td>beauty</td>
+<td>gender male</td>
+<td>age</td>
+<td>formal yes</td>
+<td></td>
+<td>native nonenglish</td>
+<td></td>
+<td>students</td>
+<td>tenure track</td>
+<td>tenure tenured</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.01</td>
+<td>0.05</td>
+<td></td>
+<td>0.02</td>
+<td></td>
+<td><strong>0.44</strong></td>
+<td>0.01</td>
+<td>0.01</td>
+</tr>
+<tr class="odd">
+<td><strong>Bước 3</strong></td>
+<td>beauty</td>
+<td>gender male</td>
+<td>age</td>
+<td>formal yes</td>
+<td></td>
+<td>native nonenglish</td>
+<td></td>
+<td></td>
+<td>tenure track</td>
+<td>tenure tenured</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.01</td>
+<td><strong>0.06</strong></td>
+<td></td>
+<td>0.02</td>
+<td></td>
+<td></td>
+<td>0.01</td>
+<td>0.01</td>
+</tr>
+<tr class="odd">
+<td><strong>Bước 4</strong></td>
+<td>beauty</td>
+<td>gender male</td>
+<td>age</td>
+<td></td>
+<td></td>
+<td>native nonenglish</td>
+<td></td>
+<td></td>
+<td>tenure track</td>
+<td>tenure tenured</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.01</td>
+<td></td>
+<td></td>
+<td><strong>0.06</strong></td>
+<td></td>
+<td></td>
+<td>0.01</td>
+<td>0.01</td>
+</tr>
+<tr class="odd">
+<td><strong>Bước 5</strong></td>
+<td>beauty</td>
+<td>gender male</td>
+<td>age</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>tenure track</td>
+<td>tenure tenured</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.01</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>0.01</td>
+<td>0.01</td>
+</tr>
+</tbody>
+</table>
+<p>Mô hình tốt nhất: beauty + gender + age + tenure</p>
+</section>
+<section id="so-sánh-cách-tiếp-cận-hệ-số-xác-định-hiệu-chỉnh-adjusted-r2-và-giá-trị-p" class="level4">
+<h4 class="anchored" data-anchor-id="so-sánh-cách-tiếp-cận-hệ-số-xác-định-hiệu-chỉnh-adjusted-r2-và-giá-trị-p">So sánh cách tiếp cận hệ số xác định hiệu chỉnh Adjusted <span class="math inline">\(R^2\)</span> và giá trị p</h4>
+<ul>
+<li>Hai cách tiếp cận này tương tự nhau, nhưng đôi khi chúng dẫn đến các mô hình khác nhau, với cách tiếp cận adjusted <span class="math inline">\(R^2\)</span> có xu hướng bao gồm nhiều biến dự báo hơn trong mô hình cuối cùng.</li>
+<li>Khi mục tiêu duy nhất là cải thiện độ chính xác của dự báo, hãy sử dụng <span class="math inline">\(R^2\)</span>. Đây là trường hợp phổ biến trong các ứng dụng học máy (machine learning).</li>
+<li>Khi chúng ta quan tâm đến việc hiểu những biến nào là các biến dự báo có ý nghĩa thống kê cho biến kết quả, hoặc nếu có sự quan tâm đến việc tạo ra một mô hình đơn giản hơn với chi phí tiềm tàng là một chút độ chính xác dự báo, thì cách tiếp cận giá trị p được ưu tiên hơn.</li>
+<li>Bất kể chúng ta sử dụng cách tiếp cận nào, công việc của chúng ta không kết thúc sau khi lựa chọn biến – chúng ta vẫn phải xác minh xem các điều kiện của mô hình có hợp lý hay không.</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="kiểm-tra-các-điều-kiện-của-mô-hình-bằng-đồ-thị" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="kiểm-tra-các-điều-kiện-của-mô-hình-bằng-đồ-thị"><span class="header-section-number">10.3</span> Kiểm tra các điều kiện của mô hình bằng đồ thị</h2>
+<section id="các-biểu-đồ-chẩn-đoán" class="level3">
+<h3 class="anchored" data-anchor-id="các-biểu-đồ-chẩn-đoán">Các biểu đồ chẩn đoán</h3>
+<section id="các-điều-kiện-mô-hình-hóa" class="level4">
+<h4 class="anchored" data-anchor-id="các-điều-kiện-mô-hình-hóa">Các điều kiện mô hình hóa</h4>
+<p><span class="math display">\[ \hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p \]</span></p>
+<p>Mô hình phụ thuộc vào các điều kiện sau 1. phần dư xấp xỉ phân phối chuẩn (nearly normal residuals) - ít quan trọng hơn đối với các tập dữ liệu lớn 2. phần dư có phương sai không đổi (constant variability) 3. phần dư độc lập (independent residuals) 4. mỗi biến có mối quan hệ tuyến tính với biến kết quả</p>
+<p>Chúng ta thường sử dụng các phương pháp đồ thị để kiểm tra tính hợp lệ của các điều kiện này, chúng ta sẽ xem xét chi tiết trong các slide sau.</p>
+</section>
+<section id="phần-dư-xấp-xỉ-phân-phối-chuẩn" class="level4">
+<h4 class="anchored" data-anchor-id="phần-dư-xấp-xỉ-phân-phối-chuẩn">(1) phần dư xấp xỉ phân phối chuẩn</h4>
+<p>biểu đồ xác suất chuẩn (normal probability plot) và/hoặc biểu đồ tần suất (histogram) của phần dư:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-3_model_cond/figures/beauty/normal_res.svg" class="img-fluid figure-img"></p>
+<figcaption>Kiểm tra tính chuẩn của phần dư</figcaption>
+</figure>
+</div>
+<p><strong>Điều kiện này có vẻ được thỏa mãn không?</strong></p>
+</section>
+<section id="phần-dư-có-phương-sai-không-đổi" class="level4">
+<h4 class="anchored" data-anchor-id="phần-dư-có-phương-sai-không-đổi">(2) phần dư có phương sai không đổi</h4>
+<p>biểu đồ phân tán của phần dư và/hoặc giá trị tuyệt đối của phần dư so với giá trị khớp (dự báo) (fitted/predicted):</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-3_model_cond/figures/beauty/homo_res.svg" class="img-fluid figure-img"></p>
+<figcaption>Kiểm tra phương sai không đổi</figcaption>
+</figure>
+</div>
+<p><strong>Điều kiện này có vẻ được thỏa mãn không?</strong></p>
+</section>
+<section id="kiểm-tra-phương-sai-không-đổi---tóm-tắt" class="level4">
+<h4 class="anchored" data-anchor-id="kiểm-tra-phương-sai-không-đổi---tóm-tắt">Kiểm tra phương sai không đổi - tóm tắt</h4>
+<ul>
+<li>Khi chúng ta thực hiện hồi quy tuyến tính đơn biến (một biến giải thích), chúng ta đã kiểm tra điều kiện phương sai không đổi bằng cách sử dụng biểu đồ <em>phần dư so với x (residuals vs.&nbsp;x)</em>.</li>
+<li>Với hồi quy tuyến tính đa biến (2+ biến giải thích), chúng ta kiểm tra điều kiện phương sai không đổi bằng cách sử dụng biểu đồ <em>phần dư so với giá trị khớp (residuals vs.&nbsp;fitted)</em>.</li>
+</ul>
+<p><strong>Tại sao chúng ta sử dụng các biểu đồ khác nhau?</strong></p>
+<p><em>Trong hồi quy tuyến tính đa biến có nhiều biến giải thích, vì vậy biểu đồ phần dư so với một trong số chúng sẽ không cho chúng ta bức tranh đầy đủ.</em></p>
+</section>
+<section id="phần-dư-độc-lập" class="level4">
+<h4 class="anchored" data-anchor-id="phần-dư-độc-lập">(3) phần dư độc lập</h4>
+<p>biểu đồ phân tán của phần dư so với thứ tự thu thập dữ liệu:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-3_model_cond/figures/beauty/indep_res.svg" class="img-fluid figure-img"></p>
+<figcaption>Kiểm tra tính độc lập</figcaption>
+</figure>
+</div>
+<p><strong>Điều kiện này có vẻ được thỏa mãn không?</strong></p>
+</section>
+<section id="thêm-về-điều-kiện-phần-dư-độc-lập" class="level4">
+<h4 class="anchored" data-anchor-id="thêm-về-điều-kiện-phần-dư-độc-lập">Thêm về điều kiện phần dư độc lập</h4>
+<ul>
+<li>Kiểm tra phần dư độc lập cho phép chúng ta kiểm tra gián tiếp các quan sát độc lập.</li>
+<li>Nếu các quan sát và phần dư độc lập, chúng ta không kỳ vọng thấy xu hướng tăng hoặc giảm trong biểu đồ phân tán của phần dư so với thứ tự thu thập dữ liệu.</li>
+<li>Điều kiện này thường bị vi phạm khi chúng ta có dữ liệu chuỗi thời gian (time series data). Những dữ liệu như vậy yêu cầu các kỹ thuật hồi quy chuỗi thời gian tiên tiến hơn để phân tích đúng cách.</li>
+</ul>
+</section>
+<section id="các-mối-quan-hệ-tuyến-tính" class="level4">
+<h4 class="anchored" data-anchor-id="các-mối-quan-hệ-tuyến-tính">(4) các mối quan hệ tuyến tính</h4>
+<p>biểu đồ phân tán của phần dư so với từng biến giải thích (dạng số):</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-3_model_cond/figures/beauty/linear.svg" class="img-fluid figure-img"></p>
+<figcaption>Kiểm tra tính tuyến tính</figcaption>
+</figure>
+</div>
+<p><strong>Điều kiện này có vẻ được thỏa mãn không?</strong></p>
+<p>Lưu ý: Chúng ta sử dụng phần dư thay vì các biến dự báo trên trục tung để vẫn có thể kiểm tra tính tuyến tính mà không phải lo lắng về các vi phạm có thể xảy ra khác như cộng tuyến giữa các biến dự báo.</p>
+</section>
+</section>
+<section id="các-lựa-chọn-để-cải-thiện-độ-khớp-của-mô-hình" class="level3">
+<h3 class="anchored" data-anchor-id="các-lựa-chọn-để-cải-thiện-độ-khớp-của-mô-hình">Các lựa chọn để cải thiện độ khớp của mô hình</h3>
+<section id="một-số-lựa-chọn-để-cải-thiện-mô-hình" class="level4">
+<h4 class="anchored" data-anchor-id="một-số-lựa-chọn-để-cải-thiện-mô-hình">Một số lựa chọn để cải thiện mô hình</h4>
+<ul>
+<li>Biến đổi biến (Transforming variables)</li>
+<li>Tìm kiếm các biến bổ sung để lấp đầy khoảng trống của mô hình</li>
+<li>Sử dụng các phương pháp tiên tiến hơn có thể giải quyết các thách thức xung quanh phương sai không đồng nhất hoặc mối quan hệ phi tuyến giữa các biến dự báo và kết quả</li>
+</ul>
+</section>
+<section id="các-phép-biến-đổi" class="level4">
+<h4 class="anchored" data-anchor-id="các-phép-biến-đổi">Các phép biến đổi</h4>
+<p>Nếu mối lo ngại đối với mô hình là các mối quan hệ phi tuyến giữa (các) biến giải thích và biến kết quả, việc biến đổi biến kết quả có thể hữu ích.</p>
+<ul>
+<li>Biến đổi Log (log <span class="math inline">\(y\)</span>)</li>
+<li>Biến đổi căn bậc hai (<span class="math inline">\(\sqrt{y}\)</span>)</li>
+<li>Biến đổi nghịch đảo (<span class="math inline">\(1/y\)</span>)</li>
+<li>Cắt cụt (Truncation - giới hạn giá trị tối đa có thể)</li>
+</ul>
+<p>Cũng có thể áp dụng các phép biến đổi cho (các) biến giải thích, tuy nhiên các phép biến đổi như vậy có xu hướng làm cho các hệ số mô hình càng khó giải thích hơn.</p>
+</section>
+<section id="mô-hình-có-thể-sai-nhưng-hữu-ích" class="level4">
+<h4 class="anchored" data-anchor-id="mô-hình-có-thể-sai-nhưng-hữu-ích">Mô hình có thể sai, nhưng hữu ích</h4>
+<blockquote class="blockquote">
+<p>Tất cả các mô hình đều sai, nhưng một số thì hữu ích. - George Box</p>
+</blockquote>
+<ul>
+<li>Không có mô hình nào là hoàn hảo, nhưng ngay cả những mô hình không hoàn hảo cũng có thể hữu ích, miễn là chúng ta rõ ràng và báo cáo những thiếu sót của mô hình.</li>
+<li>Nếu các điều kiện bị vi phạm nghiêm trọng, chúng ta không nên báo cáo kết quả mô hình mà thay vào đó hãy xem xét một mô hình mới, ngay cả khi điều đó có nghĩa là phải học thêm các phương pháp thống kê hoặc thuê người có thể giúp đỡ.</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="hồi-quy-logistic" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="hồi-quy-logistic"><span class="header-section-number">10.4</span> Hồi quy logistic</h2>
+<section id="hồi-quy-cho-đến-nay" class="level4">
+<h4 class="anchored" data-anchor-id="hồi-quy-cho-đến-nay">Hồi quy cho đến nay …</h4>
+<p>Tại thời điểm này chúng ta đã bao quát:</p>
+<ul>
+<li>Hồi quy tuyến tính đơn biến (Simple linear regression)
+<ul>
+<li>Mối quan hệ giữa biến kết quả dạng số và một biến dự báo dạng số hoặc phân loại</li>
+</ul></li>
+<li>Hồi quy đa biến (Multiple regression)
+<ul>
+<li>Mối quan hệ giữa biến kết quả dạng số và nhiều biến dự báo dạng số và/hoặc phân loại</li>
+</ul></li>
+</ul>
+<p>Những gì chúng ta chưa thấy là phải làm gì khi các biến dự báo kỳ lạ (phi tuyến, cấu trúc phụ thuộc phức tạp, v.v.) hoặc khi biến kết quả kỳ lạ (dạng phân loại, dữ liệu đếm, v.v.)</p>
+</section>
+<section id="tỉ-số-chênh" class="level4">
+<h4 class="anchored" data-anchor-id="tỉ-số-chênh">Tỉ số chênh</h4>
+<p>Tỉ số chênh (Odds) là một cách khác để định lượng xác suất của một sự kiện, thường được sử dụng trong cờ bạc (và hồi quy logistic).</p>
+<p><strong>Tỉ số chênh (Odds)</strong> Cho một sự kiện <span class="math inline">\(E\)</span>, <span class="math display">\[ \text{odds}(E) = \frac{P(E)}{P(E^c)} = \frac{P(E)}{1-P(E)} \]</span> Tương tự, nếu chúng ta được cho biết tỉ số chênh của E là <span class="math inline">\(x\)</span> so với <span class="math inline">\(y\)</span> thì <span class="math display">\[ \text{odds}(E) = \frac{x}{y} = \frac{x/(x+y)}{y/(x+y)} \]</span> điều này ngụ ý <span class="math display">\[ P(E) = x/(x+y),\quad P(E^c) = y/(x+y) \]</span></p>
+</section>
+<section id="mô-hình-tuyến-tính-tổng-quát" class="level3">
+<h3 class="anchored" data-anchor-id="mô-hình-tuyến-tính-tổng-quát">Mô hình tuyến tính tổng quát</h3>
+<section id="ví-dụ---đoàn-donner" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---đoàn-donner">Ví dụ - Đoàn Donner</h4>
+<p>Năm 1846, gia đình Donner và Reed rời Springfield, Illinois, để đến California bằng xe ngựa kéo. Vào tháng 7, Đoàn Donner (Donner Party), theo tên gọi sau này, đã đến Fort Bridger, Wyoming. Tại đó, những người lãnh đạo đoàn đã quyết định thử một con đường mới và chưa được kiểm chứng để đến Thung lũng Sacramento. Sau khi đạt đến quy mô đầy đủ là 87 người và 20 xe ngựa, đoàn đã bị trì hoãn bởi việc vượt qua dãy núi Wasatch đầy khó khăn và một lần nữa khi vượt qua sa mạc phía tây Hồ Muối Lớn (Great Salt Lake). Nhóm bị mắc kẹt ở dãy núi phía đông Sierra Nevada khi khu vực này bị tấn công bởi những trận tuyết lớn vào cuối tháng 10. Vào thời điểm người sống sót cuối cùng được cứu vào ngày 21 tháng 4 năm 1847, 40 trong số 87 thành viên đã chết vì đói và tiếp xúc với cái lạnh khắc nghiệt.</p>
+</section>
+<section id="ví-dụ---đoàn-donner---dữ-liệu" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---đoàn-donner---dữ-liệu">Ví dụ - Đoàn Donner - Dữ liệu</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Tuổi (Age)</th>
+<th>Giới tính (Sex)</th>
+<th>Trạng thái (Status)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>23.00</td>
+<td>Nam</td>
+<td>Chết</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>40.00</td>
+<td>Nữ</td>
+<td>Sống sót</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>40.00</td>
+<td>Nam</td>
+<td>Sống sót</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>30.00</td>
+<td>Nam</td>
+<td>Chết</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>28.00</td>
+<td>Nam</td>
+<td>Chết</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+</tr>
+<tr class="odd">
+<td>43</td>
+<td>23.00</td>
+<td>Nam</td>
+<td>Sống sót</td>
+</tr>
+<tr class="even">
+<td>44</td>
+<td>24.00</td>
+<td>Nam</td>
+<td>Chết</td>
+</tr>
+<tr class="odd">
+<td>45</td>
+<td>25.00</td>
+<td>Nữ</td>
+<td>Sống sót</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ví-dụ---đoàn-donner---phân-tích-khám-phá-eda" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---đoàn-donner---phân-tích-khám-phá-eda">Ví dụ - Đoàn Donner - Phân tích khám phá EDA</h4>
+<p>Trạng thái so với Giới tính: | | Nam | Nữ | |—|—|—| | Chết | 20 | 5 | | Sống sót | 10 | 10 |</p>
+<p>Trạng thái so với Tuổi:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/donner/status_age.svg" class="img-fluid figure-img"></p>
+<figcaption>Trạng thái so với Tuổi</figcaption>
+</figure>
+</div>
+</section>
+<section id="ví-dụ---đoàn-donner-1" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---đoàn-donner-1">Ví dụ - Đoàn Donner</h4>
+<p>Dường như rõ ràng là cả tuổi tác và giới tính đều có ảnh hưởng đến sự sống sót của một người, làm thế nào chúng ta đưa ra một mô hình cho phép chúng ta khám phá mối quan hệ này?</p>
+<p>Ngay cả khi chúng ta đặt Chết thành 0 và Sống sót thành 1, đây không phải là thứ chúng ta có thể sử dụng các phép biến đổi để giải quyết - chúng ta cần một thứ gì đó hơn thế.</p>
+<p>Một cách để suy nghĩ về vấn đề - chúng ta có thể coi Sống sót và Chết là những thành công và thất bại phát sinh từ một phân phối nhị thức (binomial distribution) trong đó xác suất thành công được đưa ra bởi một phép biến đổi của một mô hình tuyến tính của các biến dự báo.</p>
+</section>
+<section id="mô-hình-tuyến-tính-tổng-quát-1" class="level4">
+<h4 class="anchored" data-anchor-id="mô-hình-tuyến-tính-tổng-quát-1">Mô hình tuyến tính tổng quát</h4>
+<p>Hóa ra đây là một cách rất tổng quát để giải quyết loại vấn đề này trong hồi quy, và các mô hình kết quả được gọi là mô hình tuyến tính tổng quát (generalized linear models - GLMs). Hồi quy logistic chỉ là một ví dụ của loại mô hình này.</p>
+<p>Tất cả các mô hình tuyến tính tổng quát đều có ba đặc điểm sau:</p>
+<ol type="1">
+<li>Một phân phối xác suất mô tả biến kết quả</li>
+<li>Một mô hình tuyến tính
+<ul>
+<li><span class="math inline">\(\eta = \beta_0+\beta_1 X_1 + \cdots + \beta_n X_n\)</span></li>
+</ul></li>
+<li>Một hàm liên kết (link function) liên hệ mô hình tuyến tính với tham số của phân phối kết quả
+<ul>
+<li><span class="math inline">\(g(p) = \eta\)</span> hoặc <span class="math inline">\(p = g^{-1}(\eta)\)</span></li>
+</ul></li>
+</ol>
+</section>
+</section>
+<section id="hồi-quy-logistic-1" class="level3">
+<h3 class="anchored" data-anchor-id="hồi-quy-logistic-1">Hồi quy Logistic</h3>
+<section id="hồi-quy-logistic-2" class="level4">
+<h4 class="anchored" data-anchor-id="hồi-quy-logistic-2">Hồi quy Logistic</h4>
+<p>Hồi quy logistic là một GLM được sử dụng để mô hình hóa một biến phân loại nhị phân bằng cách sử dụng các biến dự báo dạng số và phân loại.</p>
+<p>Chúng ta giả định một phân phối nhị thức tạo ra biến kết quả và do đó chúng muốn mô hình hóa <span class="math inline">\(p\)</span> là xác suất thành công cho một tập hợp các biến dự báo nhất định.</p>
+<p>Để hoàn tất việc xác định mô hình Logistic, chúng ta chỉ cần thiết lập một hàm liên kết hợp lý kết nối <span class="math inline">\(\eta\)</span> với <span class="math inline">\(p\)</span>. Có nhiều lựa chọn khác nhau nhưng được sử dụng phổ biến nhất là hàm logit (logit function).</p>
+<p><strong>Hàm Logit (Logit function)</strong></p>
+<p><span class="math display">\[ logit(p) = \log\left(\frac{p}{1-p}\right),\text{ cho } 0\le p \le 1 \]</span></p>
+</section>
+<section id="các-tính-chất-của-logit" class="level4">
+<h4 class="anchored" data-anchor-id="các-tính-chất-của-logit">Các tính chất của Logit</h4>
+<p>Hàm logit nhận một giá trị từ 0 đến 1 và ánh xạ nó tới một giá trị từ <span class="math inline">\(-\infty\)</span> đến <span class="math inline">\(\infty\)</span>.</p>
+<p><strong>Hàm logit nghịch đảo (logistic function)</strong></p>
+<p><span class="math display">\[ g^{-1}(x) = \frac{\exp(x)}{1+\exp(x)} = \frac{1}{1+\exp(-x)} \]</span></p>
+<p>Hàm logit nghịch đảo nhận một giá trị từ <span class="math inline">\(-\infty\)</span> đến <span class="math inline">\(\infty\)</span> và ánh xạ nó tới một giá trị từ 0 đến 1.</p>
+<p>Công thức này cũng có một số công dụng khi giải thích mô hình vì logit có thể được giải thích là log tỉ số chênh (log odds) của một thành công, chi tiết hơn về phần này sẽ có ở sau.</p>
+</section>
+<section id="mô-hình-hồi-quy-logistic" class="level4">
+<h4 class="anchored" data-anchor-id="mô-hình-hồi-quy-logistic">Mô hình hồi quy logistic</h4>
+<p>Ba tiêu chí GLM cho chúng ta:</p>
+<p><span class="math display">\[\begin{align*}
+y_i &amp;\sim \text{Binom}(p_i)\\
+\\
+\eta &amp;= \beta_0+\beta_1 x_1 + \cdots + \beta_n x_n\\
+\\
+\text{logit}(p) &amp;= \eta
+\end{align*}\]</span></p>
+<p>Từ đó chúng ta đi đến,</p>
+<p><span class="math display">\[ p_i = \frac{\exp(\beta_0+\beta_1 x_{1,i} + \cdots + \beta_n x_{n,i})}{1+\exp(\beta_0+\beta_1 x_{1,i} + \cdots + \beta_n x_{n,i})} \]</span></p>
+</section>
+<section id="ví-dụ---đoàn-donner---mô-hình" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---đoàn-donner---mô-hình">Ví dụ - Đoàn Donner - Mô hình</h4>
+<p>Trong R, chúng ta khớp một GLM theo cùng cách như một mô hình tuyến tính ngoại trừ việc sử dụng <code>glm</code> thay vì <code>lm</code> và chúng ta cũng phải chỉ định loại GLM cần khớp bằng đối số <code>family</code>.</p>
+<pre class="output" contenteditable="true"><code>summary(glm(Status ~ Age, data=donner, family=binomial))
+
+## Call:
+## glm(formula = Status ~ Age, family = binomial, data = donner) 
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)  1.81852    0.99937   1.820   0.0688 .
+## Age         -0.06647    0.03222  -2.063   0.0391 *
+## 
+##     Null deviance: 61.827  on 44  degrees of freedom
+## Residual deviance: 56.291  on 43  degrees of freedom
+## AIC: 60.291
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+</section>
+<section id="ví-dụ---đoàn-donner---dự-báo" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---đoàn-donner---dự-báo">Ví dụ - Đoàn Donner - Dự báo</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị z (z value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>z<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>1.8185</td>
+<td>0.9994</td>
+<td>1.82</td>
+<td>0.0688</td>
+</tr>
+<tr class="even">
+<td>Tuổi (Age)</td>
+<td>-0.0665</td>
+<td>0.0322</td>
+<td>-2.06</td>
+<td>0.0391</td>
+</tr>
+</tbody>
+</table>
+<p>Mô hình:</p>
+<p><span class="math display">\[ \log\left(\frac{p}{1-p}\right) = 1.8185-0.0665\times \text{Age} \]</span></p>
+<p>Tỉ số chênh / Xác suất sống sót cho một trẻ sơ sinh (Tuổi=0): <span class="math display">\[\begin{align*}
+\log\left(\frac{p}{1-p}\right) &amp;= 1.8185-0.0665\times 0\\
+\frac{p}{1-p} &amp;= \exp(1.8185) = 6.16 \\
+p &amp;= 6.16/7.16 = 0.86
+\end{align*}\]</span></p>
+<p>Mô hình:</p>
+<p><span class="math display">\[ \log\left(\frac{p}{1-p}\right) = 1.8185-0.0665\times \text{Age} \]</span></p>
+<p>Tỉ số chênh / Xác suất sống sót cho một người 25 tuổi:</p>
+<p><span class="math display">\[\begin{align*}
+\log\left(\frac{p}{1-p}\right) &amp;= 1.8185-0.0665\times 25\\
+\frac{p}{1-p} &amp;= \exp(0.156) = 1.17 \\
+p &amp;= 1.17/2.17 = 0.539
+\end{align*}\]</span></p>
+<p>Tỉ số chênh / Xác suất sống sót cho một người 50 tuổi:</p>
+<p><span class="math display">\[\begin{align*}
+\log\left(\frac{p}{1-p}\right) &amp;= 1.8185-0.0665\times 50\\
+\frac{p}{1-p} &amp;= \exp(-1.5065) = 0.222 \\
+p &amp;= 0.222/1.222 =  0.181
+\end{align*}\]</span></p>
+<p><span class="math display">\[ \log\left(\frac{p}{1-p}\right) = 1.8185-0.0665\times \text{Age} \]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/donner/donner_scatter.svg" class="img-fluid figure-img"></p>
+<figcaption>Dữ liệu Donner</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/donner/donner_scatter_pred.svg" class="img-fluid figure-img"></p>
+<figcaption>Dự báo Donner</figcaption>
+</figure>
+</div>
+</section>
+<section id="ví-dụ---đoàn-donner---giải-thích" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---đoàn-donner---giải-thích">Ví dụ - Đoàn Donner - Giải thích</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị z (z value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>z<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>1.8185</td>
+<td>0.9994</td>
+<td>1.82</td>
+<td>0.0688</td>
+</tr>
+<tr class="even">
+<td>Tuổi (Age)</td>
+<td>-0.0665</td>
+<td>0.0322</td>
+<td>-2.06</td>
+<td>0.0391</td>
+</tr>
+</tbody>
+</table>
+<p>Giải thích đơn giản chỉ có thể thực hiện thông qua log tỉ số chênh (log odds) và log tỉ số của tỉ số chênh (log odds ratios) cho hệ số chặn và hệ số góc.</p>
+<p><em>Hệ số chặn</em>: Log tỉ số chênh sống sót cho một thành viên trong đoàn có tuổi là 0. Từ đây chúng ta có thể tính toán tỉ số chênh hoặc xác suất, nhưng cần các tính toán bổ sung.</p>
+<p><em>Hệ số góc</em>: Đối với sự gia tăng một đơn vị tuổi (lớn hơn 1 tuổi) thì log tỉ số của tỉ số chênh sẽ thay đổi bao nhiêu, điều này không đặc biệt trực quan. Thông thường, chúng ta chỉ quan tâm đến dấu và độ lớn tương đối.</p>
+</section>
+<section id="ví-dụ---đoàn-donner---giải-thích---hệ-số-góc" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---đoàn-donner---giải-thích---hệ-số-góc">Ví dụ - Đoàn Donner - Giải thích - Hệ số góc</h4>
+<p><span class="math display">\[\begin{align*}
+\log\left(\frac{p_1}{1-p_1}\right) &amp;= 1.8185-0.0665 (x+1) \\
+                                   &amp;= 1.8185-0.0665 x-0.0665 \\
+\log\left(\frac{p_2}{1-p_2}\right) &amp;= 1.8185-0.0665 x \\
+\\
+\log\left(\frac{p_1}{1-p_1}\right) - \log\left(\frac{p_2}{1-p_2}\right) &amp;= -0.0665 \\
+\log\left(\left. \frac{p_1}{1-p_1} \right/ \frac{p_2}{1-p_2} \right) &amp;= -0.0665 \\
+\left. \frac{p_1}{1-p_1} \right/ \frac{p_2}{1-p_2} &amp;= \exp(-0.0665) = 0.94
+\end{align*}\]</span></p>
+</section>
+<section id="ví-dụ---đoàn-donner---tuổi-và-giới-tính" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---đoàn-donner---tuổi-và-giới-tính">Ví dụ - Đoàn Donner - Tuổi và Giới tính</h4>
+<pre class="output" contenteditable="true"><code>summary(glm(Status ~ Age + Sex, data=donner, family=binomial))
+
+## Call:
+## glm(formula = Status ~ Age + Sex, family = binomial, data = donner)
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)  1.63312    1.11018   1.471   0.1413  
+## Age         -0.07820    0.03728  -2.097   0.0359 *
+## SexFemale    1.59729    0.75547   2.114   0.0345 *
+## ---
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 61.827  on 44  degrees of freedom
+## Residual deviance: 51.256  on 42  degrees of freedom
+## AIC: 57.256
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p><em>Hệ số góc giới tính</em>: Khi các biến dự báo khác được giữ không đổi, đây là log tỉ số của tỉ số chênh giữa mức được cho (Nữ) và mức tham chiếu (Nam).</p>
+</section>
+<section id="ví-dụ---đoàn-donner---các-mô-hình-giới-tính" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---đoàn-donner---các-mô-hình-giới-tính">Ví dụ - Đoàn Donner - Các mô hình giới tính</h4>
+<p>Giống như MLR, chúng ta có thể thay giới tính vào để đi đến hai mô hình trạng thái so với tuổi tương ứng cho nam và nữ.</p>
+<p>Mô hình tổng quát:</p>
+<p><span class="math display">\[ \log\left(\frac{p_1}{1-p_1}\right) = 1.63312 + -0.07820\times\text{Age} + 1.59729\times\text{Sex} \]</span></p>
+<p>Mô hình Nam:</p>
+<p><span class="math display">\[\begin{align*}
+\log\left(\frac{p_1}{1-p_1}\right) &amp;= 1.63312 + -0.07820\times\text{Age} + 1.59729\times 0\\
+                                   &amp;= 1.63312 + -0.07820\times\text{Age}
+\end{align*}\]</span></p>
+<p>Mô hình Nữ:</p>
+<p><span class="math display">\[\begin{align*}
+\log\left(\frac{p_1}{1-p_1}\right) &amp;= 1.63312 + -0.07820\times\text{Age} + 1.59729\times 1\\
+                                   &amp;= 3.23041 + -0.07820\times\text{Age}
+\end{align*}\]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/donner/donner_scatter_both.svg" class="img-fluid figure-img"></p>
+<figcaption>Dữ liệu Donner theo Giới tính</figcaption>
+</figure>
+</div>
+</section>
+<section id="kiểm-định-giả-thuyết-cho-toàn-bộ-mô-hình" class="level4">
+<h4 class="anchored" data-anchor-id="kiểm-định-giả-thuyết-cho-toàn-bộ-mô-hình">Kiểm định giả thuyết cho toàn bộ mô hình</h4>
+<pre contenteditable="true"><code>summary(glm(Status ~ Age + Sex, data=donner, family=binomial))
+
+## Call:
+## glm(formula = Status ~ Age + Sex, family = binomial, data = donner)
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)  1.63312    1.11018   1.471   0.1413  
+## Age         -0.07820    0.03728  -2.097   0.0359 *
+## SexFemale    1.59729    0.75547   2.114   0.0345 *
+## ---
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 61.827  on 44  degrees of freedom
+## Residual deviance: 51.256  on 42  degrees of freedom
+## AIC: 57.256
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>Lưu ý: Kết quả mô hình không bao gồm bất kỳ thống kê F nào, vì theo quy tắc chung, không có các kiểm định giả thuyết mô hình đơn lẻ cho các mô hình GLM.</p>
+</section>
+<section id="kiểm-định-giả-thuyết-cho-một-hệ-số" class="level4">
+<h4 class="anchored" data-anchor-id="kiểm-định-giả-thuyết-cho-một-hệ-số">Kiểm định giả thuyết cho một hệ số</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị z (z value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>z<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>1.6331</td>
+<td>1.1102</td>
+<td>1.47</td>
+<td>0.1413</td>
+</tr>
+<tr class="even">
+<td>Tuổi (Age)</td>
+<td>-0.0782</td>
+<td>0.0373</td>
+<td>-2.10</td>
+<td>0.0359</td>
+</tr>
+<tr class="odd">
+<td>SexFemale</td>
+<td>1.5973</td>
+<td>0.7555</td>
+<td>2.11</td>
+<td>0.0345</td>
+</tr>
+</tbody>
+</table>
+<p>Tuy nhiên, chúng ta vẫn có thể thực hiện suy diễn cho các hệ số riêng lẻ, thiết lập cơ bản hoàn toàn giống với những gì chúng ta đã thấy trước đây ngoại trừ việc chúng ta sử dụng kiểm định Z (Z test).</p>
+<p>Lưu ý: Điểm lắt léo duy nhất, vốn nằm ngoài phạm vi của khóa học này, là cách sai số chuẩn được tính toán.</p>
+</section>
+<section id="kiểm-định-hệ-số-góc-của-tuổi-age" class="level4">
+<h4 class="anchored" data-anchor-id="kiểm-định-hệ-số-góc-của-tuổi-age">Kiểm định hệ số góc của Tuổi (Age)</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị z (z value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>z<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>1.6331</td>
+<td>1.1102</td>
+<td>1.47</td>
+<td>0.1413</td>
+</tr>
+<tr class="even">
+<td>Tuổi (Age)</td>
+<td>-0.0782</td>
+<td>0.0373</td>
+<td>-2.10</td>
+<td>0.0359</td>
+</tr>
+<tr class="odd">
+<td>SexFemale</td>
+<td>1.5973</td>
+<td>0.7555</td>
+<td>2.11</td>
+<td>0.0345</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[\begin{align*}
+H_0:~&amp; \beta_{age} = 0 \\
+H_A:~&amp; \beta_{age} \ne 0
+\end{align*}\]</span></p>
+<p><span class="math display">\[\begin{align*}
+Z &amp;= \frac{\hat{\beta_{age}} - \beta_{age}}{SE_{age}}
+   = \frac{-0.0782 - 0}{0.0373} = -2.10 \\
+\\
+\text{giá trị p} &amp;= P(|Z| &gt; 2.10) = P(Z&gt;2.10)+P(Z&lt;-2.10)\\
+               &amp;= 2\times 0.0178 = 0.0359
+\end{align*}\]</span></p>
+</section>
+<section id="khoảng-tin-cậy-cho-hệ-số-góc-tuổi" class="level4">
+<h4 class="anchored" data-anchor-id="khoảng-tin-cậy-cho-hệ-số-góc-tuổi">Khoảng tin cậy cho hệ số góc tuổi</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị z (z value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>z<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>1.6331</td>
+<td>1.1102</td>
+<td>1.47</td>
+<td>0.1413</td>
+</tr>
+<tr class="even">
+<td>Tuổi (Age)</td>
+<td>-0.0782</td>
+<td>0.0373</td>
+<td>-2.10</td>
+<td>0.0359</td>
+</tr>
+<tr class="odd">
+<td>SexFemale</td>
+<td>1.5973</td>
+<td>0.7555</td>
+<td>2.11</td>
+<td>0.0345</td>
+</tr>
+</tbody>
+</table>
+<p>Hãy nhớ rằng, việc giải thích cho một hệ số góc là sự thay đổi trong log tỉ số của tỉ số chênh trên mỗi đơn vị thay đổi của biến dự báo.</p>
+<p>Log tỉ số của tỉ số chênh (Log odds ratio): <span class="math display">\[ CI = PE \pm CV \times SE = -0.0782 \pm 1.96 \times 0.0373 = (-0.1513, -0.0051) \]</span></p>
+<p>Tỉ số của tỉ số chênh (Odds ratio): <span class="math display">\[ \exp(CI) = (\exp{-0.1513}, \exp{-0.0051}) = (0.8596, 0.9949) \]</span></p>
+</section>
+</section>
+<section id="ví-dụ-bổ-sung" class="level3">
+<h3 class="anchored" data-anchor-id="ví-dụ-bổ-sung">Ví dụ bổ sung</h3>
+<section id="ví-dụ---nuôi-chim-và-ung-thư-phổi" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---nuôi-chim-và-ung-thư-phổi">Ví dụ - Nuôi chim và Ung thư phổi</h4>
+<p>Một cuộc khảo sát sức khỏe từ năm 1972 đến 1981 tại The Hague, Hà Lan, đã phát hiện ra mối liên hệ giữa việc nuôi chim cảnh và nguy cơ ung thư phổi tăng cao. Để điều tra việc nuôi chim như một yếu tố nguy cơ, các nhà nghiên cứu đã thực hiện một nghiên cứu bệnh-chứng (case-control study) trên các bệnh nhân vào năm 1985 tại bốn bệnh viện ở The Hague (dân số 450.000 người). Họ đã xác định được 49 trường hợp ung thư phổi trong số các bệnh nhân đã đăng ký với một phòng khám đa khoa, những người từ 65 tuổi trở xuống và đã cư trú tại thành phố từ năm 1965. Họ cũng chọn ra 98 người đối chứng từ một nhóm cư dân có cùng cấu trúc độ tuổi chung.</p>
+</section>
+<section id="ví-dụ---nuôi-chim-và-ung-thư-phổi---dữ-liệu" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---nuôi-chim-và-ung-thư-phổi---dữ-liệu">Ví dụ - Nuôi chim và Ung thư phổi - Dữ liệu</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>LC</th>
+<th>FM</th>
+<th>SS</th>
+<th>BK</th>
+<th>AG</th>
+<th>YR</th>
+<th>CD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>LungCancer</td>
+<td>Male</td>
+<td>Low</td>
+<td>Bird</td>
+<td>37.00</td>
+<td>19.00</td>
+<td>12.00</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>LungCancer</td>
+<td>Male</td>
+<td>Low</td>
+<td>Bird</td>
+<td>41.00</td>
+<td>22.00</td>
+<td>15.00</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>LungCancer</td>
+<td>Male</td>
+<td>High</td>
+<td>NoBird</td>
+<td>43.00</td>
+<td>19.00</td>
+<td>15.00</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+</tr>
+<tr class="odd">
+<td>147</td>
+<td>NoCancer</td>
+<td>Female</td>
+<td>Low</td>
+<td>NoBird</td>
+<td>65.00</td>
+<td>7.00</td>
+<td>2.00</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Biến (Variable)</th>
+<th>Mô tả (Description)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>LC</code></td>
+<td>Đối tượng có bị ung thư phổi hay không</td>
+</tr>
+<tr class="even">
+<td><code>FM</code></td>
+<td>Giới tính của đối tượng</td>
+</tr>
+<tr class="odd">
+<td><code>SS</code></td>
+<td>Trạng thái kinh tế xã hội</td>
+</tr>
+<tr class="even">
+<td><code>BK</code></td>
+<td>Chỉ báo về việc nuôi chim</td>
+</tr>
+<tr class="odd">
+<td><code>AG</code></td>
+<td>Tuổi của đối tượng (năm)</td>
+</tr>
+<tr class="even">
+<td><code>YR</code></td>
+<td>Số năm hút thuốc trước khi chẩn đoán hoặc kiểm tra</td>
+</tr>
+<tr class="odd">
+<td><code>CD</code></td>
+<td>Tỷ lệ hút thuốc trung bình (số điếu thuốc mỗi ngày)</td>
+</tr>
+</tbody>
+</table>
+<p>Lưu ý: NoCancer là phản hồi tham chiếu (0 hoặc thất bại), LungCancer là phản hồi không tham chiếu (1 hoặc thành công) - điều này quan trọng cho việc giải thích.</p>
+</section>
+<section id="ví-dụ---nuôi-chim-và-ung-thư-phổi---eda" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---nuôi-chim-và-ung-thư-phổi---eda">Ví dụ - Nuôi chim và Ung thư phổi - EDA</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/birds/birds.svg" class="img-fluid figure-img"></p>
+<figcaption>Dữ liệu Chim và Ung thư phổi</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Nuôi chim (Bird)</th>
+<th>Không nuôi chim (No Bird)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ung thư phổi</td>
+<td><span class="math inline">\(\blacktriangle\)</span></td>
+<td><span class="math inline">\(\bullet\)</span></td>
+</tr>
+<tr class="even">
+<td>Không bị ung thư phổi</td>
+<td><span class="math inline">\(\triangle\)</span></td>
+<td><span class="math inline">\(\circ\)</span></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ví-dụ---nuôi-chim-và-ung-thư-phổi---mô-hình" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---nuôi-chim-và-ung-thư-phổi---mô-hình">Ví dụ - Nuôi chim và Ung thư phổi - Mô hình</h4>
+<pre class="output" contenteditable="true"><code>summary(glm(LC ~ FM + SS + BK + AG + YR + CD, data=bird, family=binomial))
+
+## Call:
+## glm(formula = LC ~ FM + SS + BK + AG + YR + CD, family = binomial, 
+##     data = bird)
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -1.93736    1.80425  -1.074 0.282924    
+## FMFemale     0.56127    0.53116   1.057 0.290653    
+## SSHigh       0.10545    0.46885   0.225 0.822050    
+## BKBird       1.36259    0.41128   3.313 0.000923 ***
+## AG          -0.03976    0.03548  -1.120 0.262503    
+## YR           0.07287    0.02649   2.751 0.005940 ** 
+## CD           0.02602    0.02552   1.019 0.308055    
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 187.14  on 146  degrees of freedom
+## Residual deviance: 154.20  on 140  degrees of freedom
+## AIC: 168.2
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+</section>
+<section id="ví-dụ---nuôi-chim-và-ung-thư-phổi---giải-thích" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ---nuôi-chim-và-ung-thư-phổi---giải-thích">Ví dụ - Nuôi chim và Ung thư phổi - Giải thích</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị z (z value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>z<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>-1.9374</td>
+<td>1.8043</td>
+<td>-1.07</td>
+<td>0.2829</td>
+</tr>
+<tr class="even">
+<td>FMFemale</td>
+<td>0.5613</td>
+<td>0.5312</td>
+<td>1.06</td>
+<td>0.2907</td>
+</tr>
+<tr class="odd">
+<td>SSHigh</td>
+<td>0.1054</td>
+<td>0.4688</td>
+<td>0.22</td>
+<td>0.8221</td>
+</tr>
+<tr class="even">
+<td>BKBird</td>
+<td>1.3626</td>
+<td>0.4113</td>
+<td>3.31</td>
+<td>0.0009</td>
+</tr>
+<tr class="odd">
+<td>AG</td>
+<td>-0.0398</td>
+<td>0.0355</td>
+<td>-1.12</td>
+<td>0.2625</td>
+</tr>
+<tr class="even">
+<td>YR</td>
+<td>0.0729</td>
+<td>0.0265</td>
+<td>2.75</td>
+<td>0.0059</td>
+</tr>
+<tr class="odd">
+<td>CD</td>
+<td>0.0260</td>
+<td>0.0255</td>
+<td>1.02</td>
+<td>0.3081</td>
+</tr>
+</tbody>
+</table>
+<p>Giữ tất cả các biến dự báo khác không đổi, khi đó:</p>
+<ul>
+<li>Tỉ số của tỉ số chênh (odds ratio) bị ung thư phổi của những người nuôi chim so với những người không nuôi chim là <span class="math inline">\(\exp(1.3626) = 3.91\)</span>.</li>
+<li>Tỉ số của tỉ số chênh bị ung thư phổi cho mỗi năm hút thuốc thêm là <span class="math inline">\(\exp(0.0729) = 1.08\)</span>.</li>
+</ul>
+</section>
+<section id="những-con-số-không-có-nghĩa-là-gì" class="level4">
+<h4 class="anchored" data-anchor-id="những-con-số-không-có-nghĩa-là-gì">Những con số không có nghĩa là gì …</h4>
+<p>Sai lầm phổ biến nhất khi giải thích hồi quy logistic là coi tỉ số của tỉ số chênh (odds ratio) như một tỉ lệ của các xác suất.</p>
+<p>Những người nuôi chim <em>không</em> phải có khả năng bị ung thư phổi cao gấp 4 lần so với những người không nuôi chim.</p>
+<p>Đây là sự khác biệt giữa nguy cơ tương đối (relative risk) và tỉ số của tỉ số chênh (odds ratio).</p>
+<p><span class="math display">\[ RR = \frac{P(\text{bệnh} | \text{tiếp xúc})}{P(\text{bệnh} | \text{không tiếp xúc})} \]</span></p>
+<p><span class="math display">\[ OR = \frac{P(\text{bệnh} | \text{tiếp xúc}) / [1-P(\text{bệnh} | \text{tiếp xúc})]}{P(\text{bệnh} | \text{không tiếp xúc})/[1-P(\text{bệnh} | \text{không tiếp xúc})]} \]</span></p>
+</section>
+<section id="quay-lại-với-những-con-chim" class="level4">
+<h4 class="anchored" data-anchor-id="quay-lại-với-những-con-chim">Quay lại với những con chim</h4>
+<p>Xác suất ung thư phổi ở một người nuôi chim là bao nhiêu nếu chúng ta biết rằng <span class="math inline">\(P(\text{ung thư phổi}|\text{không nuôi chim}) = 0.05\)</span>?</p>
+<p><span class="math display">\[\begin{align*}
+OR &amp;= \frac{P(\text{ung thư phổi} | \text{nuôi chim}) / [1-P(\text{ung thư phổi} | \text{nuôi chim})]}{P(\text{ung thư phổi} | \text{không nuôi chim})/[1-P(\text{ung thư phổi} | \text{không nuôi chim})]} \\
+\\
+   &amp;= \frac{P(\text{ung thư phổi} | \text{nuôi chim}) / [1-P(\text{ung thư phổi} | \text{nuôi chim})]}{0.05/[1-0.05]} = 3.91
+\end{align*}\]</span></p>
+<p><span class="math display">\[ P(\text{ung thư phổi} | \text{nuôi chim}) = \frac{3.91 \times \frac{0.05}{0.95}}{1+3.91 \times \frac{0.05}{0.95}} = 0.171 \]</span></p>
+<p><span class="math display">\[ RR = P(\text{ung thư phổi} | \text{nuôi chim}) / P(\text{ung thư phổi} | \text{không nuôi chim}) = 0.171 / 0.05 = 3.41 \]</span></p>
+</section>
+<section id="đường-cong-or-chim" class="level4">
+<h4 class="anchored" data-anchor-id="đường-cong-or-chim">Đường cong OR Chim</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/birds/OR1.svg" class="img-fluid figure-img"></p>
+<figcaption>Đường cong OR 1</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/birds/OR2.svg" class="img-fluid figure-img"></p>
+<figcaption>Đường cong OR 2</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/birds/OR3.svg" class="img-fluid figure-img"></p>
+<figcaption>Đường cong OR 3</figcaption>
+</figure>
+</div>
+</section>
+<section id="các-đường-cong-or" class="level4">
+<h4 class="anchored" data-anchor-id="các-đường-cong-or">Các đường cong OR</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/all_OR.svg" class="img-fluid figure-img"></p>
+<figcaption>Tất cả các đường cong OR</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="độ-nhạy-và-độ-đặc-hiệu" class="level3">
+<h3 class="anchored" data-anchor-id="độ-nhạy-và-độ-đặc-hiệu">Độ nhạy và Độ đặc hiệu</h3>
+<section id="một-ví-dụ-cũ-ví-dụ---bác-sĩ-house" class="level4">
+<h4 class="anchored" data-anchor-id="một-ví-dụ-cũ-ví-dụ---bác-sĩ-house">(Một ví dụ cũ) Ví dụ - Bác sĩ House</h4>
+<p>Nếu bạn đã từng xem chương trình truyền hình <em>House</em> trên Fox, bạn sẽ biết rằng Bác sĩ House thường xuyên tuyên bố, “Không bao giờ là lupus.”</p>
+<p>Lupus là một hiện tượng y tế trong đó các kháng thể vốn được cho là tấn công các tế bào ngoại lai để ngăn ngừa nhiễm trùng lại coi các protein huyết tương là vật thể ngoại lai, dẫn đến nguy cơ cao bị đông máu. Người ta tin rằng 2% dân số mắc căn bệnh này.</p>
+<p>Xét nghiệm lupus rất chính xác nếu người đó thực sự mắc lupus, tuy nhiên lại rất không chính xác nếu người đó không mắc. Cụ thể hơn, xét nghiệm chính xác 98% nếu một người thực sự mắc bệnh. Xét nghiệm chính xác 74% nếu một người không mắc bệnh.</p>
+<p>Bác sĩ House có đúng không ngay cả khi ai đó có kết quả xét nghiệm dương tính với Lupus?</p>
+</section>
+<section id="một-ví-dụ-cũ-ví-dụ---bác-sĩ-house-1" class="level4">
+<h4 class="anchored" data-anchor-id="một-ví-dụ-cũ-ví-dụ---bác-sĩ-house-1">(Một ví dụ cũ) Ví dụ - Bác sĩ House</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/tree_lupus.svg" class="img-fluid figure-img"></p>
+<figcaption>Sơ đồ cây Lupus</figcaption>
+</figure>
+</div>
+<p><span class="math display">\[\begin{align*}
+P(\text{Lupus} | +)  &amp;= \frac{P(+,\text{Lupus})}{P(+,\text{Lupus})+P(+,\text{No Lupus})} \\
+                     &amp;= \frac{0.0196}{0.0196+0.2548} = 0.0714
+\end{align*}\]</span></p>
+</section>
+<section id="xét-nghiệm-lupus" class="level4">
+<h4 class="anchored" data-anchor-id="xét-nghiệm-lupus">Xét nghiệm lupus</h4>
+<p>Hóa ra việc xét nghiệm Lupus thực sự khá phức tạp, một chẩn đoán thường dựa trên kết quả của nhiều xét nghiệm, thường bao gồm: tổng phân tích tế bào máu, tốc độ lắng hồng cầu, đánh giá thận và gan, phân tích nước tiểu, và hoặc xét nghiệm kháng thể kháng nhân (ANA).</p>
+<p>Điều quan trọng là phải suy nghĩ về những gì liên quan đến mỗi xét nghiệm này (ví dụ: quyết định xem số lượng tế bào máu toàn bộ là cao hay thấp) và cách mỗi xét nghiệm riêng lẻ và các quyết định liên quan đóng vai trò như thế nào trong quyết định tổng thể chẩn đoán bệnh nhân mắc lupus.</p>
+</section>
+<section id="xét-nghiệm-lupus-1" class="level4">
+<h4 class="anchored" data-anchor-id="xét-nghiệm-lupus-1">Xét nghiệm lupus</h4>
+<p>Ở một mức độ nào đó, chúng ta có thể coi một chẩn đoán là một quyết định nhị phân (có lupus hoặc không lupus) liên quan đến sự tích hợp phức tạp của các biến giải thích khác nhau.</p>
+<p>Ví dụ không cho chúng ta bất kỳ thông tin nào về cách đưa ra chẩn đoán, nhưng những gì nó cung cấp cho chúng ta cũng quan trọng không kém - độ nhạy và độ đặc hiệu của xét nghiệm. Những giá trị này rất quan trọng để chúng ta hiểu kết quả xét nghiệm dương tính hoặc âm tính thực sự có ý nghĩa gì.</p>
+</section>
+<section id="độ-nhạy-và-độ-đặc-hiệu-1" class="level4">
+<h4 class="anchored" data-anchor-id="độ-nhạy-và-độ-đặc-hiệu-1">Độ nhạy và Độ đặc hiệu</h4>
+<p><em>Độ nhạy (Sensitivity)</em> - đo lường khả năng của một xét nghiệm trong việc xác định các kết quả dương tính. <span class="math display">\[ P(\text{Xét nghiệm }+~|~\text{Tình trạng }+) = P(+ | \text{lupus}) = 0.98 \]</span></p>
+<p><em>Độ đặc hiệu (Specificity)</em> - đo lường khả năng của một xét nghiệm trong việc xác định các kết quả âm tính. <span class="math display">\[ P(\text{Xét nghiệm }-~|~\text{Tình trạng }-) = P(- | \text{no lupus}) = 0.74 \]</span></p>
+<p>Thật hữu ích khi nghĩ về các trường hợp cực đoan - độ nhạy và độ đặc hiệu của một xét nghiệm luôn trả về kết quả dương tính là gì? Còn đối với một xét nghiệm luôn trả về kết quả âm tính thì sao?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/SenSpec.svg" class="img-fluid figure-img"></p>
+<figcaption>Độ nhạy và Độ đặc hiệu</figcaption>
+</figure>
+</div>
+<p><span class="math display">\[\begin{align*}
+\text{Độ nhạy (Sensitivity)} &amp;= P(\text{Xét nghiệm }+~|~\text{Tình trạng }+) = TP / (TP + FN) \\
+\text{Độ đặc hiệu (Specificity)} &amp;= P(\text{Xét nghiệm }-~|~\text{Tình trạng }-) = TN / (FP + TN)\\
+\text{Tỷ lệ âm tính giả (False negative rate)} (\beta) &amp;= P(\text{Xét nghiệm }-~|~\text{Tình trạng }+) = FN / (TP + FN) \\
+\text{Tỷ lệ dương tính giả (False positive rate)} (\alpha) &amp;= P(\text{Xét nghiệm }+~|~\text{Tình trạng }-) = FP / (FP + TN)
+\end{align*}\]</span></p>
+<p><span class="math display">\[\begin{align*}
+\text{Độ nhạy (Sensitivity)} &amp;= 1 - \text{Tỷ lệ âm tính giả} = \text{Lực lượng kiểm định (Power)}\\
+\text{Độ đặc hiệu (Specificity)} &amp;= 1 - \text{Tỷ lệ dương tính giả}
+\end{align*}\]</span></p>
+</section>
+<section id="vậy-thì-sao" class="level4">
+<h4 class="anchored" data-anchor-id="vậy-thì-sao">Vậy thì sao?</h4>
+<p>Rõ ràng việc biết Độ nhạy và Độ đặc hiệu của xét nghiệm (và hoặc tỷ lệ dương tính giả và âm tính giả) là rất quan trọng. Cùng với tỷ lệ mắc bệnh (ví dụ: <span class="math inline">\(P(\text{lupus})\)</span>), những giá trị này là cần thiết để tính toán các đại lượng quan trọng như <span class="math inline">\(P(\text{lupus} | + )\)</span>.</p>
+<p>Ngoài ra, việc tìm hiểu sơ qua về phân tích lực lượng kiểm định trước kỳ thi giữa kỳ đầu tiên cũng sẽ cho bạn ý tưởng về sự đánh đổi vốn có trong việc giảm thiểu tỷ lệ dương tính giả và âm tính giả (tăng lực lượng kiểm định yêu cầu tăng <span class="math inline">\(\alpha\)</span> hoặc <span class="math inline">\(n\)</span>).</p>
+<p>Chúng ta nên sử dụng thông tin này như thế nào khi cố gắng đưa ra một quyết định?</p>
+</section>
+</section>
+<section id="đường-cong-roc" class="level3">
+<h3 class="anchored" data-anchor-id="đường-cong-roc">Đường cong ROC</h3>
+<section id="trở-lại-với-thư-rác-spam" class="level4">
+<h4 class="anchored" data-anchor-id="trở-lại-với-thư-rác-spam">Trở lại với Thư rác (Spam)</h4>
+<p>Trong bài thực hành tuần này, chúng ta đã kiểm tra một tập dữ liệu email mà chúng ta quan tâm đến việc xác định các thư rác. Chúng ta đã xem xét các mô hình hồi quy logistic khác nhau để đánh giá cách các biến dự báo khác nhau ảnh hưởng đến xác suất một tin nhắn là thư rác.</p>
+<p>Các mô hình này cũng có thể được sử dụng để gán xác suất cho các tin nhắn đến (điều này tương đương với dự báo trong trường hợp SLR / MLR). Tuy nhiên, nếu chúng ta đang thiết kế một bộ lọc thư rác thì đây chỉ mới là một nửa chặng đường, chúng ta cũng cần sử dụng các xác suất này để đưa ra quyết định về việc email nào bị gắn thẻ là thư rác.</p>
+<p>Mặc dù không phải là giải pháp khả thi duy nhất, chúng ta sẽ xem xét một cách tiếp cận đơn giản là chọn một xác suất ngưỡng (threshold probability) và bất kỳ email nào vượt quá xác suất đó sẽ bị gắn thẻ là thư rác.</p>
+</section>
+<section id="chọn-một-ngưỡng-picking-a-threshold" class="level4">
+<h4 class="anchored" data-anchor-id="chọn-một-ngưỡng-picking-a-threshold">Chọn một ngưỡng (Picking a threshold)</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/spam1.svg" class="img-fluid figure-img"></p>
+<figcaption>Ngưỡng 1</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/spam2.svg" class="img-fluid figure-img"></p>
+<figcaption>Ngưỡng 2</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/spam3.svg" class="img-fluid figure-img"></p>
+<figcaption>Ngưỡng 3</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/spam4.svg" class="img-fluid figure-img"></p>
+<figcaption>Ngưỡng 4</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/spam5.svg" class="img-fluid figure-img"></p>
+<figcaption>Ngưỡng 5</figcaption>
+</figure>
+</div>
+<p>Hãy xem điều gì xảy ra nếu chúng ta chọn ngưỡng là 0,75.</p>
+</section>
+<section id="hệ-quả-của-việc-chọn-một-ngưỡng" class="level4">
+<h4 class="anchored" data-anchor-id="hệ-quả-của-việc-chọn-một-ngưỡng">Hệ quả của việc chọn một ngưỡng</h4>
+<p>Đối với tập dữ liệu của chúng ta, việc chọn ngưỡng 0,75 cho chúng ta các kết quả sau:</p>
+<p><span class="math display">\[\begin{align*}
+FN = 340 &amp;\qquad TP = 27 \\
+TN = 3545 &amp;\qquad FP = 9
+\end{align*}\]</span></p>
+<p>Độ nhạy và độ đặc hiệu cho quy tắc quyết định cụ thể này là bao nhiêu?</p>
+<p><span class="math display">\[\begin{align*}
+\text{Độ nhạy (Sensitivity)} &amp; = TP / (TP + FN) = 27 / (27+340) = 0.073 \\
+\text{Độ đặc hiệu (Specificity)} &amp; = TN / (FP + TN) = 3545 / (9+3545) = 0.997 \\
+\end{align*}\]</span></p>
+</section>
+<section id="thử-các-ngưỡng-khác" class="level4">
+<h4 class="anchored" data-anchor-id="thử-các-ngưỡng-khác">Thử các ngưỡng khác</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/spam5-1.svg" class="img-fluid figure-img"></p>
+<figcaption>Thử ngưỡng 5-1</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/spam5-2.svg" class="img-fluid figure-img"></p>
+<figcaption>Thử ngưỡng 5-2</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/spam5-3.svg" class="img-fluid figure-img"></p>
+<figcaption>Thử ngưỡng 5-3</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/spam5-4.svg" class="img-fluid figure-img"></p>
+<figcaption>Thử ngưỡng 5-4</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/spam5-5.svg" class="img-fluid figure-img"></p>
+<figcaption>Thử ngưỡng 5-5</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Ngưỡng</th>
+<th>0.75</th>
+<th>0.625</th>
+<th>0.5</th>
+<th>0.375</th>
+<th>0.25</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Độ nhạy (Sensitivity)</td>
+<td>0.074</td>
+<td>0.106</td>
+<td>0.136</td>
+<td>0.305</td>
+<td>0.510</td>
+</tr>
+<tr class="even">
+<td>Độ đặc hiệu (Specificity)</td>
+<td>0.997</td>
+<td>0.995</td>
+<td>0.995</td>
+<td>0.963</td>
+<td>0.936</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="mối-quan-hệ-giữa-độ-nhạy-và-độ-đặc-hiệu" class="level4">
+<h4 class="anchored" data-anchor-id="mối-quan-hệ-giữa-độ-nhạy-và-độ-đặc-hiệu">Mối quan hệ giữa Độ nhạy và Độ đặc hiệu</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Ngưỡng</th>
+<th>0.75</th>
+<th>0.625</th>
+<th>0.5</th>
+<th>0.375</th>
+<th>0.25</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Độ nhạy (Sensitivity)</td>
+<td>0.074</td>
+<td>0.106</td>
+<td>0.136</td>
+<td>0.305</td>
+<td>0.510</td>
+</tr>
+<tr class="even">
+<td>Độ đặc hiệu (Specificity)</td>
+<td>0.997</td>
+<td>0.995</td>
+<td>0.995</td>
+<td>0.963</td>
+<td>0.936</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/sen_vs_spec1.svg" class="img-fluid figure-img"></p>
+<figcaption>Độ nhạy so với Độ đặc hiệu 1</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/sen_vs_spec2.svg" class="img-fluid figure-img"></p>
+<figcaption>Độ nhạy so với Độ đặc hiệu 2</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/sen_vs_spec3.svg" class="img-fluid figure-img"></p>
+<figcaption>Độ nhạy so với Độ đặc hiệu 3</figcaption>
+</figure>
+</div>
+</section>
+<section id="đường-cong-đặc-tính-hoạt-động-của-máy-thu" class="level4">
+<h4 class="anchored" data-anchor-id="đường-cong-đặc-tính-hoạt-động-của-máy-thu">Đường cong Đặc tính hoạt động của máy thu</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/ROC.svg" class="img-fluid figure-img"></p>
+<figcaption>Đường cong ROC</figcaption>
+</figure>
+</div>
+<p>Tại sao chúng ta quan tâm đến đường cong ROC?</p>
+<ul>
+<li>Hiển thị sự đánh đổi giữa độ nhạy và độ đặc hiệu cho tất cả các ngưỡng có thể.</li>
+<li>Dễ dàng so sánh hiệu suất so với sự ngẫu nhiên (chance).</li>
+<li>Có thể sử dụng diện tích dưới đường cong (AUC) như một đánh giá về khả năng dự báo của một mô hình.</li>
+</ul>
+</section>
+<section id="tinh-chỉnh-mô-hình-thư-rác-spam" class="level4">
+<h4 class="anchored" data-anchor-id="tinh-chỉnh-mô-hình-thư-rác-spam">Tinh chỉnh mô hình Thư rác (Spam)</h4>
+<pre class="output" contenteditable="true"><code>g_refined = glm(spam ~ to_multiple+cc+image+attach+winner
+                      +password+line_breaks+format+re_subj
+                      +urgent_subj+exclaim_mess, 
+                data=email, family=binomial)
+summary(g_refined)</code></pre>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Ước tính (Estimate)</th>
+<th>Sai số chuẩn (Std. Error)</th>
+<th>giá trị z (z value)</th>
+<th>Pr(&gt;<span class="math inline">\(|\)</span>z<span class="math inline">\(|\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Hệ số chặn)</td>
+<td>-1.7594</td>
+<td>0.1177</td>
+<td>-14.94</td>
+<td>0.0000</td>
+</tr>
+<tr class="even">
+<td>to_multipleyes</td>
+<td>-2.7368</td>
+<td>0.3156</td>
+<td>-8.67</td>
+<td>0.0000</td>
+</tr>
+<tr class="odd">
+<td>ccyes</td>
+<td>-0.5358</td>
+<td>0.3143</td>
+<td>-1.71</td>
+<td>0.0882</td>
+</tr>
+<tr class="even">
+<td>imageyes</td>
+<td>-1.8585</td>
+<td>0.7701</td>
+<td>-2.41</td>
+<td>0.0158</td>
+</tr>
+<tr class="odd">
+<td>attachyes</td>
+<td>1.2002</td>
+<td>0.2391</td>
+<td>5.02</td>
+<td>0.0000</td>
+</tr>
+<tr class="even">
+<td>winneryes</td>
+<td>2.0433</td>
+<td>0.3528</td>
+<td>5.79</td>
+<td>0.0000</td>
+</tr>
+<tr class="odd">
+<td>passwordyes</td>
+<td>-1.5618</td>
+<td>0.5354</td>
+<td>-2.92</td>
+<td>0.0035</td>
+</tr>
+<tr class="even">
+<td>line_breaks</td>
+<td>-0.0031</td>
+<td>0.0005</td>
+<td>-6.33</td>
+<td>0.0000</td>
+</tr>
+<tr class="odd">
+<td>formatPlain</td>
+<td>1.0130</td>
+<td>0.1380</td>
+<td>7.34</td>
+<td>0.0000</td>
+</tr>
+<tr class="even">
+<td>re_subjyes</td>
+<td>-2.9935</td>
+<td>0.3778</td>
+<td>-7.92</td>
+<td>0.0000</td>
+</tr>
+<tr class="odd">
+<td>urgent_subjyes</td>
+<td>3.8830</td>
+<td>1.0054</td>
+<td>3.86</td>
+<td>0.0001</td>
+</tr>
+<tr class="even">
+<td>exclaim_mess</td>
+<td>0.0093</td>
+<td>0.0016</td>
+<td>5.71</td>
+<td>0.0000</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="so-sánh-các-mô-hình" class="level4">
+<h4 class="anchored" data-anchor-id="so-sánh-các-mô-hình">So sánh các mô hình</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/ROC_comp.svg" class="img-fluid figure-img"></p>
+<figcaption>So sánh ROC</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="hàm-hữu-dụng" class="level3">
+<h3 class="anchored" data-anchor-id="hàm-hữu-dụng">Hàm hữu dụng</h3>
+<section id="hàm-hữu-dụng-1" class="level4">
+<h4 class="anchored" data-anchor-id="hàm-hữu-dụng-1">Hàm hữu dụng</h4>
+<p>Có nhiều cách tiếp cận định lượng hợp lý khác mà chúng ta có thể sử dụng để quyết định ngưỡng nào là “tốt nhất”.</p>
+<p>Nếu bạn đã từng học một khóa học kinh tế, có lẽ bạn đã nghe nói về ý tưởng về các hàm hữu dụng (utility functions), chúng ta có thể gán các chi phí và lợi ích cho mỗi kết quả có thể xảy ra và sử dụng chúng để tính toán mức độ hữu dụng cho từng trường hợp.</p>
+</section>
+<section id="hàm-hữu-dụng-cho-bộ-lọc-thư-rác-của-chúng-ta" class="level4">
+<h4 class="anchored" data-anchor-id="hàm-hữu-dụng-cho-bộ-lọc-thư-rác-của-chúng-ta">Hàm hữu dụng cho bộ lọc thư rác của chúng ta</h4>
+<p>Để viết ra một hàm hữu dụng cho một bộ lọc thư rác, chúng ta cần xem xét các chi phí / lợi ích của mỗi kết quả đầu ra.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Kết quả (Outcome)</th>
+<th>Độ hữu dụng (Utility)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Dương tính thật (True Positive)</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>Âm tính thật (True Negative)</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>Dương tính giả (False Positive)</td>
+<td>-50</td>
+</tr>
+<tr class="even">
+<td>Âm tính giả (False Negative)</td>
+<td>-5</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[ U(p) = TP(p) + TN(p) - 50 \times FP(p) - 5 \times FN(p) \]</span></p>
+</section>
+<section id="độ-hữu-dụng-cho-ngưỡng-075" class="level4">
+<h4 class="anchored" data-anchor-id="độ-hữu-dụng-cho-ngưỡng-075">Độ hữu dụng cho ngưỡng 0,75</h4>
+<p>Đối với tập dữ liệu email, việc chọn ngưỡng 0,75 cho chúng ta các kết quả sau: <span class="math display">\[\begin{align*}
+FN = 340 &amp;\qquad TP = 27 \\
+TN = 3545 &amp;\qquad FP = 9
+\end{align*}\]</span></p>
+<p><span class="math display">\[\begin{align*}
+U(p) &amp;= TP(p) + TN(p) - 50 \times FP(p) - 5 \times FN(p) \\
+     &amp;= 27+3545-50\times 9-5\times 340 = 1422
+\end{align*}\]</span></p>
+<p>Tự thân nó không hữu ích, nhưng cho phép chúng ta so sánh với các ngưỡng khác.</p>
+</section>
+<section id="đường-cong-hữu-dụng-utility-curve" class="level4">
+<h4 class="anchored" data-anchor-id="đường-cong-hữu-dụng-utility-curve">Đường cong hữu dụng (Utility curve)</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/utility.svg" class="img-fluid figure-img"></p>
+<figcaption>Đường cong hữu dụng</figcaption>
+</figure>
+</div>
+</section>
+<section id="đường-cong-hữu-dụng-phóng-to" class="level4">
+<h4 class="anchored" data-anchor-id="đường-cong-hữu-dụng-phóng-to">Đường cong hữu dụng (phóng to)</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/utility2.svg" class="img-fluid figure-img"></p>
+<figcaption>Đường cong hữu dụng phóng to 1</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/utility3.svg" class="img-fluid figure-img"></p>
+<figcaption>Đường cong hữu dụng phóng to 2</figcaption>
+</figure>
+</div>
+</section>
+<section id="độ-hữu-dụng-cực-đại-maximum-utility" class="level4">
+<h4 class="anchored" data-anchor-id="độ-hữu-dụng-cực-đại-maximum-utility">Độ hữu dụng cực đại (Maximum Utility)</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="9-5_logistic_reg/figures/spam/utility4.svg" class="img-fluid figure-img"></p>
+<figcaption>Độ hữu dụng cực đại</figcaption>
+</figure>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const tocLinks = document.querySelectorAll("nav#TOC a[data-scroll-target]");
+  if (tocLinks.length === 0) return;
+
+  const sections = Array.from(tocLinks).map(link => {
+    const target = link.getAttribute("data-scroll-target");
+    if (target.startsWith("#")) {
+      return document.getElementById(decodeURI(target.slice(1)));
+    } else {
+      return document.querySelector(decodeURI(target));
+    }
+  });
+
+  function updateActive() {
+    let activeIndex = 0;
+    // Find the section closest to the top of the viewport
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        // If the section top has scrolled past the top offset (120px for navbar)
+        if (rect.top <= 120) {
+          activeIndex = i;
+        }
+      }
+    }
+
+    // Update active class
+    tocLinks.forEach((link, idx) => {
+      if (idx === activeIndex) {
+        link.classList.add("active");
+        
+        // Ensure parent lists are expanded (prevent Quarto from auto-collapsing active submenus)
+        let parent = link.parentElement;
+        while (parent && parent !== document.getElementById("TOC")) {
+          if (parent.tagName === "UL") {
+            parent.classList.remove("collapse");
+          }
+          parent = parent.parentElement;
+        }
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  }
+
+  // Bind to window scroll and resize events
+  window.addEventListener("scroll", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  window.addEventListener("resize", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  
+  // Initial runs to align state
+  updateActive();
+  setTimeout(updateActive, 100);
+  setTimeout(updateActive, 500);
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./slide-simple-reg-vn.html" class="pagination-link" aria-label="Hồi quy tuyến tính">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hồi quy tuyến tính</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./slide-mc-vn.html" class="pagination-link" aria-label="Phương pháp mô phỏng Monte Carlo">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Phương pháp mô phỏng Monte Carlo</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

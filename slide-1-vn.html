@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>1&nbsp; Giới thiệu về phân tích dữ liệu – Phân tích dữ liệu</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./slide-2-vn.html" rel="next">
+<link href="./slide-0-vn.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fa9e0952a64697c55f958ad13d4b0b73.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+    window.MathJax = {
+        tex: {
+            macros: {
+                E: "{\\mathbb{E}}",
+                P: "{\\mathbb{P}}",
+                Var: "{\\mathrm{Var}}"
+            }
+        }
+    };
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Phân tích dữ liệu</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./slide-1-vn.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Giới thiệu về phân tích dữ liệu</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Giới thiệu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-0-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Các yêu cầu về môn học</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-1-vn.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Giới thiệu về phân tích dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-2-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Các kỹ thuật thu thập dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-3-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Phân tích mô tả dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-research-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Phương pháp nghiên cứu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-inferences-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cơ sở suy diễn thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-hypo-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Kiểm định giả thuyết thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-bn-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Mô hình đồ thị</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-causal-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Phân tích nhân quả</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-simple-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hồi quy tuyến tính</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-multi-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Hồi quy đa biến và hồi quy logistic</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-mc-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Phương pháp mô phỏng Monte Carlo</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#phân-tích-dữ-liệu-và-quy-trình" id="toc-phân-tích-dữ-liệu-và-quy-trình" class="nav-link active" data-scroll-target="#phân-tích-dữ-liệu-và-quy-trình"><span class="header-section-number">1.1</span> Phân tích dữ liệu và quy trình</a></li>
+  <li><a href="#các-dạng-dữ-liệu" id="toc-các-dạng-dữ-liệu" class="nav-link" data-scroll-target="#các-dạng-dữ-liệu"><span class="header-section-number">1.2</span> Các dạng dữ liệu</a></li>
+  <li><a href="#biến-và-quan-sát" id="toc-biến-và-quan-sát" class="nav-link" data-scroll-target="#biến-và-quan-sát"><span class="header-section-number">1.3</span> Biến và quan sát</a></li>
+  <li><a href="#các-phương-pháp-lấy-mẫu" id="toc-các-phương-pháp-lấy-mẫu" class="nav-link" data-scroll-target="#các-phương-pháp-lấy-mẫu"><span class="header-section-number">1.4</span> Các phương pháp lấy mẫu</a></li>
+  <li><a href="#thí-nghiệm-thực-nghiệm" id="toc-thí-nghiệm-thực-nghiệm" class="nav-link" data-scroll-target="#thí-nghiệm-thực-nghiệm"><span class="header-section-number">1.5</span> Thí nghiệm (thực nghiệm)</a></li>
+  <li><a href="#case-study" id="toc-case-study" class="nav-link" data-scroll-target="#case-study"><span class="header-section-number">1.6</span> Case study</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Giới thiệu về phân tích dữ liệu</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="phân-tích-dữ-liệu-và-quy-trình" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="phân-tích-dữ-liệu-và-quy-trình"><span class="header-section-number">1.1</span> Phân tích dữ liệu và quy trình</h2>
+<ol type="1">
+<li><strong>Phân tích Mô tả (Descriptive Analytics):</strong> <em>Cái gì đã xảy ra?</em>
+<ul>
+<li>Sử dụng các hệ thống BI (Business Intelligence) hiện đại, dashboard tương tác thời gian thực để tổng hợp và trực quan hóa luồng dữ liệu liên tục.</li>
+</ul></li>
+<li><strong>Phân tích Chẩn đoán (Diagnostic Analytics):</strong> <em>Tại sao nó xảy ra?</em>
+<ul>
+<li>Vượt mốc thống kê đơn thuần để tìm ra nguyên nhân gốc rễ.</li>
+<li>Ngày nay, bước này đang dịch chuyển mạnh mẽ từ việc tìm kiếm <strong>sự tương quan (correlation)</strong> sang xác định <strong>mối quan hệ nhân quả (causation)</strong> thông qua các mô hình đồ thị nhân quả (Causal DAGs) và thực nghiệm số hóa.</li>
+</ul></li>
+<li><strong>Phân tích Dự báo (Predictive Analytics):</strong> <em>Điều gì sẽ xảy ra?</em>
+<ul>
+<li>Sử dụng các thuật toán Học máy (Machine Learning) và Học sâu (Deep Learning) để khai phá các mẫu ẩn (hidden patterns) từ dữ liệu lịch sử nhằm dự đoán xu hướng tương lai.</li>
+</ul></li>
+<li><strong>Phân tích Khuyến nghị (Prescriptive Analytics):</strong> <em>Nên làm gì tiếp theo?</em>
+<ul>
+<li>Mức độ cao nhất, nơi hệ thống không chỉ dự báo mà còn đề xuất các phương án hành động tối ưu hoặc tự động ra quyết định thông qua các mô hình tối ưu hóa toán học và Học tăng cường (Reinforcement Learning).</li>
+</ul></li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/workflow.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/da-flow.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="các-dạng-dữ-liệu" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="các-dạng-dữ-liệu"><span class="header-section-number">1.2</span> Các dạng dữ liệu</h2>
+<section id="dữ-liệu-dạng-bảng-tabular-data" class="level3">
+<h3 class="anchored" data-anchor-id="dữ-liệu-dạng-bảng-tabular-data">Dữ liệu dạng bảng (Tabular data)</h3>
+<p><strong>Định nghĩa:</strong></p>
+<p>Dữ liệu dạng bảng là dữ liệu được tổ chức theo cấu trúc <strong>hàng (rows) và cột (columns)</strong>, trong đó:</p>
+<ul>
+<li>Mỗi <strong>hàng</strong> đại diện cho một quan sát (observation)</li>
+<li>Mỗi <strong>cột</strong> đại diện cho một biến (feature/attribute)</li>
+</ul>
+<p><strong>Ví dụ:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>ID</th>
+<th>Tuổi</th>
+<th>Thu nhập</th>
+<th>Giới tính</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>25</td>
+<td>10 triệu</td>
+<td>Nam</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>30</td>
+<td>15 triệu</td>
+<td>Nữ</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Đặc điểm:</strong></p>
+<ul>
+<li>Không có yếu tố thời gian bắt buộc</li>
+<li>Các quan sát thường <strong>độc lập với nhau</strong></li>
+<li>Là dạng dữ liệu phổ biến nhất trong machine learning (classification, regression)</li>
+</ul>
+</section>
+<section id="dữ-liệu-chuỗi-thời-gian-time-series-data" class="level3">
+<h3 class="anchored" data-anchor-id="dữ-liệu-chuỗi-thời-gian-time-series-data">Dữ liệu chuỗi thời gian (Time Series Data)</h3>
+<p><strong>Định nghĩa:</strong></p>
+<p>Dữ liệu chuỗi thời gian là dữ liệu trong đó các quan sát được thu thập <strong>theo thứ tự thời gian</strong>, và thứ tự này <strong>có ý nghĩa quan trọng</strong>.</p>
+<p><strong>Ví dụ:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Thời gian</th>
+<th>Giá cổ phiếu</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>01/01</td>
+<td>100</td>
+</tr>
+<tr class="even">
+<td>02/01</td>
+<td>102</td>
+</tr>
+<tr class="odd">
+<td>03/01</td>
+<td>101</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Đặc điểm:</strong></p>
+<ul>
+<li><p>Có <strong>phụ thuộc theo thời gian</strong> (temporal dependency)</p></li>
+<li><p>Thường có các tính chất như:</p>
+<ul>
+<li>xu hướng (trend)</li>
+<li>mùa vụ (seasonality)</li>
+</ul></li>
+<li><p>Thứ tự dữ liệu <strong>không được phép xáo trộn</strong></p></li>
+<li><p>Dùng trong forecasting (dự báo)</p></li>
+</ul>
+</section>
+<section id="dữ-liệu-bảng-panel-data" class="level3">
+<h3 class="anchored" data-anchor-id="dữ-liệu-bảng-panel-data">Dữ liệu bảng (Panel Data)</h3>
+<p><strong>Định nghĩa:</strong></p>
+<p>Dữ liệu bảng là sự kết hợp giữa <strong>dữ liệu dạng bảng</strong> và <strong>chuỗi thời gian</strong>, tức là:</p>
+<blockquote class="blockquote">
+<p>Theo dõi <strong>nhiều đối tượng (entities)</strong> qua <strong>nhiều thời điểm</strong></p>
+</blockquote>
+<p><strong>Ví dụ:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>ID</th>
+<th>Thời gian</th>
+<th>Thu nhập</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>2020</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td>A</td>
+<td>2021</td>
+<td>12</td>
+</tr>
+<tr class="odd">
+<td>B</td>
+<td>2020</td>
+<td>8</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>2021</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Đặc điểm:</strong></p>
+<ul>
+<li>Có <strong>2 chiều</strong>:
+<ul>
+<li>chiều cá thể (cross-sectional)</li>
+<li>chiều thời gian (time dimension)</li>
+</ul></li>
+<li>Cho phép phân tích:
+<ul>
+<li>sự thay đổi theo thời gian</li>
+<li>sự khác biệt giữa các cá thể</li>
+</ul></li>
+<li>Rất quan trọng trong <strong>kinh tế lượng nhân quả</strong> (causal inference)</li>
+</ul>
+</section>
+</section>
+<section id="biến-và-quan-sát" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="biến-và-quan-sát"><span class="header-section-number">1.3</span> Biến và quan sát</h2>
+<section id="khảo-sát-lớp-học" class="level4">
+<h4 class="anchored" data-anchor-id="khảo-sát-lớp-học">Khảo sát lớp học</h4>
+<p>Một cuộc khảo sát đã được thực hiện trong các sinh viên khóa học “phân tích dữ liệu”. Dưới đây là một vài câu hỏi trong khảo sát và các biến (variables) tương ứng mà dữ liệu từ các câu trả lời:</p>
+<ul>
+<li><code>gender</code>: Giới tính của bạn là gì?</li>
+<li><code>intro_extra</code>: Bạn coi mình là người hướng nội hay hướng ngoại?</li>
+<li><code>sleep</code>: Trung bình bạn ngủ bao nhiêu giờ mỗi đêm?</li>
+<li><code>bedtime</code>: Bạn thường đi ngủ lúc mấy giờ?</li>
+<li><code>countries</code>: Bạn đã đến thăm bao nhiêu quốc gia?</li>
+<li><code>dread</code>: Trên thang điểm 1-5, bạn sợ hãi việc có mặt ở đây đến mức nào?</li>
+</ul>
+</section>
+<section id="tập-dữ-liệu" class="level4">
+<h4 class="anchored" data-anchor-id="tập-dữ-liệu">Tập dữ liệu</h4>
+<p>Dữ liệu được thu thập trên các sinh viên trong một lớp thống kê về nhiều biến số khác nhau:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>SV.</th>
+<th><code>gender</code></th>
+<th><code>intro_extra</code></th>
+<th><span class="math inline">\(\cdots\)</span></th>
+<th><code>dread</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>nam</td>
+<td>hướng ngoại</td>
+<td><span class="math inline">\(\cdots\)</span></td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>nữ</td>
+<td>hướng ngoại</td>
+<td><span class="math inline">\(\cdots\)</span></td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>nữ</td>
+<td>hướng nội</td>
+<td><span class="math inline">\(\cdots\)</span></td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>nữ</td>
+<td>hướng ngoại</td>
+<td><span class="math inline">\(\cdots\)</span></td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+</tr>
+<tr class="even">
+<td>86</td>
+<td>nam</td>
+<td>hướng ngoại</td>
+<td><span class="math inline">\(\cdots\)</span></td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="các-loại-biến" class="level3">
+<h3 class="anchored" data-anchor-id="các-loại-biến">Các loại biến</h3>
+<section id="các-loại-biến-số" class="level4">
+<h4 class="anchored" data-anchor-id="các-loại-biến-số">Các loại biến số</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-2_data_basics/figures/variables/variables.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><code>gender</code></th>
+<th><code>sleep</code></th>
+<th><code>bedtime</code></th>
+<th><code>countries</code></th>
+<th><code>dread</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>nam</td>
+<td>5</td>
+<td>12-2</td>
+<td>13</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>nữ</td>
+<td>7</td>
+<td>10-12</td>
+<td>7</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>nữ</td>
+<td>5.5</td>
+<td>12-2</td>
+<td>1</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>nữ</td>
+<td>7</td>
+<td>12-2</td>
+<td></td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>nữ</td>
+<td>3</td>
+<td>12-2</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>nữ</td>
+<td>3</td>
+<td>12-2</td>
+<td>9</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>gender</code>: <em>phân loại (categorical)</em></li>
+<li><code>sleep</code>: <em>số (numerical), liên tục (continuous)</em></li>
+<li><code>bedtime</code>: <em>phân loại (categorical), thứ bậc (ordinal)</em></li>
+<li><code>countries</code>: <em>số (numerical), rời rạc (discrete)</em></li>
+<li><code>dread</code>: <em>phân loại (categorical), thứ bậc (ordinal) - cũng có thể được sử dụng như dạng số</em></li>
+</ul>
+</section>
+<section id="luyện-tập" class="level4">
+<h4 class="anchored" data-anchor-id="luyện-tập">✍ Luyện tập</h4>
+<p><strong>Mã vùng điện thoại thuộc loại biến nào?</strong></p>
+<ol type="1">
+<li>số, liên tục</li>
+<li>số, rời rạc</li>
+<li>phân loại</li>
+<li>phân loại, thứ bậc</li>
+</ol>
+</section>
+</section>
+<section id="mối-quan-hệ-giữa-các-biến" class="level3">
+<h3 class="anchored" data-anchor-id="mối-quan-hệ-giữa-các-biến">Mối quan hệ giữa các biến</h3>
+<p><strong>Có vẻ như có mối quan hệ giữa điểm trung bình (GPA) và số giờ học sinh học mỗi tuần không?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-2_data_basics/figures/gpa_study_hours/gpa_study_hours.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p><strong>Bạn có nhận thấy điều gì bất thường về bất kỳ điểm dữ liệu nào không?</strong></p>
+<p><em>Có một sinh viên có GPA &gt; 4.0, đây có khả năng là một lỗi dữ liệu.</em></p>
+</section>
+<section id="biến-giải-thích-và-biến-phản-hồi" class="level3">
+<h3 class="anchored" data-anchor-id="biến-giải-thích-và-biến-phản-hồi">Biến giải thích và biến phản hồi</h3>
+<section id="biến-giải-thích-và-biến-phản-hồi-1" class="level4">
+<h4 class="anchored" data-anchor-id="biến-giải-thích-và-biến-phản-hồi-1">Biến giải thích và biến phản hồi</h4>
+<ul>
+<li><p>Để xác định <em>biến giải thích</em> (<em>explanatory variable</em>) trong một cặp biến, hãy xác định xem biến nào trong hai biến được nghi ngờ là có ảnh hưởng đến biến kia:</p>
+<p>biến giải thích <span class="math inline">\(\xrightarrow{có~thể~ảnh~hưởng}\)</span> biến phản hồi (response variable)</p></li>
+<li><p>Việc gắn nhãn các biến là biến giải thích và biến phản hồi không đảm bảo mối quan hệ giữa hai biến thực sự là <em>quan hệ nhân quả</em> (<em>causal</em>), ngay cả khi có một <em>sự liên kết</em> (<em>association</em>) được xác định giữa hai biến. Chúng ta sử dụng các nhãn này chỉ để theo dõi biến nào chúng ta nghi ngờ có ảnh hưởng đến biến kia.</p></li>
+</ul>
+</section>
+</section>
+<section id="giới-thiệu-các-nghiên-cứu-quan-sát-và-thí-nghiệm" class="level3">
+<h3 class="anchored" data-anchor-id="giới-thiệu-các-nghiên-cứu-quan-sát-và-thí-nghiệm">Giới thiệu các nghiên cứu quan sát và thí nghiệm</h3>
+<section id="hai-loại-thu-thập-dữ-liệu-chính" class="level4">
+<h4 class="anchored" data-anchor-id="hai-loại-thu-thập-dữ-liệu-chính">Hai loại thu thập dữ liệu chính</h4>
+<ul>
+<li><em>Nghiên cứu quan sát (Observational studies):</em> Thu thập dữ liệu theo cách không can thiệp trực tiếp vào cách dữ liệu phát sinh (ví dụ: khảo sát).
+<ul>
+<li>Có thể cung cấp bằng chứng về một mối liên quan xuất hiện tự nhiên giữa các biến, nhưng tự thân chúng không thể cho thấy một kết nối nhân quả.</li>
+</ul></li>
+<li><em>Thí nghiệm (Experiment):</em> Các nhà nghiên cứu phân bổ ngẫu nhiên các đối tượng vào các phương pháp can thiệp khác nhau nhằm thiết lập các kết nối nhân quả giữa biến giải thích và biến phản hồi.</li>
+</ul>
+</section>
+<section id="quan-hệ-liên-kết-vs.-quan-hệ-nhân-quả" class="level4">
+<h4 class="anchored" data-anchor-id="quan-hệ-liên-kết-vs.-quan-hệ-nhân-quả">Quan hệ liên kết vs.&nbsp;Quan hệ nhân quả</h4>
+<ul>
+<li>Khi hai biến cho thấy một số kết nối với nhau, chúng được gọi là các biến <em>có liên kết (associated)</em>.
+<ul>
+<li>Các biến có liên kết cũng có thể được gọi là các biến <em>phụ thuộc (dependent)</em> và ngược lại.</li>
+</ul></li>
+<li>Nếu hai biến không có liên kết, tức là không có kết nối rõ ràng giữa hai biến, thì chúng được gọi là <em>độc lập (independent)</em>.</li>
+<li>Nhìn chung, sự liên kết không hàm ý quan hệ nhân quả (causation), và quan hệ nhân quả chỉ có thể được suy ra từ một thí nghiệm ngẫu nhiên.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="http://xkcd.com/552/"><img src="1-2_data_basics/figures/xkcd_correlation.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a></p>
+</figure>
+</div>
+</section>
+<section id="luyện-tập-1" class="level4">
+<h4 class="anchored" data-anchor-id="luyện-tập-1">✍ Luyện tập</h4>
+<p><strong>Dựa trên biểu đồ phân tán (scatterplot) ở bên phải, câu nào sau đây là đúng về chiều dài đầu và chiều dài hộp sọ của thú có túi?</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-2_data_basics/figures/possum_head_skull/possum_head_skull.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<ol type="1">
+<li>Không có mối quan hệ nào giữa chiều dài đầu và chiều rộng hộp sọ, tức là các biến độc lập với nhau.</li>
+<li>Chiều dài đầu và chiều rộng hộp sọ có liên kết dương.</li>
+<li>Chiều rộng hộp sọ và chiều dài đầu có liên kết âm.</li>
+<li>Đầu dài hơn khiến hộp sọ rộng hơn.</li>
+<li>Hộp sọ rộng hơn khiến đầu dài hơn.</li>
+</ol>
+</section>
+</section>
+</section>
+<section id="các-phương-pháp-lấy-mẫu" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="các-phương-pháp-lấy-mẫu"><span class="header-section-number">1.4</span> Các phương pháp lấy mẫu</h2>
+<section id="quần-thể-và-mẫu" class="level3">
+<h3 class="anchored" data-anchor-id="quần-thể-và-mẫu">Quần thể và mẫu</h3>
+<section id="quần-thể-và-mẫu-1" class="level4">
+<h4 class="anchored" data-anchor-id="quần-thể-và-mẫu-1">Quần thể và mẫu</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="http://well.blogs.nytimes.com/2012/08/29/finding-your-ideal-running-form"><img src="1-3_sampling_principles_strategies/figures/running.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a></p>
+</figure>
+</div>
+<p><em>Câu hỏi nghiên cứu:</em> Con người có thể trở thành những người chạy bộ tốt hơn, hiệu quả hơn một cách tự thân, chỉ đơn giản bằng việc chạy bộ không?</p>
+<p><em>Quần thể (Population) quan tâm:</em> <em>Tất cả mọi người</em></p>
+<p><em>Mẫu (Sample):</em> Nhóm phụ nữ trưởng thành vừa mới tham gia một nhóm chạy bộ</p>
+<p><em>Quần thể mà kết quả có thể được tổng quát hóa:</em> Phụ nữ trưởng thành, nếu dữ liệu được lấy mẫu ngẫu nhiên</p>
+</section>
+</section>
+<section id="bằng-chứng-giai-thoại" class="level3">
+<h3 class="anchored" data-anchor-id="bằng-chứng-giai-thoại">Bằng chứng giai thoại</h3>
+<section id="bằng-chứng-giai-thoại-và-nghiên-cứu-sớm-về-hút-thuốc" class="level4">
+<h4 class="anchored" data-anchor-id="bằng-chứng-giai-thoại-và-nghiên-cứu-sớm-về-hút-thuốc">Bằng chứng giai thoại và nghiên cứu sớm về hút thuốc</h4>
+<ul>
+<li>Nghiên cứu chống hút thuốc bắt đầu vào những năm 1930 và 1940 khi việc hút thuốc lá ngày càng trở nên phổ biến. Trong khi một số người hút thuốc có vẻ nhạy cảm với khói thuốc lá, những người khác hoàn toàn không bị ảnh hưởng.</li>
+<li>Nghiên cứu chống hút thuốc đã phải đối mặt với sự kháng cự dựa trên <em>bằng chứng giai thoại (anecdotal evidence)</em> chẳng hạn như “Chú tôi hút ba bao một ngày và ông ấy vẫn hoàn toàn khỏe mạnh”, bằng chứng dựa trên kích thước mẫu hạn chế có thể không đại diện cho quần thể.</li>
+<li>Người ta kết luận rằng “hút thuốc là một hành vi phức tạp của con người, về bản chất rất khó nghiên cứu, bị gây nhiễu bởi sự biến thiên của con người.”</li>
+<li>Theo thời gian, các nhà nghiên cứu đã có thể kiểm tra các mẫu trường hợp (người hút thuốc) lớn hơn, và các xu hướng cho thấy hút thuốc có những tác động tiêu cực đến sức khỏe đã trở nên rõ ràng hơn nhiều.</li>
+</ul>
+<p>Brandt, <em>The Cigarette Century</em> (2009), Basic Books.</p>
+</section>
+</section>
+<section id="chọn-mẫu-từ-một-quần-thể" class="level3">
+<h3 class="anchored" data-anchor-id="chọn-mẫu-từ-một-quần-thể">Chọn mẫu từ một quần thể</h3>
+<section id="điều-tra-dân-số" class="level4">
+<h4 class="anchored" data-anchor-id="điều-tra-dân-số">Điều tra dân số</h4>
+<ul>
+<li>Chẳng phải sẽ tốt hơn nếu chỉ cần bao gồm tất cả mọi người và “lấy mẫu” toàn bộ quần thể sao?
+<ul>
+<li>Điều này được gọi là <em>điều tra dân số (census)</em>.</li>
+</ul></li>
+<li>Có những vấn đề với việc thực hiện điều tra dân số:
+<ul>
+<li>Có thể khó hoàn thành một cuộc điều tra dân số: luôn có vẻ như có một số cá nhân khó xác định vị trí hoặc khó đo lường. <em>Và những người khó tìm thấy này có thể có những đặc điểm nhất định giúp phân biệt họ với phần còn lại của quần thể.</em></li>
+<li>Quần thể hiếm khi đứng yên. Ngay cả khi bạn có thể thực hiện điều tra dân số, quần thể vẫn thay đổi liên tục, vì vậy không bao giờ có thể có được một phép đo hoàn hảo.</li>
+<li>Việc thực hiện điều tra dân số có thể phức tạp hơn việc chọn mẫu.</li>
+</ul></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="http://www.npr.org/templates/story/story.php?storyId=125380052"><img src="1-3_sampling_principles_strategies/figures/census_illegal_immig.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a></p>
+</figure>
+</div>
+</section>
+<section id="từ-phân-tích-khám-phá-đến-suy-diễn" class="level4">
+<h4 class="anchored" data-anchor-id="từ-phân-tích-khám-phá-đến-suy-diễn">Từ phân tích khám phá đến suy diễn</h4>
+<ul>
+<li>Chọn mẫu là điều tự nhiên.</li>
+<li>Hãy nghĩ về việc nếm thử món gì đó bạn đang nấu - bạn nếm (kiểm tra) một phần nhỏ của món bạn đang nấu để có ý tưởng về toàn bộ món ăn.</li>
+<li>Khi bạn nếm một thìa súp và quyết định rằng thìa súp bạn nếm không đủ mặn, đó là <em>phân tích khám phá (exploratory analysis)</em>.</li>
+<li>Nếu bạn tổng quát hóa và kết luận rằng toàn bộ nồi súp của bạn cần thêm muối, đó là một <em>suy diễn (inference)</em>.</li>
+<li>Để suy diễn của bạn có giá trị, thìa súp bạn đã nếm (mẫu) cần phải <em>mang tính đại diện (representative)</em> cho toàn bộ nồi (quần thể).
+<ul>
+<li>Nếu thìa súp của bạn chỉ lấy từ bề mặt và muối tập trung ở dưới đáy nồi, thì những gì bạn nếm có thể không đại diện cho toàn bộ nồi.</li>
+<li>Nếu đầu tiên bạn khuấy đều súp trước khi nếm, thìa súp của bạn sẽ có nhiều khả năng đại diện cho toàn bộ nồi hơn.</li>
+</ul></li>
+</ul>
+</section>
+<section id="chệch-hướng-chọn-mẫu" class="level4">
+<h4 class="anchored" data-anchor-id="chệch-hướng-chọn-mẫu">Chệch hướng chọn mẫu</h4>
+<ul>
+<li><em>Không phản hồi (Non-response):</em> Nếu chỉ một phần nhỏ những người được lấy mẫu ngẫu nhiên chọn trả lời khảo sát, mẫu đó có thể không còn đại diện cho quần thể nữa.</li>
+<li><em>Phản hồi tự nguyện (Voluntary response):</em> Xảy ra khi mẫu bao gồm những người tình nguyện trả lời vì họ có ý kiến mạnh mẽ về vấn đề đó. Một mẫu như vậy cũng sẽ không đại diện cho quần thể.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-3_sampling_principles_strategies/figures/vol_resp_bias/vol_resp_bias_q.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-3_sampling_principles_strategies/figures/vol_resp_bias/vol_resp_bias_res.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p>cnn.com, Jan 14, 2012</p>
+<ul>
+<li><em>Mẫu thuận tiện (Convenience sample):</em> Những cá nhân dễ dàng tiếp cận có nhiều khả năng được đưa vào mẫu hơn.</li>
+</ul>
+</section>
+<section id="ví-dụ-về-chệch-hướng-chọn-mẫu-landon-so-với-fdr" class="level4">
+<h4 class="anchored" data-anchor-id="ví-dụ-về-chệch-hướng-chọn-mẫu-landon-so-với-fdr">Ví dụ về chệch hướng chọn mẫu: Landon so với FDR</h4>
+<p>Một ví dụ lịch sử về một mẫu bị chệch hướng mang lại kết quả sai lệch:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-3_sampling_principles_strategies/figures/landon_fdr/landon.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p>Năm 1936, Landon tìm cách giành được đề cử tổng thống của Đảng Cộng hòa chống lại sự tái đắc cử của FDR.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-3_sampling_principles_strategies/figures/landon_fdr/fdr.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="cuộc-thăm-dò-của-the-literary-digest" class="level4">
+<h4 class="anchored" data-anchor-id="cuộc-thăm-dò-của-the-literary-digest">Cuộc thăm dò của The Literary Digest</h4>
+<ul>
+<li>Tờ Literary Digest đã thăm dò ý kiến của khoảng 10 triệu người Mỹ và nhận được phản hồi từ khoảng 2,4 triệu người.</li>
+<li>Cuộc thăm dò cho thấy Landon có khả năng sẽ là người chiến thắng áp đảo và FDR sẽ chỉ nhận được 43% số phiếu bầu.</li>
+<li>Kết quả bầu cử: FDR thắng với 62% số phiếu bầu.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-3_sampling_principles_strategies/figures/literaryDigest.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<ul>
+<li>Tạp chí này đã hoàn toàn bị mất uy tín vì cuộc thăm dò và sớm bị ngừng xuất bản.</li>
+</ul>
+</section>
+<section id="cuộc-thăm-dò-của-the-literary-digest-điều-gì-đã-sai" class="level4">
+<h4 class="anchored" data-anchor-id="cuộc-thăm-dò-của-the-literary-digest-điều-gì-đã-sai">Cuộc thăm dò của The Literary Digest – điều gì đã sai?</h4>
+<ul>
+<li>Tạp chí đã khảo sát
+<ul>
+<li>độc giả của chính mình,</li>
+<li>những người sở hữu ô tô đã đăng ký, và</li>
+<li>những người sử dụng điện thoại đã đăng ký.</li>
+</ul></li>
+<li>Những nhóm này có thu nhập cao hơn nhiều so với mức trung bình quốc gia thời bấy giờ (hãy nhớ rằng, đây là thời kỳ Đại khủng hoảng), điều này dẫn đến danh sách những cử tri có nhiều khả năng ủng hộ Đảng Cộng hòa hơn so với một cử tri <em>điển hình</em> thực sự vào thời điểm đó, tức là mẫu không đại diện cho quần thể người Mỹ lúc bấy giờ.</li>
+</ul>
+</section>
+<section id="các-mẫu-lớn-là-đáng-ưu-tiên-nhưng" class="level4">
+<h4 class="anchored" data-anchor-id="các-mẫu-lớn-là-đáng-ưu-tiên-nhưng">Các mẫu lớn là đáng ưu tiên, nhưng…</h4>
+<ul>
+<li>Cuộc thăm dò bầu cử của Literary Digest dựa trên kích thước mẫu là 2,4 triệu người, một con số khổng lồ, nhưng vì mẫu bị <em>chệch hướng (biased)</em>, nên mẫu đã không đưa ra được một dự đoán chính xác.</li>
+<li>Quay lại ví dụ về nồi súp: Nếu súp không được khuấy đều, thì cái thìa của bạn có lớn đến đâu cũng không quan trọng, súp vẫn sẽ không có vị chuẩn. Nếu súp được khuấy đều, một cái thìa nhỏ là đủ để kiểm tra súp.</li>
+</ul>
+</section>
+<section id="luyện-tập-2" class="level4">
+<h4 class="anchored" data-anchor-id="luyện-tập-2">✍ Luyện tập</h4>
+<p><strong>Một học khu đang cân nhắc xem liệu có nên không cho phép học sinh trung học đỗ xe tại trường sau hai vụ tai nạn gần đây khiến học sinh bị thương nặng hay không. Bước đầu tiên, họ khảo sát phụ huynh qua thư, hỏi xem phụ huynh có phản đối thay đổi chính sách này hay không. Trong số 6.000 bản khảo sát được gửi đi, có 1.200 bản được gửi lại. Trong số 1.200 bản khảo sát đã hoàn thành này, 960 người đồng ý với thay đổi chính sách và 240 người không đồng ý. Phát biểu nào sau đây là đúng?</strong></p>
+<ol type="1">
+<li>Một số thư có thể chưa bao giờ đến tay phụ huynh.</li>
+<li>Học khu có sự ủng hộ mạnh mẽ từ phụ huynh để tiến tới phê duyệt chính sách.</li>
+<li>Có khả năng đa số phụ huynh của học sinh trung học không đồng ý với thay đổi chính sách.</li>
+<li>Kết quả khảo sát khó có thể bị chệch hướng vì tất cả phụ huynh đều được gửi thư khảo sát.</li>
+</ol>
+</section>
+</section>
+<section id="các-nghiên-cứu-quan-sát" class="level3">
+<h3 class="anchored" data-anchor-id="các-nghiên-cứu-quan-sát">Các nghiên cứu quan sát</h3>
+<section id="các-nghiên-cứu-quan-sát-1" class="level4">
+<h4 class="anchored" data-anchor-id="các-nghiên-cứu-quan-sát-1">Các nghiên cứu quan sát</h4>
+<ul>
+<li>Các nhà nghiên cứu thu thập dữ liệu theo cách không can thiệp trực tiếp vào cách dữ liệu phát sinh.</li>
+<li>Kết quả của một nghiên cứu quan sát thường có thể được sử dụng để thiết lập một mối liên quan giữa biến giải thích và biến phản hồi.</li>
+</ul>
+</section>
+</section>
+<section id="bốn-phương-pháp-chọn-mẫu" class="level3">
+<h3 class="anchored" data-anchor-id="bốn-phương-pháp-chọn-mẫu">Bốn phương pháp chọn mẫu</h3>
+<section id="đạt-được-các-mẫu-tốt" class="level4">
+<h4 class="anchored" data-anchor-id="đạt-được-các-mẫu-tốt">Đạt được các mẫu tốt</h4>
+<ul>
+<li>Hầu hết tất cả các phương pháp thống kê đều dựa trên khái niệm ngẫu nhiên ngầm định.</li>
+<li>Nếu dữ liệu quan sát không được thu thập trong một khung ngẫu nhiên từ một quần thể, thì các phương pháp thống kê này – các ước lượng và sai số liên quan đến các ước lượng – sẽ không đáng tin cậy.</li>
+<li>Các kỹ thuật chọn mẫu ngẫu nhiên được sử dụng phổ biến nhất là chọn mẫu <em>đơn giản (simple)</em>, <em>phân tầng (stratified)</em> và <em>cụm (cluster)</em>.</li>
+</ul>
+</section>
+<section id="mẫu-ngẫu-nhiên-đơn-giản" class="level4">
+<h4 class="anchored" data-anchor-id="mẫu-ngẫu-nhiên-đơn-giản">Mẫu ngẫu nhiên đơn giản</h4>
+<p>Chọn ngẫu nhiên các trường hợp từ quần thể, trong đó không có kết nối ngầm định nào giữa các điểm được chọn.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-3_sampling_principles_strategies/figures/sampling_methods/simple.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="mẫu-phân-tầng" class="level4">
+<h4 class="anchored" data-anchor-id="mẫu-phân-tầng">Mẫu phân tầng</h4>
+<p>Các <em>tầng (strata)</em> được tạo thành từ các quan sát tương tự nhau. Chúng ta lấy một mẫu ngẫu nhiên đơn giản (simple random sample) từ mỗi tầng.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-3_sampling_principles_strategies/figures/sampling_methods/stratified.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="mẫu-cụm" class="level4">
+<h4 class="anchored" data-anchor-id="mẫu-cụm">Mẫu cụm</h4>
+<p>Các <em>cụm (clusters)</em> thường không được tạo thành từ các quan sát đồng nhất. Chúng ta lấy một mẫu ngẫu nhiên đơn giản của các cụm, sau đó lấy mẫu tất cả các quan sát trong cụm đó. Thường được ưu tiên vì lý do kinh tế.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-3_sampling_principles_strategies/figures/sampling_methods/cluster.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="mẫu-đa-tầng" class="level4">
+<h4 class="anchored" data-anchor-id="mẫu-đa-tầng">Mẫu đa tầng</h4>
+<p>Các <em>cụm (clusters)</em> thường không được tạo thành từ các quan sát đồng nhất. Chúng ta lấy một mẫu ngẫu nhiên đơn giản của các cụm, sau đó lấy một mẫu ngẫu nhiên đơn giản của các quan sát từ các cụm đã chọn.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-3_sampling_principles_strategies/figures/sampling_methods/multistage.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="luyện-tập-3" class="level4">
+<h4 class="anchored" data-anchor-id="luyện-tập-3">✍ Luyện tập</h4>
+<p><strong>Một hội đồng thành phố đã yêu cầu thực hiện một cuộc khảo sát hộ gia đình tại một khu vực ngoại ô của thành phố. Khu vực này được chia thành nhiều khu dân cư riêng biệt và độc đáo, một số khu gồm những ngôi nhà lớn, một số khu chỉ có căn hộ. Cách tiếp cận nào có khả năng <em>ít</em> hiệu quả nhất?</strong></p>
+<ol type="1">
+<li>Chọn mẫu ngẫu nhiên đơn giản</li>
+<li>Chọn mẫu cụm</li>
+<li>Chọn mẫu phân tầng</li>
+<li>Chọn mẫu theo khối (Blocked sampling)</li>
+</ol>
+</section>
+</section>
+</section>
+<section id="thí-nghiệm-thực-nghiệm" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="thí-nghiệm-thực-nghiệm"><span class="header-section-number">1.5</span> Thí nghiệm (thực nghiệm)</h2>
+<section id="các-thuật-ngữ" class="level4">
+<h4 class="anchored" data-anchor-id="các-thuật-ngữ">Các thuật ngữ</h4>
+<p><strong>Đối tượng (Subject)</strong></p>
+<ul>
+<li>Đối tượng cá nhân được lấy mẫu hoặc chỉ định cho các nhóm trong thí nghiệm.</li>
+</ul>
+<p><strong>Đơn vị thí nghiệm (Experimental unit)</strong></p>
+<ul>
+<li>Là đối tượng chịu tác động của phương pháp can thiệp.</li>
+<li>Có thể không phải là đối tượng khảo sát.</li>
+</ul>
+<p><strong>Nhóm (Group)</strong></p>
+<ul>
+<li>Tập hợp các đối tượng được xử lý bởi cùng một mức của yếu tố</li>
+</ul>
+<p><strong>Phương pháp can thiệp (Treatment)</strong></p>
+<ul>
+<li>Là một trong các mức hoặc sự kết hợp của các mức của yếu tố chính đang được thử nghiệm.</li>
+</ul>
+<p><strong>Yếu tố (Factor)</strong></p>
+<ul>
+<li>Là mọi loại biến số giải thích trong thí nghiệm</li>
+<li>Giá trị của biến số này được thiết lập bởi thí nghiệm</li>
+<li>Có thể là biến số định lượng hoặc định tính, gián đoạn hoặc liên tục.</li>
+<li>Có thể có hoặc không có ảnh hưởng đến kết quả.</li>
+</ul>
+<p><strong>Kết quả (Response)</strong></p>
+<ul>
+<li>Là kết quả thu đo được của thí nghiệm</li>
+<li>Có thể gọi là biến số phản hồi hoặc biến số phụ thuộc vào các yếu tố của thí nghiệm</li>
+</ul>
+<p><strong>Yếu tố chính (Primary factor)</strong></p>
+<ul>
+<li>Là yếu tố quan tâm hàng đầu cần tìm hiểu ảnh hưởng của nó lên kết quả</li>
+</ul>
+<p><strong>Mức (Level)</strong></p>
+<ul>
+<li>Các giá trị khác nhau của một yếu tố</li>
+</ul>
+</section>
+<section id="các-nguyên-tắc-của-thiết-kế-thí-nghiệm" class="level4">
+<h4 class="anchored" data-anchor-id="các-nguyên-tắc-của-thiết-kế-thí-nghiệm">Các nguyên tắc của thiết kế thí nghiệm</h4>
+<ol type="1">
+<li><em>Kiểm soát (Control):</em> Kiểm soát tác động (tiềm tàng) của các biến khác ngoài những biến đang được nghiên cứu trực tiếp.</li>
+<li><em>Ngẫu nhiên hóa (Randomize):</em> Phân bổ ngẫu nhiên các đối tượng vào các phương pháp can thiệp, và lấy mẫu ngẫu nhiên từ quần thể bất cứ khi nào có thể.</li>
+<li><em>Lặp lại (Replicate):</em> Trong một nghiên cứu, lặp lại bằng cách thu thập một mẫu đủ lớn. Hoặc lặp lại toàn bộ nghiên cứu.</li>
+<li><em>Phân khối (Block):</em> Nếu có các biến đã biết hoặc nghi ngờ có ảnh hưởng đến biến phản hồi, trước tiên hãy nhóm các đối tượng vào các <em>khối (blocks)</em> dựa trên các biến này, sau đó ngẫu nhiên hóa các trường hợp trong mỗi khối vào các nhóm can thiệp.</li>
+</ol>
+</section>
+<section id="thêm-về-phân-khối" class="level4">
+<h4 class="anchored" data-anchor-id="thêm-về-phân-khối">Thêm về phân khối</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-4_experiments/figures/figureShowingBlocking.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-4_experiments/figures/gu.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<ul>
+<li>Chúng ta muốn thiết kế một thí nghiệm để nghiên cứu xem gel năng lượng có giúp bạn chạy nhanh hơn không:
+<ul>
+<li>Can thiệp: gel năng lượng</li>
+<li>Đối chứng: không dùng gel năng lượng</li>
+</ul></li>
+<li>Người ta nghi ngờ rằng gel năng lượng có thể ảnh hưởng đến các vận động viên chuyên nghiệp và nghiệp dư khác nhau, do đó chúng ta phân khối theo tình trạng chuyên nghiệp:
+<ul>
+<li>Chia mẫu thành chuyên nghiệp và nghiệp dư</li>
+<li>Phân bổ ngẫu nhiên các vận động viên chuyên nghiệp vào nhóm can thiệp và nhóm đối chứng</li>
+<li>Phân bổ ngẫu nhiên các vận động viên nghiệp dư vào nhóm can thiệp và nhóm đối chứng</li>
+<li>Tình trạng chuyên nghiệp/nghiệp dư được đại diện như nhau trong các nhóm can thiệp và đối chứng kết quả</li>
+</ul></li>
+</ul>
+<p><strong>Tại sao điều này lại quan trọng? Bạn có thể nghĩ ra các biến khác để phân khối không?</strong></p>
+</section>
+<section id="luyện-tập-4" class="level4">
+<h4 class="anchored" data-anchor-id="luyện-tập-4">✍ Luyện tập</h4>
+<p><strong>Một nghiên cứu được thiết kế để kiểm tra tác động của mức độ ánh sáng và mức độ tiếng ồn đến kết quả thi của sinh viên. Nhà nghiên cứu cũng tin rằng mức độ ánh sáng và tiếng ồn có thể có tác động khác nhau đến nam và nữ, vì vậy muốn đảm bảo cả hai giới tính đều được đại diện như nhau trong mỗi nhóm. Câu nào dưới đây là đúng?</strong></p>
+<ol type="1">
+<li>Có 3 biến giải thích (ánh sáng, tiếng ồn, giới tính) và 1 biến phản hồi (kết quả thi)</li>
+<li>Có 2 biến giải thích (ánh sáng và tiếng ồn), 1 biến phân khối (giới tính) và 1 biến phản hồi (kết quả thi)</li>
+<li>Có 1 biến giải thích (giới tính) và 3 biến phản hồi (ánh sáng, tiếng ồn, kết quả thi)</li>
+<li>Có 2 biến phân khối (ánh sáng và tiếng ồn), 1 biến giải thích (giới tính) và 1 biến phản hồi (kết quả thi)</li>
+</ol>
+</section>
+<section id="sự-khác-biệt-giữa-biến-phân-khối-và-biến-giải-thích" class="level4">
+<h4 class="anchored" data-anchor-id="sự-khác-biệt-giữa-biến-phân-khối-và-biến-giải-thích">Sự khác biệt giữa biến phân khối và biến giải thích</h4>
+<ul>
+<li>Các yếu tố (factors) là những điều kiện chúng ta có thể áp đặt lên các đơn vị thí nghiệm.</li>
+<li>Các biến phân khối là những đặc điểm sẵn có của các đơn vị thí nghiệm mà chúng ta muốn kiểm soát.</li>
+<li>Phân khối (blocking) giống như phân tầng (stratifying), ngoại trừ việc nó được sử dụng trong bối cảnh thí nghiệm khi phân bổ ngẫu nhiên, thay vì khi chọn mẫu.</li>
+</ul>
+</section>
+<section id="thêm-các-thuật-ngữ-thiết-kế-thí-nghiệm" class="level4">
+<h4 class="anchored" data-anchor-id="thêm-các-thuật-ngữ-thiết-kế-thí-nghiệm">Thêm các thuật ngữ thiết kế thí nghiệm…</h4>
+<ul>
+<li><em>Giả dược (Placebo):</em> phương pháp can thiệp giả, thường được sử dụng làm nhóm đối chứng cho các nghiên cứu y khoa</li>
+<li><em>Hiệu ứng giả dược (Placebo effect):</em> các đơn vị thí nghiệm cho thấy sự cải thiện đơn giản vì họ tin rằng họ đang nhận được một phương pháp can thiệp đặc biệt</li>
+<li><em>Mù (Blinding):</em> khi các đơn vị thí nghiệm không biết họ thuộc nhóm đối chứng hay nhóm can thiệp</li>
+<li><em>Mù kép (Double-blind):</em> khi cả đơn vị thí nghiệm và các nhà nghiên cứu tương tác với bệnh nhân đều không biết ai thuộc nhóm đối chứng và ai thuộc nhóm can thiệp</li>
+</ul>
+</section>
+<section id="luyện-tập-5" class="level4">
+<h4 class="anchored" data-anchor-id="luyện-tập-5">✍ Luyện tập</h4>
+<p><strong>Sự khác biệt chính giữa các nghiên cứu quan sát và thí nghiệm là gì?</strong></p>
+<ol type="1">
+<li>Thí nghiệm diễn ra trong phòng thí nghiệm trong khi các nghiên cứu quan sát thì không cần thiết.</li>
+<li>Trong một nghiên cứu quan sát, chúng ta chỉ xem xét những gì đã xảy ra trong quá khứ.</li>
+<li>Hầu hết các thí nghiệm sử dụng phân bổ ngẫu nhiên trong khi các nghiên cứu quan sát thì không.</li>
+<li>Các nghiên cứu quan sát hoàn toàn vô dụng vì không thể đưa ra suy diễn nhân quả nào dựa trên những phát hiện của chúng.</li>
+</ol>
+</section>
+<section id="phân-bổ-ngẫu-nhiên-so-với-chọn-mẫu-ngẫu-nhiên" class="level4">
+<h4 class="anchored" data-anchor-id="phân-bổ-ngẫu-nhiên-so-với-chọn-mẫu-ngẫu-nhiên">Phân bổ ngẫu nhiên so với Chọn mẫu ngẫu nhiên</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-4_experiments/figures/random_sample_assignment.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p><strong>Nghiên cứu của Đan Mạch về tác động của việc hút thuốc đối với sức khỏe của thai nhi</strong></p>
+<ul>
+<li>1998-2002, các nhà nghiên cứu Đan Mạch theo dõi hơn 90.000 phụ nữ mang thai.</li>
+<li>4.770 trong số những phụ nữ này đã cho con bú mẹ bị suy giảm thính lực.</li>
+<li>Nguồn gốc của vấn đề: 2.804 phụ nữ hút thuốc khi đang mang thai.</li>
+<li>Tuyệt đại đa số những phụ nữ này đã không tham gia một cuộc khảo sát khoa học nào.</li>
+</ul>
+<p><strong>Phân bổ ngẫu nhiên so với Chọn mẫu ngẫu nhiên</strong></p>
+<ul>
+<li>Phân bổ ngẫu nhiên giúp kiểm soát các yếu tố gây nhiễu (confounding) trong các thử nghiệm.</li>
+<li>Chọn mẫu ngẫu nhiên đảm bảo các kết quả có thể được tổng quát hóa cho toàn bộ quần thể.</li>
+</ul>
+</section>
+</section>
+<section id="case-study" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="case-study"><span class="header-section-number">1.6</span> Case study</h2>
+<p><strong>Điều trị Hội chứng mệt mỏi mãn tính</strong></p>
+<ul>
+<li>Mục tiêu: Đánh giá hiệu quả của liệu pháp nhận thức - hành vi (cognitive-behavior therapy) đối với hội chứng mệt mỏi mãn tính (chronic fatigue syndrome).</li>
+<li>Nhóm ứng viên: 142 bệnh nhân được tuyển chọn từ các giới thiệu của bác sĩ chăm sóc ban đầu và các chuyên gia tư vấn cho một phòng khám bệnh viện chuyên về hội chứng mệt mỏi mãn tính.</li>
+<li>Người tham gia thực tế: Chỉ 60 trong số 142 bệnh nhân được giới thiệu tham gia vào nghiên cứu. Một số bị loại vì không đáp ứng các tiêu chí chẩn đoán, một số có vấn đề sức khỏe khác, và một số từ chối tham gia nghiên cứu.</li>
+</ul>
+<p>Deale et. al.&nbsp;<em>Cognitive behavior therapy for chronic fatigue syndrome: A randomized controlled trial</em>. The American Journal of Psychiatry 154.3 (1997).</p>
+<section id="thiết-kế-nghiên-cứu" class="level4">
+<h4 class="anchored" data-anchor-id="thiết-kế-nghiên-cứu">Thiết kế nghiên cứu</h4>
+<ul>
+<li>Bệnh nhân được phân bổ ngẫu nhiên vào nhóm can thiệp (treatment group) và nhóm đối chứng (control group), mỗi nhóm có 30 bệnh nhân:
+<ul>
+<li><em>Can thiệp</em>: Liệu pháp nhận thức - hành vi – mang tính hợp tác, giáo dục và chú trọng vào hành vi. Bệnh nhân được hướng dẫn cách tăng cường hoạt động một cách ổn định và an toàn mà không làm trầm trọng thêm các triệu chứng.</li>
+<li><em>Đối chứng:</em> Thư giãn – Không có lời khuyên nào được đưa ra về cách tăng cường hoạt động. Thay vào đó, bệnh nhân được dạy các kỹ năng thư giãn cơ bắp tịnh tiến, hình dung và thư giãn nhanh.</li>
+</ul></li>
+</ul>
+</section>
+<section id="kết-quả" class="level4">
+<h4 class="anchored" data-anchor-id="kết-quả">Kết quả</h4>
+<p>Bảng dưới đây cho thấy sự phân bổ của các bệnh nhân có kết quả tốt sau 6 tháng theo dõi. Lưu ý rằng có 7 bệnh nhân đã bỏ cuộc giữa chừng: 3 từ nhóm can thiệp và 4 từ nhóm đối chứng.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th></th>
+<th>Kết quả tốt</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>Có</td>
+<td>Không</td>
+<td>Tổng cộng</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Can thiệp</td>
+<td>19</td>
+<td>8</td>
+<td>27</td>
+</tr>
+<tr class="odd">
+<td><strong>Nhóm</strong></td>
+<td>Đối chứng</td>
+<td>5</td>
+<td>21</td>
+<td>26</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Tổng cộng</td>
+<td>24</td>
+<td>29</td>
+<td>53</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>Tỷ lệ có kết quả tốt trong nhóm can thiệp: <span class="math display">\[ 19 / 27 \approx 0.70 \rightarrow 70\% \]</span></p></li>
+<li><p>Tỷ lệ có kết quả tốt trong nhóm đối chứng: <span class="math display">\[ 5 / 26 \approx 0.19 \rightarrow 19\% \]</span></p></li>
+</ul>
+</section>
+<section id="hiểu-về-kết-quả" class="level4">
+<h4 class="anchored" data-anchor-id="hiểu-về-kết-quả">Hiểu về kết quả</h4>
+<p><strong>Dữ liệu có cho thấy một sự khác biệt “thực sự” giữa các nhóm không?</strong></p>
+<ul>
+<li>Giả sử bạn tung một đồng xu 100 lần. Mặc dù xác suất đồng xu rơi vào mặt ngửa trong bất kỳ lần tung nào là 50%, chúng ta có thể sẽ không quan sát được chính xác 50 lần ngửa. Kiểu biến động này là một phần của hầu hết mọi quy trình tạo dữ liệu.</li>
+<li>Sự khác biệt quan sát được giữa hai nhóm (70 - 19 = 51%) có thể là thật, hoặc có thể do sự biến thiên tự nhiên.</li>
+<li>Vì sự khác biệt là khá lớn, nên việc tin rằng sự khác biệt đó là có thật sẽ thuyết phục hơn.</li>
+<li>Chúng ta cần các công cụ thống kê để xác định xem sự khác biệt có đủ lớn để bác bỏ ý kiến cho rằng nó là do ngẫu nhiên hay không.</li>
+</ul>
+</section>
+<section id="tổng-quát-hóa-kết-quả" class="level4">
+<h4 class="anchored" data-anchor-id="tổng-quát-hóa-kết-quả">Tổng quát hóa kết quả</h4>
+<p><strong>Kết quả của nghiên cứu này có thể tổng quát hóa (generalizable) cho tất cả bệnh nhân mắc hội chứng mệt mỏi mãn tính không?</strong></p>
+<p>Những bệnh nhân này có những đặc điểm cụ thể và đã tình nguyện tham gia nghiên cứu này, do đó họ có thể không đại diện cho tất cả các bệnh nhân mắc hội chứng mệt mỏi mãn tính. Mặc dù chúng ta không thể ngay lập tức tổng quát hóa kết quả cho tất cả bệnh nhân, nhưng nghiên cứu đầu tiên này rất đáng khích lệ. Phương pháp này có tác dụng đối với những bệnh nhân có một số đặc điểm hẹp, và điều đó mang lại hy vọng rằng nó sẽ hoạt động, ít nhất là ở một mức độ nào đó, với các bệnh nhân khác.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const tocLinks = document.querySelectorAll("nav#TOC a[data-scroll-target]");
+  if (tocLinks.length === 0) return;
+
+  const sections = Array.from(tocLinks).map(link => {
+    const target = link.getAttribute("data-scroll-target");
+    if (target.startsWith("#")) {
+      return document.getElementById(decodeURI(target.slice(1)));
+    } else {
+      return document.querySelector(decodeURI(target));
+    }
+  });
+
+  function updateActive() {
+    let activeIndex = 0;
+    // Find the section closest to the top of the viewport
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        // If the section top has scrolled past the top offset (120px for navbar)
+        if (rect.top <= 120) {
+          activeIndex = i;
+        }
+      }
+    }
+
+    // Update active class
+    tocLinks.forEach((link, idx) => {
+      if (idx === activeIndex) {
+        link.classList.add("active");
+        
+        // Ensure parent lists are expanded (prevent Quarto from auto-collapsing active submenus)
+        let parent = link.parentElement;
+        while (parent && parent !== document.getElementById("TOC")) {
+          if (parent.tagName === "UL") {
+            parent.classList.remove("collapse");
+          }
+          parent = parent.parentElement;
+        }
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  }
+
+  // Bind to window scroll and resize events
+  window.addEventListener("scroll", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  window.addEventListener("resize", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  
+  // Initial runs to align state
+  updateActive();
+  setTimeout(updateActive, 100);
+  setTimeout(updateActive, 500);
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./slide-0-vn.html" class="pagination-link" aria-label="Các yêu cầu về môn học">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Các yêu cầu về môn học</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./slide-2-vn.html" class="pagination-link" aria-label="Các kỹ thuật thu thập dữ liệu">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Các kỹ thuật thu thập dữ liệu</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>6&nbsp; Kiểm định giả thuyết thống kê – Phân tích dữ liệu</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./slide-bn-vn.html" rel="next">
+<link href="./slide-inferences-vn.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fa9e0952a64697c55f958ad13d4b0b73.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+    window.MathJax = {
+        tex: {
+            macros: {
+                E: "{\\mathbb{E}}",
+                P: "{\\mathbb{P}}",
+                Var: "{\\mathrm{Var}}"
+            }
+        }
+    };
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Phân tích dữ liệu</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./slide-hypo-vn.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Kiểm định giả thuyết thống kê</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Giới thiệu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-0-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Các yêu cầu về môn học</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-1-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Giới thiệu về phân tích dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-2-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Các kỹ thuật thu thập dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-3-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Phân tích mô tả dữ liệu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-research-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Phương pháp nghiên cứu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-inferences-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cơ sở suy diễn thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-hypo-vn.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Kiểm định giả thuyết thống kê</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-bn-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Mô hình đồ thị</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-causal-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Phân tích nhân quả</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-simple-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hồi quy tuyến tính</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-multi-reg-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Hồi quy đa biến và hồi quy logistic</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slide-mc-vn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Phương pháp mô phỏng Monte Carlo</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#các-bước-trong-thủ-tục-kiểm-định-giả-thuyết-thống-kê" id="toc-các-bước-trong-thủ-tục-kiểm-định-giả-thuyết-thống-kê" class="nav-link active" data-scroll-target="#các-bước-trong-thủ-tục-kiểm-định-giả-thuyết-thống-kê"><span class="header-section-number">6.1</span> Các bước trong thủ tục kiểm định giả thuyết thống kê</a></li>
+  <li><a href="#kiểm-định-tham-số" id="toc-kiểm-định-tham-số" class="nav-link" data-scroll-target="#kiểm-định-tham-số"><span class="header-section-number">6.2</span> Kiểm định tham số</a></li>
+  <li><a href="#kiểm-định-phi-tham-số" id="toc-kiểm-định-phi-tham-số" class="nav-link" data-scroll-target="#kiểm-định-phi-tham-số"><span class="header-section-number">6.3</span> Kiểm định phi tham số</a></li>
+  <li><a href="#bài-tập" id="toc-bài-tập" class="nav-link" data-scroll-target="#bài-tập"><span class="header-section-number">6.4</span> ✏️ Bài tập</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Kiểm định giả thuyết thống kê</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Kiểm định giả thuyết thống kê là một dạng suy diễn thống kê. Đây là một phương pháp quan trọng cho phép giải quyết nhiều vấn đề trong thực tế. Nội dung của kiểm định giả thuyết thống kê là dựa vào dữ liệu thu thập từ mẫu để ra quyết định bác bỏ hay chấp nhận giả thuyết về tổng thể.</p>
+<section id="các-bước-trong-thủ-tục-kiểm-định-giả-thuyết-thống-kê" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="các-bước-trong-thủ-tục-kiểm-định-giả-thuyết-thống-kê"><span class="header-section-number">6.1</span> Các bước trong thủ tục kiểm định giả thuyết thống kê</h2>
+<div class="tcolorbox">
+<p>Một thủ tục kiểm định giả thuyết thống kê bao gồm các bước sau:</p>
+<ol type="1">
+<li>Phát biểu giả thuyết không đúng <span class="math inline">\(H_{0}\)</span> và đối thuyết <span class="math inline">\(H_{a}\)</span>.</li>
+<li>Từ tổng thể nghiên cứu lập mẫu ngẫu nhiên kích thước <span class="math inline">\(n\)</span>. Chọn tiêu chuẩn kiểm định <span class="math inline">\(G\)</span> và xác định quy luật phân phối xác suất của <span class="math inline">\(G\)</span> với giả định giả thuyết <span class="math inline">\(H_{0}\)</span> là đúng.</li>
+<li>Với mức ý nghĩa <span class="math inline">\(\alpha\)</span>, xác định miền bác bỏ giả thuyết <span class="math inline">\(H_{0}\)</span>.</li>
+<li>Bác bỏ <span class="math inline">\(H_{0}\)</span> nếu giá trị kiểm định thuộc miền bác bỏ.</li>
+</ol>
+</div>
+<p>Trong thực hành, tiêu chuẩn kiểm định <span class="math inline">\(G\)</span> thường dựa trên các phân phối như: <span class="math inline">\(z\)</span> (phân phối chuẩn), <span class="math inline">\(t\)</span> (phân phối Student), <span class="math inline">\(\chi^{2}\)</span> (phân phối Chi-squared) và <span class="math inline">\(F\)</span> (phân phối Fisher).</p>
+<p><img src="figure/unnamed-chunk-22-1.svg" class="img-fluid" style="width:100.0%"></p>
+<div class="tcolorbox">
+<p>Trong thực hành tính toán thống kê ngày nay, người ta hay sử dụng thủ tục sau:</p>
+<ol type="1">
+<li>Tính giá trị kiểm định (ví dụ: <span class="math inline">\(z\)</span> hoặc <span class="math inline">\(t,\)</span> <span class="math inline">\(q\)</span>)</li>
+<li>Tính giá trị xác suất <span class="math inline">\(p\)</span>-value tương ứng với giá trị kiểm định tính ở bước 1</li>
+<li>Bác bỏ <span class="math inline">\(H_{0}\)</span> nếu <span class="math inline">\(p\)</span>-value &lt; <span class="math inline">\(\alpha\)</span> với <span class="math inline">\(p\text{-value} = p(\mathcal{D} | H_{0})\)</span>, với giả định <span class="math inline">\(H_{0}\)</span> là đúng và <span class="math inline">\(\alpha\)</span> là mức ý nghĩa, <span class="math inline">\(\mathcal{D}\)</span> là dữ liệu quan sát.</li>
+</ol>
+</div>
+<section id="sai-lầm-loại-i-và-ii" class="level3">
+<h3 class="anchored" data-anchor-id="sai-lầm-loại-i-và-ii">Sai lầm loại I và II</h3>
+<p>Khi đưa ra quyết định về chấp nhận hay bác bỏ một giả thuyết có thể chúng ta quyết định đúng hoặc sai. Bảng sau tóm tắt các tình huống</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Thực tế</th>
+<th style="text-align: right;">chấp nhận <span class="math inline">\(H_{0}\)</span></th>
+<th style="text-align: right;">bác bỏ <span class="math inline">\(H_{0}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(H_{0}\)</span> đúng</td>
+<td style="text-align: right;">Quyết định đúng</td>
+<td style="text-align: right;">Sai lầm loại I</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(H_{0}\)</span> sai</td>
+<td style="text-align: right;">Sai lầm loại II</td>
+<td style="text-align: right;">Quyết định đúng</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/paste-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p>Diễn giải bằng ví dụ xét nghiệm bệnh:</p>
+<ul>
+<li><span class="math inline">\(H_{0}\)</span>: “Người này không bị bệnh”</li>
+<li>Bác bỏ <span class="math inline">\(H_{0}\)</span>: kết luận “có bệnh”</li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Thực tế</th>
+<th style="text-align: right;">chấp nhận <span class="math inline">\(H_{0}\)</span></th>
+<th style="text-align: right;">bác bỏ <span class="math inline">\(H_{0}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Thực sự không bệnh</td>
+<td style="text-align: right;">Quyết định đúng</td>
+<td style="text-align: right;">False Positive</td>
+</tr>
+<tr class="even">
+<td>Thực sự có bệnh</td>
+<td style="text-align: right;">False Negative</td>
+<td style="text-align: right;">Quyết định đúng</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Sai lầm loại I (<span class="math inline">\(\alpha\)</span>): báo động giả <span class="math inline">\(\to\)</span> thấy hiệu ứng dù không có.</li>
+<li>Sai lầm loại II (<span class="math inline">\(\beta\)</span>): bỏ sót <span class="math inline">\(\to\)</span> có hiệu ứng nhưng không phát hiện.</li>
+<li>Power = <span class="math inline">\(1 - \beta\)</span>: khả năng phát hiện hiệu ứng khi nó thực sự tồn tại.</li>
+</ul>
+</section>
+</section>
+<section id="kiểm-định-tham-số" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="kiểm-định-tham-số"><span class="header-section-number">6.2</span> Kiểm định tham số</h2>
+<section id="kiểm-định-một-tham-số-một-tổng-thể-một-mẫu" class="level3">
+<h3 class="anchored" data-anchor-id="kiểm-định-một-tham-số-một-tổng-thể-một-mẫu">Kiểm định một tham số, một tổng thể, một mẫu</h3>
+<section id="trung-bình-tổng-thể" class="level4">
+<h4 class="anchored" data-anchor-id="trung-bình-tổng-thể">Trung bình tổng thể</h4>
+<p>Biết phương sai tổng thể <span class="math inline">\(\sigma\)</span> và mức ý nghĩa <span class="math inline">\(\alpha\)</span></p>
+<ol type="1">
+<li><p>Kiểm định hai phía</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\mu=\mu_{0}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\mu\neq\mu_{0}\)</span></li>
+<li>Tính <span class="math inline">\(z\)</span> <span class="math display">\[z=\frac{\bar{x}-\mu_{0}}{\sigma/\sqrt{n}}\]</span></li>
+<li>Miền bác bỏ <span class="math display">\[|z|&gt;z\left(\frac{\alpha}{2}\right)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía phải</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\mu=\mu_{0}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\mu&gt;\mu_{0}\)</span></li>
+<li>Tính <span class="math inline">\(z\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[z&gt;z(\alpha)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía trái</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\mu=\mu_{0}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\mu&lt;\mu_{0}\)</span></li>
+<li>Tính <span class="math inline">\(z\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[z&lt;-z(\alpha)\]</span></li>
+</ul></li>
+</ol>
+</section>
+<section id="trung-bình-tổng-thể-1" class="level4">
+<h4 class="anchored" data-anchor-id="trung-bình-tổng-thể-1">Trung bình tổng thể</h4>
+<p>Không biết phương sai tổng thể</p>
+<ol type="1">
+<li><p>Kiểm định hai phía</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\mu=\mu_{0}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\mu\neq\mu_{0}\)</span><br>
+</li>
+<li>Tính <span class="math inline">\(t\)</span> <span class="math display">\[t=\frac{\bar{x}-\mu_{0}}{s/\sqrt{n}}\]</span></li>
+<li>Miền bác bỏ <span class="math display">\[|t|&gt;t\left(\frac{\alpha}{2};n-1\right)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía phải</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\mu=\mu_{0}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\mu&gt;\mu_{0}\)</span></li>
+<li>Tính <span class="math inline">\(t\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[t&gt;t(\alpha;n-1)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía trái</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\mu=\mu_{0}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\mu&lt;\mu_{0}\)</span></li>
+<li>Tính <span class="math inline">\(t\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[t&lt;-t(\alpha;n-1)\]</span></li>
+</ul></li>
+</ol>
+</section>
+<section id="phương-sai-tổng-thể" class="level4">
+<h4 class="anchored" data-anchor-id="phương-sai-tổng-thể">Phương sai tổng thể</h4>
+<ol type="1">
+<li><p>Kiểm định hai phía</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\sigma=\sigma_{0}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\sigma\neq\sigma_{0}\)</span></li>
+<li>Tính <span class="math inline">\(q\)</span> <span class="math display">\[q=\frac{(n-1)s^{2}}{\sigma_{0}^{2}}\]</span></li>
+<li>Miền bác bỏ <span class="math display">\[q&gt;\chi^{2}\left(\frac{\alpha}{2};n-1\right)\]</span> hoặc <span class="math display">\[q&lt;\chi^{2}\left(1-\frac{\alpha}{2};n-1\right)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía phải</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\sigma=\sigma_{0}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\sigma&gt;\sigma_{0}\)</span></li>
+<li>Tính <span class="math inline">\(q\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[q&gt;\chi^{2}\left(\alpha;n-1\right)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía trái</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\sigma=\sigma_{0}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\sigma&lt;\sigma_{0}\)</span></li>
+<li>Tính <span class="math inline">\(q\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[q&lt;\chi^{2}\left(1-\alpha;n-1\right)\]</span></li>
+</ul></li>
+</ol>
+</section>
+<section id="tỉ-lệ-tổng-thể" class="level4">
+<h4 class="anchored" data-anchor-id="tỉ-lệ-tổng-thể">Tỉ lệ tổng thể</h4>
+<ol type="1">
+<li><p>Kiểm định hai phía</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:p=p_{0}\)</span> và đối thuyết <span class="math inline">\(H_{a}:p\neq p_{0}\)</span></li>
+<li>Tính <span class="math inline">\(z\)</span> <span class="math display">\[z=\frac{\hat{p}-p_{0}}{\sqrt{p_{0}(1-p_{0})/n}}\]</span></li>
+<li>Miền bác bỏ <span class="math display">\[|z|&gt;z\left(\frac{\alpha}{2}\right)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía phải</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:p=p_{0}\)</span> và đối thuyết <span class="math inline">\(H_{a}:p&gt;p_{0}\)</span></li>
+<li>Tính <span class="math inline">\(z\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[z&gt;z(\alpha)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía trái</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:p=p_{0}\)</span> và đối thuyết <span class="math inline">\(H_{a}:p&lt;p_{0}\)</span></li>
+<li>Tính <span class="math inline">\(z\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[z&lt;-z(\alpha)\]</span></li>
+</ul></li>
+</ol>
+</section>
+</section>
+<section id="kiểm-định-hai-tham-số-hai-tổng-thể-hai-mẫu" class="level3">
+<h3 class="anchored" data-anchor-id="kiểm-định-hai-tham-số-hai-tổng-thể-hai-mẫu">Kiểm định hai tham số, hai tổng thể, hai mẫu</h3>
+<section id="hai-trung-bình-tổng-thể" class="level4">
+<h4 class="anchored" data-anchor-id="hai-trung-bình-tổng-thể">Hai trung bình tổng thể</h4>
+<p>Giả sử phương sai bằng nhau</p>
+<ol type="1">
+<li><p>Kiểm định hai phía</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\mu_{1}=\mu_{2}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\mu_{1}\neq\mu_{2}\)</span></li>
+<li>Tính <span class="math inline">\(t\)</span> <span class="math display">\[t=\dfrac{\bar{x}_{1}-\bar{x}_{2}}{\sqrt{s_{p}^{2}\left(\frac{1}{n_{1}}+\frac{1}{n_{2}}\right)}}\]</span> với <span class="math display">\[s_{p}^{2}=\frac{(n_{1}-1)s_{1}^{2}+(n_{2}-1)s_{2}^{2}}{n_{1}+n_{2}-2}\]</span></li>
+<li>Miền bác bỏ <span class="math display">\[|t|&gt;t\left(\frac{\alpha}{2};n_{1}+n_{2}-2\right)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía phải</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\mu_{1}=\mu_{2}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\mu_{1}&gt;\mu_{2}\)</span></li>
+<li>Tính <span class="math inline">\(t\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[t&gt;t(\alpha;n_{1}+n_{2}-2)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía trái</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\mu_{1}=\mu_{2}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\mu_{1}&lt;\mu_{2}\)</span></li>
+<li>Tính <span class="math inline">\(t\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[t&lt;-t(\alpha;n_{1}+n_{2}-2)\]</span></li>
+</ul></li>
+</ol>
+</section>
+<section id="hai-trung-bình-tổng-thể-1" class="level4">
+<h4 class="anchored" data-anchor-id="hai-trung-bình-tổng-thể-1">Hai trung bình tổng thể</h4>
+<p>Giả sử phương sai khác nhau</p>
+<ol type="1">
+<li><p>Kiểm định hai phía</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\mu_{1}=\mu_{2}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\mu_{1}\neq\mu_{2}\)</span></li>
+<li>Tính <span class="math inline">\(z\)</span> <span class="math display">\[z=\dfrac{\bar{x}_{1}-\bar{x}_{2}}{\sqrt{\frac{s_{1}^{2}}{n_{1}}+\frac{s_{2}^{2}}{n_{2}}}}\]</span> với <span class="math inline">\(n_{1}&gt;30,n_{2}&gt;30\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[|z|&gt;z\left(\frac{\alpha}{2}\right)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía phải</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\mu_{1}=\mu_{2}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\mu_{1}&gt;\mu_{2}\)</span></li>
+<li>Tính <span class="math inline">\(z\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[z&gt;z(\alpha)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía trái</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\mu_{1}=\mu_{2}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\mu_{1}&lt;\mu_{2}\)</span></li>
+<li>Tính <span class="math inline">\(z\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[z&lt;-z(\alpha)\]</span></li>
+</ul></li>
+</ol>
+</section>
+<section id="hai-phương-sai-tổng-thể" class="level4">
+<h4 class="anchored" data-anchor-id="hai-phương-sai-tổng-thể">Hai phương sai tổng thể</h4>
+<ol type="1">
+<li><p>Kiểm định hai phía</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\sigma_{1}=\sigma_{2}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\sigma_{1}\neq\sigma_{2}\)</span></li>
+<li>Tính <span class="math inline">\(f\)</span> <span class="math display">\[f=\frac{s_{1}^{2}}{s_{2}^{2}}\]</span></li>
+<li>Miền bác bỏ <span class="math display">\[f&gt;F\left(\frac{\alpha}{2};n_{1}-1,n_{2}-1\right)\]</span> hoặc <span class="math display">\[f&lt;F\left(1-\frac{\alpha}{2};n_{1}-1,n_{2}-1\right)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía phải</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\sigma_{1}=\sigma_{2}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\sigma_{1}&gt;\sigma_{2}\)</span></li>
+<li>Tính <span class="math inline">\(f\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[f&gt;F\left(\alpha;n_{1}-1,n_{2}-1\right)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía trái</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:\sigma_{1}=\sigma_{2}\)</span> và đối thuyết <span class="math inline">\(H_{a}:\sigma_{1}&lt;\sigma_{2}\)</span></li>
+<li>Tính <span class="math inline">\(f\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[f&lt;F\left(1-\alpha;n_{1}-1,n_{2}-1\right)\]</span></li>
+</ul></li>
+</ol>
+</section>
+<section id="hai-tỉ-lệ-tổng-thể" class="level4">
+<h4 class="anchored" data-anchor-id="hai-tỉ-lệ-tổng-thể">Hai tỉ lệ tổng thể</h4>
+<ol type="1">
+<li><p>Kiểm định hai phía</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:p_{1}=p_{2}\)</span> và đối thuyết <span class="math inline">\(H_{a}:p_{1}\neq p_{2}\)</span></li>
+<li>Tính <span class="math inline">\(z\)</span> <span class="math display">\[z=\dfrac{\hat{p}_{1}-\hat{p}_{2}}{\sqrt{\bar{p}(1-\bar{p})\left(\frac{1}{n_{1}}+\frac{1}{n_{2}}\right)}}\]</span> với <span class="math display">\[\bar{p}=\frac{n_{1}\hat{p}_{1}+n_{2}\hat{p}_{2}}{n_{1}+n_{2}}\]</span></li>
+<li>Miền bác bỏ <span class="math display">\[|z|&gt;z\left(\frac{\alpha}{2}\right)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía phải</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:p_{1}=p_{2}\)</span> và đối thuyết <span class="math inline">\(H_{a}:p_{1}&gt;p_{2}\)</span></li>
+<li>Tính <span class="math inline">\(z\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[z&gt;z(\alpha)\]</span></li>
+</ul></li>
+<li><p>Kiểm định phía trái</p>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}:p_{1}=p_{2}\)</span> và đối thuyết <span class="math inline">\(H_{a}:p_{1}&lt;p_{2}\)</span></li>
+<li>Tính <span class="math inline">\(z\)</span></li>
+<li>Miền bác bỏ <span class="math display">\[z&lt;-z(\alpha)\]</span></li>
+</ul></li>
+</ol>
+</section>
+</section>
+</section>
+<section id="kiểm-định-phi-tham-số" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="kiểm-định-phi-tham-số"><span class="header-section-number">6.3</span> Kiểm định phi tham số</h2>
+<p>Cho mức ý nghĩa <span class="math inline">\(\alpha\)</span></p>
+<section id="kiểm-định-tính-độc-lập-của-hai-dấu-hiệu-định-tính" class="level3">
+<h3 class="anchored" data-anchor-id="kiểm-định-tính-độc-lập-của-hai-dấu-hiệu-định-tính">Kiểm định tính độc lập của hai dấu hiệu định tính</h3>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}\)</span>: hai biến độc lập</li>
+<li>Đối thuyết <span class="math inline">\(H_{a}\)</span>: hai biến không đập lập</li>
+<li>Tính <span class="math inline">\(q\)</span> từ bảng tương quan <span class="math display">\[q=n\left[\sum_{i=1}^{h}\sum_{j=1}^{k}\frac{n_{i}m_{j}}{n_{ij}^{2}}-1\right]\]</span></li>
+<li>Miền bác bỏ <span class="math display">\[q&gt;\chi^{2}(\alpha;(h-1)(k-1))\]</span></li>
+</ul>
+</section>
+<section id="kiểm-định-tính-phân-phối-chuẩn---jacque-berra" class="level3">
+<h3 class="anchored" data-anchor-id="kiểm-định-tính-phân-phối-chuẩn---jacque-berra">Kiểm định tính phân phối chuẩn - Jacque-Berra</h3>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}\)</span>: biến phân phối chuẩn</li>
+<li>Đối thuyết <span class="math inline">\(H_{a}\)</span>: biến không phân phối chuẩn</li>
+<li>Tính <span class="math inline">\(q\)</span> <span class="math display">\[q=n\left[\frac{skew^{2}}{6}+\frac{kurt^{2}}{24}\right]\]</span></li>
+<li>Miền bác bỏ <span class="math display">\[q&gt;\chi^{2}(\alpha;2)\]</span></li>
+</ul>
+</section>
+<section id="kiểm-định-phân-phối---kolmogorov-smirnov" class="level3">
+<h3 class="anchored" data-anchor-id="kiểm-định-phân-phối---kolmogorov-smirnov">Kiểm định phân phối - Kolmogorov-Smirnov</h3>
+<ul>
+<li>Giả thuyết không <span class="math inline">\(H_{0}\)</span>: phân phối thực nghiệm <span class="math inline">\(F_{o}\)</span> và phân phối mô hình <span class="math inline">\(F_{m}\)</span> là tương đồng</li>
+<li>Đối thuyết <span class="math inline">\(H_{a}\)</span>: phân phối thực nghiệm <span class="math inline">\(F_{o}\)</span> và phân phối mô hình <span class="math inline">\(F_{m}\)</span> là khác nhau</li>
+<li>Tính <span class="math inline">\(d\)</span> <span class="math display">\[d=\max(F_{o}(x)-F_{m}(x))\]</span></li>
+<li>Bác bỏ <span class="math inline">\(H_{0}\)</span> <span class="math display">\[d&gt;D(\alpha)\]</span></li>
+</ul>
+</section>
+</section>
+<section id="bài-tập" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="bài-tập"><span class="header-section-number">6.4</span> ✏️ Bài tập</h2>
+<section id="so-sánh-kì-vọng-với-một-số-cho-trước" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="so-sánh-kì-vọng-với-một-số-cho-trước">So sánh kì vọng với một số cho trước</h3>
+<div class="xca">
+<p>Giám đốc một xí nghiệp cho biết lương trung bình của 1 công nhân thuộc xí nghiệp là 380 ngàn đ/tháng. Chọn ngẫu nhiên 36 công nhân thấy lương trung bình là 350 ngàn đ/tháng, với độ lệch chuẩn <em>s</em> = 40. Lời báo cáo của giám đốc có tin cậy được không, với mức có ý nghĩa là <span class="math inline">\(\alpha=5\%\)</span>.</p>
+</div>
+<div class="xca">
+<p>Trong thập niên 80, trọng lượng trung bình của thanh niên là 48kg. Nay để xác định lại trọng lượng ấy, người ta chọn ngẫu nhiên 100 thanh niên đo trọng lượng trung bình là 50kg và phương sai mẫu <span class="math inline">\(s^{2}=(10kg)^{2}\)</span>. Thử xem trọng lượng thanh niên hiện nay phải chăng có thay đổi, với mức có ý nghĩa là 1%?</p>
+</div>
+<div class="xca">
+<p>Một cửa hàng thực phẩm nhận thấy thời gian vừa qua trung bình một khách hàng mua 250 ngàn đồng thực phẩm trong ngày. Nay cửa hàng chọn ngẫu nhiên 15 khách hàng thấy trung bình một khách hàng mua 240 ngàn đồng trong ngày và phương sai mẫu là <span class="math inline">\(s^{2}=(20\text{ ngàn đồng})^{2}\)</span>. Với mức ý nghĩa là 5%, kiểm định xem có phải sức mua của khách hàng hiện nay thực sự giảm sút hay không. Biết rằng sức mua của khách hàng có phân phối chuẩn.</p>
+</div>
+<div class="xca">
+<p>Đối với người Việt Nam, lượng huyết sắc tố trung bình là <span class="math inline">\(138.3\text{ g/l}\)</span>. Khám cho 80 công nhân ở nhà máy có tiếp xúc hoá chất, thấy huyết sắc tố trung bình <span class="math inline">\(\overline{x}=120\)</span> g/l; <span class="math inline">\(s=15\)</span> g/l. Từ kết quả trên, có thể kết luận lượng huyết sắc tố trung bình của công nhân nhà máy hoá chất này thấp hơn mức chung hay không? Kết luận với <span class="math inline">\(\alpha=0.05\)</span>.</p>
+</div>
+<div class="xca">
+<p>Trong điều kiện chăn nuôi bình thường, lượng sữa trung bình của 1 con bò là <span class="math inline">\(14\text{ kg/ngày}\)</span>. Nghi ngờ điều kiện chăn nuôi kém đi làm cho lượng sữa giảm xuống, người ta điều tra ngẫu nhiên 25 con và tính được lượng sữa trung bình của 1 con trong 1 ngày là 12.5 và độ lệch chuẩn <span class="math inline">\(s=2.5\)</span>. Với mức ý nghĩa <span class="math inline">\(\alpha=0.05\)</span>. hãy kết luận điều nghi ngờ nói trên. Giả thiết lượng sữa bò là 1 biến ngẫu nhiên chuẩn.</p>
+</div>
+<div class="xca">
+<p>Tiền lương trung bình của công nhân trước đây là 400 ngàn đ/tháng. Để xét xem tiền lương hiện nay so với mức trước đây thế nào, người ta điều tra 100 công nhân và tính được <span class="math inline">\(\overline{x}=404.8\)</span> ngàn đ/tháng và <span class="math inline">\(s=20\)</span> ngàn đ/tháng. Với <span class="math inline">\(\alpha=1\%\)</span></p>
+<ol type="1">
+<li><p>Nếu lập giả thiết 2 phía và giả thiết 1 phía thì kết quả kiểm định như thế nào?</p></li>
+<li><p>Giống câu (1), với <span class="math inline">\(\overline{x}=406\)</span> ngàn đ/tháng và <span class="math inline">\(s=20\)</span> ngàn đ/tháng.</p></li>
+</ol>
+</div>
+<div class="xca">
+<p>Một máy đóng gói các sản phẩm có khối lượng 1 kg. Nghi ngờ máy hoạt động không bình thường, người ta chọn ra một mẫu ngẫu nhiên gồm 100 sản phẩm thì thấy như sau:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Khối lượng</th>
+<th style="text-align: center;">0.95</th>
+<th style="text-align: center;">0.97</th>
+<th style="text-align: center;">0.99</th>
+<th style="text-align: center;">1.01</th>
+<th style="text-align: center;">1.03</th>
+<th style="text-align: center;">1.05</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Số gói</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">31</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+</tr>
+</tbody>
+</table>
+<p>Với mức ý nghĩa 0.05, hãy kết luận về nghi ngờ trên.</p>
+</div>
+<div class="xca">
+<p>Trọng lượng trung bình khi xuất chuồng ở một trại chăn nuôi trước là 3.3 kg/con. Năm nay người ta sử dụng một loại thức ăn mới, cân thử 15 con khi xuất chuồng ta được các số liệu như sau:</p>
+<p><code>3.25,2.50,4.00,3.75,3.80,3.90,4.02,3.60,3.80,3.20,3.82,3.40,3.75,4.00,3.50</code></p>
+<p>Giả thiết trọng lượng gà là đại lượng ngẫu nhiên phân phối theo quy luật chuẩn.</p>
+<ol type="1">
+<li><p>Với mức ý nghĩa <span class="math inline">\(\alpha=0.05\)</span>. Hãy cho kết luận về tác dụng của loại thức ăn này?</p></li>
+<li><p>Nếu trại chăn nuôi báo cáo trọng lượng trung bình khi xuất chuồng là 3.5 kg/con thì có chấp nhận được không? (<span class="math inline">\(\alpha=0.05\)</span>).</p></li>
+</ol>
+</div>
+<div class="xca">
+<p>Đo cholesterol (đơn vị mg%) cho một nhóm người, ta ghi nhận lại được</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Chol.</th>
+<th style="text-align: center;">150–160</th>
+<th style="text-align: center;">160-170</th>
+<th style="text-align: center;">170-180</th>
+<th style="text-align: center;">180-190</th>
+<th style="text-align: center;">190-200</th>
+<th style="text-align: center;">200-210</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Số người</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>Cho rằng độ cholesterol tuân theo phân phối chuẩn.</p>
+<ol type="1">
+<li><p>Tính trung bình mẫu <span class="math inline">\(\overline{x}\)</span> và phương sai mẫu <span class="math inline">\(s^{2}\)</span>.</p></li>
+<li><p>Tìm khoảng ước lượng cho trung bình cholesterol trong dân số ở độ tin cậy 0.95.</p></li>
+<li><p>Có tài liệu cho biết lượng cholesterol trung bình là <span class="math inline">\(\mu_{0}=175\)</span> mg%. Giá trị này có phù hợp với mẫu quan sát không? (kết luận với <span class="math inline">\(\alpha=0.05\)</span>).</p></li>
+</ol>
+</div>
+<div class="xca">
+<p>Quan sát số hoa hồng bán ra trong một ngày của một cửa hàng bán hoa sau một thời gian, người ta ghi được số liệu sau:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Số hoa hồng(đoá)</th>
+<th style="text-align: center;">12</th>
+<th style="text-align: center;">13</th>
+<th style="text-align: center;">15</th>
+<th style="text-align: center;">16</th>
+<th style="text-align: center;">17</th>
+<th style="text-align: center;">18</th>
+<th style="text-align: center;">19</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Số ngày</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>Giả thiết rằng số hoa bán ra trong ngày có phân phối chuẩn.</p>
+<ol type="1">
+<li><p>Tính trung bình mẫu <span class="math inline">\(\overline{x}\)</span> và phương sai mẫu <span class="math inline">\(s^{2}\)</span>.</p></li>
+<li><p>Sau khi tính toán, ông chủ cửa hàng nói rằng nếu trung bình một ngày không bán được 15 đoá hoa thì chẳng thà đóng cửa còn hơn. Dựa vào số liệu trên, anh (chị) hãy kết luận giúp ông chủ cửa hàng xem có nên tiếp tục bán hay không ở mức ý nghĩa <span class="math inline">\(\alpha=0.05\)</span>.</p></li>
+<li><p>Giả sử những ngày bán được từ 13 đến 17 đoá hồng là những ngày “bình thường”. Hãy ước lượng tỉ lệ của những ngày bình thường của cửa hàng ở độ tin cậy 90%.</p></li>
+</ol>
+</div>
+<div class="xca">
+<p>Một xí nghiệp đúc một số rất lớn các sản phẩm bằng thép với số khuyết tật trung bình ở mỗi sản phẩm là 3. Người ta cải tiến cách sản xuất và kiểm tra 36 sản phẩm. Kết quả như sau:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 45%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Số khuyết tật trên sản phẩm</th>
+<th style="text-align: center;">0</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Số sản phẩm tương ứng</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>Giả sử số khuyết tật của các sản phẩm có phân phối chuẩn.</p>
+<ol type="1">
+<li><p>Hãy ước lượng số khuyết tật trung bình ở mỗi sản phẩm sau khi cải tiến, với độ tin cậy 90 %.</p></li>
+<li><p>Hãy cho kết luận về hiệu quả của việc cải tiến sản xuất ở mức ý nghĩa 0.05.</p></li>
+</ol>
+</div>
+<div class="xca">
+<p>Đánh giá tác dụng của một chế độ ăn bồi dưỡng mà dấu hiệu quan sát là số hồng cầu. Người ta đếm số hồng cầu của 20 người trước và sau khi ăn bồi dưỡng:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(x_{i}\)</span></th>
+<th style="text-align: center;">32</th>
+<th style="text-align: center;">40</th>
+<th style="text-align: center;">38</th>
+<th style="text-align: center;">42</th>
+<th style="text-align: center;">41</th>
+<th style="text-align: center;">35</th>
+<th style="text-align: center;">36</th>
+<th style="text-align: center;">47</th>
+<th style="text-align: center;">50</th>
+<th style="text-align: center;">30</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(y_{i}\)</span></td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">52</td>
+<td style="text-align: center;">43</td>
+<td style="text-align: center;">48</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;">55</td>
+<td style="text-align: center;">34</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(x_{i}\)</span> 38 45 43 36 50 38 42 41 45 44 <span class="math inline">\(y_{i}\)</span> 32 54 58 30 60 35 50 48 40 50</p>
+<p>Với mức ý nghĩa <span class="math inline">\(\alpha=0.05\)</span>, có thể kết luận gì về tác dụng của chế độ ăn bồi dưỡng này?</p>
+</div>
+<div class="xca">
+<p>Giả sử ta muốn xác định xem hiệu quả của chế độ ăn kiêng đối với việc giảm trọng lượng như thế nào. 20 người quá béo đã thực hiện chế độ ăn kiêng. Trọng lượng của từng người trước khi ăn kiêng (<span class="math inline">\(X\)</span> kg) và sau khi ăn kiêng (<span class="math inline">\(Y\)</span> kg) được cho như sau:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: center;">80</th>
+<th style="text-align: center;">78</th>
+<th style="text-align: center;">85</th>
+<th style="text-align: center;">70</th>
+<th style="text-align: center;">90</th>
+<th style="text-align: center;">78</th>
+<th style="text-align: center;">92</th>
+<th style="text-align: center;">88</th>
+<th style="text-align: center;">75</th>
+<th style="text-align: center;">75</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(Y\)</span></td>
+<td style="text-align: center;">75</td>
+<td style="text-align: center;">77</td>
+<td style="text-align: center;">80</td>
+<td style="text-align: center;">70</td>
+<td style="text-align: center;">84</td>
+<td style="text-align: center;">74</td>
+<td style="text-align: center;">85</td>
+<td style="text-align: center;">82</td>
+<td style="text-align: center;">80</td>
+<td style="text-align: center;">65</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(X\)</span> 63 72 89 76 77 71 83 78 82 90 <span class="math inline">\(Y\)</span> 62 71 83 72 82 71 79 76 83 81</p>
+<p>Kiểm tra xem chế độ ăn kiêng có tác dụng làm thay đổi trọng lượng hay không (<span class="math inline">\(\alpha=0.05\)</span>).</p>
+</div>
+</section>
+<section id="so-sánh-hai-kì-vọng" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="so-sánh-hai-kì-vọng">So sánh hai kì vọng</h3>
+<div class="xca">
+<p>Một nhà phát triển sản phẩm quan tâm đến việc giảm thời gian khô của sơn. Vì vậy hai công thức sơn được đem thử nghiệm. Công thức 1 là công thức có các thành phần chuẩn và công thức 2 có thêm một thành phần làm khô mới được cho rằng sẽ làm giảm thời gian khô của sơn. Từ các thí nghiệm người ta thấy rằng <span class="math inline">\(\sigma_{1}=\sigma_{2}=8\)</span> phút. 10 đồ vật được sơn với công thức 1 và 10 đồ vật khác được sơn với công thức 2. Thời gian khô trung bình của từng mẫu là <span class="math inline">\(\overline{x}_{1}=121\)</span> phút và <span class="math inline">\(\overline{x}_{2}=112\)</span> phút. Nhà phát triển sản phẩm có thể rút ra kết luận gì về ảnh hưởng của thành phần làm khô mới? Với mức ý nghĩa 5%.</p>
+</div>
+<div class="xca">
+<p>Tốc độ cháy của hai loại chất nổ lỏng được dùng làm nhiên liệu trong tàu vũ trụ được nghiên cứu. Người ta biết rằng độ lệch chuẩn của tốc độ cháy của hai loại nhiên liệu bằng nhau và bằng 3 cm/s. Hai mẫu ngẫu nhiên kích thước <span class="math inline">\(n_{1}=20\)</span> và <span class="math inline">\(n_{2}=20\)</span> được thử nghiệm; trung bình mẫu tốc độ cháy là <span class="math inline">\(\overline{x}_{1}=18\)</span> cm/s và <span class="math inline">\(\overline{x}_{2}=24\)</span> <em>cm/s</em>. Với mức ý nghĩa <span class="math inline">\(\alpha=0.05\)</span> hãy kiểm định giả thuyết hai loại chất nổ lỏng này có cùng tốc độ đốt cháy.</p>
+</div>
+<div class="xca">
+<p>Theo dõi giá cổ phiếu của 2 công ty A và B trong vòng 31 ngày người ta tính được các giá trị sau</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: center;"><span class="math inline">\(\overline{x}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(s\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Công ty A</td>
+<td style="text-align: center;">37.58</td>
+<td style="text-align: center;">1.50</td>
+</tr>
+<tr class="even">
+<td>Công ty B</td>
+<td style="text-align: center;">38.24</td>
+<td style="text-align: center;">2.20</td>
+</tr>
+</tbody>
+</table>
+<p>Giả thiết rằng giá cổ phiếu của hai công ty A và B là hai biến ngẫu nhiên phân phối theo quy luật chuẩn. Hãy cho biết ý nghĩa kì vọng của các biến ngẫu nhiên nói trên? Hãy cho biết có sự khác biệt thực sự về giá cổ phiếu trung bình của hai công ty A và B không? Với mức ý nghĩa <span class="math inline">\(\alpha=5\%\)</span></p>
+</div>
+<div class="xca">
+<p>Hàm lượng đường trong máu của công nhân sau 5 giờ làm việc với máy siêu cao tần đã đo được ở hai thời điểm trước và sau 5 giờ làm việc. Ta có kết quả sau:</p>
+<ul>
+<li><p>Trước: <span class="math inline">\(n_{1}=50\)</span>, <span class="math inline">\(\overline{x}=60\)</span> mg%, <span class="math inline">\(s_{x}=7\)</span></p></li>
+<li><p>Sau: <span class="math inline">\(n_{2}=40\)</span>, <span class="math inline">\(\overline{y}=52\)</span> mg%, <span class="math inline">\(s_{y}=9.2\)</span></p></li>
+</ul>
+<p>Với mức ý nghĩa <span class="math inline">\(\alpha=0.05\)</span>, có thể khẳng định hàm lượng đường trong máu sau 5 giờ làm việc đã giảm đi hay không?</p>
+</div>
+<div class="xca">
+<p>Trồng cùng một giống lúa trên hai thửa ruộng như nhau và bón hai loại phân khác nhau. Đến ngày thu hoạch ta có kết quả như sau:</p>
+<ul>
+<li><p>Thửa thứ nhất lấy mẫu 1000 bông lúa thấy số hạt trung bình của mỗi bông là <span class="math inline">\(\overline{x}=70\)</span> hạt và <span class="math inline">\(s_{x}=10\)</span>.</p></li>
+<li><p>Thửa thứ hai lấy mẫu 500 bông thấy số hạt trung bình mỗi bông là <span class="math inline">\(\overline{y}=72\)</span> hạt và <span class="math inline">\(s_{y}=20\)</span>.</p></li>
+</ul>
+<p>Hỏi sự khác nhau giữa <span class="math inline">\(X\)</span> và <span class="math inline">\(Y\)</span> là ngẫu nhiên hay bản chất, với <span class="math inline">\(\alpha=0.05\)</span>?</p>
+</div>
+<div class="xca">
+<p>Để so sánh trọng lượng trung bình của trẻ sơ sinh ở thành thị và nông thôn, người ta thử cân trọng lượng của 10000 cháu và thu được kết quả sau đây:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 25%">
+<col style="width: 33%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Vùng</th>
+<th style="text-align: center;">Số cháu được cân</th>
+<th style="text-align: center;">Trọng lượng trung bình</th>
+<th style="text-align: center;">Độ lệch chuẩn mẫu</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Nông thôn</td>
+<td style="text-align: center;">8000</td>
+<td style="text-align: center;">3.0 kg</td>
+<td style="text-align: center;">0.3 kg</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Thành thị</td>
+<td style="text-align: center;">2000</td>
+<td style="text-align: center;">3.2 kg</td>
+<td style="text-align: center;">0.2 kg</td>
+</tr>
+</tbody>
+</table>
+<p>Với mức ý nghĩa <span class="math inline">\(\alpha=0.05\)</span> có thể coi trọng lượng trung bình của trẻ sơ sinh ở thành thị cao hơn ở nông thôn hay không? (Giả thiết trọng lượng trẻ sơ sinh là biến ngẫu nhiên chuẩn).</p>
+</div>
+<div class="xca">
+<p>Để so sánh năng lực học toán và vật lý của học sinh, người ta kiểm tra ngẫu nhiên 8 em bằng hai bài toán và vật lý. Kết quả cho bởi bảng dưới đây (<span class="math inline">\(X\)</span> là điểm toán, <span class="math inline">\(Y\)</span> là điểm lý):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: center;">15</th>
+<th style="text-align: center;">20</th>
+<th style="text-align: center;">16</th>
+<th style="text-align: center;">22</th>
+<th style="text-align: center;">24</th>
+<th style="text-align: center;">18</th>
+<th style="text-align: center;">20</th>
+<th style="text-align: center;">14</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(Y\)</span></td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">22</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">16</td>
+</tr>
+</tbody>
+</table>
+<p>Giả sử <span class="math inline">\(X\)</span> và <span class="math inline">\(Y\)</span> đều có phân phối chuẩn. Hãy so sánh điểm trung bình giữa <span class="math inline">\(X\)</span> và <span class="math inline">\(Y\)</span>, mức ý nghĩa 5%.</p>
+</div>
+<div class="xca">
+<p>Hai máy được sử dụng để rót nước vào các bình. Người ta lấy mẫu ngẫu nhiên 10 bình do máy thứ nhất và 10 bình do máy thứ hai thì được kết quả sau:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Máy 1</th>
+<th style="text-align: center;">16.03</th>
+<th style="text-align: center;">16.01</th>
+<th style="text-align: center;">16.04</th>
+<th style="text-align: center;">15.96</th>
+<th style="text-align: center;">16.05</th>
+<th style="text-align: center;">15.98</th>
+<th style="text-align: center;">16.05</th>
+<th style="text-align: center;">16.02</th>
+<th style="text-align: center;">16.02</th>
+<th style="text-align: center;">15.99</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Máy 2</td>
+<td style="text-align: center;">16.02</td>
+<td style="text-align: center;">16.03</td>
+<td style="text-align: center;">15.97</td>
+<td style="text-align: center;">16.04</td>
+<td style="text-align: center;">15.96</td>
+<td style="text-align: center;">16.02</td>
+<td style="text-align: center;">16.01</td>
+<td style="text-align: center;">16.01</td>
+<td style="text-align: center;">15.99</td>
+<td style="text-align: center;">16.00</td>
+</tr>
+</tbody>
+</table>
+<p>Với mức ý nghĩa <span class="math inline">\(\alpha=0.05\)</span> có thể nói rằng hai máy rót nước vào bình như nhau không?</p>
+</div>
+<div class="xca">
+<p>Để nghiên cứu ảnh hưởng của một loại thuốc, người ta cho 10 bệnh nhân uống thuốc. Lần khác họ cũng cho bệnh nhân uống thuốc nhưng là thuốc giả. Kết quả thí nghiệm thu được như sau:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 34%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Bệnh nhân</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">8</th>
+<th style="text-align: center;">9</th>
+<th style="text-align: center;">10</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Số giờ ngủ có thuốc</td>
+<td style="text-align: center;">6.1</td>
+<td style="text-align: center;">7.0</td>
+<td style="text-align: center;">8.2</td>
+<td style="text-align: center;">7.6</td>
+<td style="text-align: center;">6.5</td>
+<td style="text-align: center;">8.4</td>
+<td style="text-align: center;">6.9</td>
+<td style="text-align: center;">6.7</td>
+<td style="text-align: center;">7.4</td>
+<td style="text-align: center;">5.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Số giờ ngủ với thuốc giả</td>
+<td style="text-align: center;">5.2</td>
+<td style="text-align: center;">7.9</td>
+<td style="text-align: center;">3.9</td>
+<td style="text-align: center;">4.7</td>
+<td style="text-align: center;">5.3</td>
+<td style="text-align: center;">5.4</td>
+<td style="text-align: center;">4.2</td>
+<td style="text-align: center;">6.1</td>
+<td style="text-align: center;">3.8</td>
+<td style="text-align: center;">6.3</td>
+</tr>
+</tbody>
+</table>
+<p>Giả sử số giờ ngủ của bệnh nhân tuân theo phân phối chuẩn. Với mức ý nghĩa 5%, hãy kết luận về ảnh hưởng của loại thuốc trên.</p>
+</div>
+<div class="xca">
+<p>Quan sát sức nặng của bé trai (<span class="math inline">\(X\)</span>) và bé gái (<span class="math inline">\(Y\)</span>) lúc sơ sinh (đơn vị gam), ta có kết quả</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Trọng lượng</th>
+<th style="text-align: center;">3000-3200</th>
+<th style="text-align: center;">3200-3400</th>
+<th style="text-align: center;">3400-3600</th>
+<th style="text-align: center;">3600-3800</th>
+<th style="text-align: center;">3800-4000</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Số bé trai</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Số bé gái</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li><p>Tính <span class="math inline">\(\overline{x}\)</span>, <span class="math inline">\(\overline{y}\)</span>, <span class="math inline">\(s_{x}^{2}\)</span>, <span class="math inline">\(s_{y}^{2}\)</span>.</p></li>
+<li><p>So sánh các kì vọng <span class="math inline">\(\mu_{X}\)</span>, <span class="math inline">\(\mu_{Y}\)</span> (kết luận với <span class="math inline">\(\alpha=5\%\)</span>).</p></li>
+<li><p>Nhập hai mẫu lại. Tính trung bình và độ lệch chuẩn của mẫu nhập. Dùng mẫu nhập để ước lượng sức nặng trung bình của trẻ sơ sinh ở độ tin cậy 95%.</p></li>
+</ol>
+</div>
+</section>
+<section id="so-sánh-tỉ-lệ-với-một-số-cho-trước" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="so-sánh-tỉ-lệ-với-một-số-cho-trước">So sánh tỉ lệ với một số cho trước</h3>
+<div class="xca">
+<p>Trong một vùng dân cư có 18 bé trai và 28 bé gái mắc bệnh B. Hỏi rằng tỷ lệ nhiễm bệnh của bé trai và bé gái có như nhau không? (kết luận với <span class="math inline">\(\alpha=0.05\)</span> và giả sử rằng số lượng bé trai và bé gái trong vùng tương đương nhau, và rất nhiều).</p>
+</div>
+<div class="xca">
+<p>Một máy sản xuất tự động với tỷ lệ chính phẩm là 98%. Sau một thời gian hoạt động, người ta nghi ngờ tỷ lệ trên đã bị giảm. Kiểm tra ngẫu nhiên 500 sản phẩm thấy có 28 phế phẩm, với <span class="math inline">\(\alpha=0.05\)</span> hãy kiểm tra xem chất lượng làm việc của máy có còn được như trước hay không?</p>
+</div>
+<div class="xca">
+<p>Đo huyết sắc tố cho 50 công nhân nông trường thấy có 60% ở mức dưới 110 g/l. Số liệu chung của khu vực này là 30% ở mức dưới 110 g/l. Với mức ý nghĩa <span class="math inline">\(\alpha=0.05\)</span>, có thể kết luận công nhân nông trường có tỷ lệ huyết sắc tố dưới 110 g/l cao hơn mức chung hay không?</p>
+</div>
+<div class="xca">
+<p>Theo một nguồn tin thì tỉ lệ hộ dân thích xem dân ca trên Tivi là 80%. Thăm dò 36 hộ dân thấy có 25 hộ thích xem dân ca. Với mức có ý nghĩa là 5%. Kiểm định xem nguồn tin này có đáng tin cậy không?</p>
+</div>
+<div class="xca">
+<p>Một máy sản suất tự động, lúc đầu tỷ lệ sản phẩm loại A là 20%. Sau khi áp dụng một phương pháp cải tiến sản xuất mới, người ta lấy 40 mẫu, mỗi mẫu gồm 10 sản phẩm đề kiểm tra. Kết quả kiểm tra cho ở bảng sau:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 37%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Số sản phẩm loại A trong mẫu</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">8</th>
+<th style="text-align: center;">9</th>
+<th style="text-align: center;">10</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Số mẫu</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>Với mức ý nghĩa 5%. Hãy cho kết luận về phương pháp sản suất này.</p>
+</div>
+<div class="xca">
+<p>Tỷ lệ phế phẩm của một nhà máy trước đây là 5%. Năm nay nhà máy áp dụng một biện pháp kỹ thuật mới. Để nghiên cứu tác dụng của biện pháp kỹ thuật mới, người ta lấy một mẫu gồm 800 sản phẩm để kiểm tra và thấy có 24 phế phẩm.</p>
+<ol type="1">
+<li><p>Với <span class="math inline">\(\alpha=0.01\)</span>. Hãy cho kết luận về biện pháp kỹ thuật mới này?</p></li>
+<li><p>Nếu nhà máy báo cáo tỷ lệ phế phẩm sau khi áp dụng biện pháp kỹ thuật mới là 2% thì có chấp nhận được không? (<span class="math inline">\(\alpha=0.01\)</span>).</p></li>
+</ol>
+</div>
+</section>
+<section id="so-sánh-hai-tỉ-lệ" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="so-sánh-hai-tỉ-lệ">So sánh hai tỉ lệ</h3>
+<div class="xca">
+<p>Trong 90 người dùng DDT để ngừa bệnh ngoài da thì có 10 người nhiễm bệnh; trong 100 người không dùng DDT thì có 26 người mắc bệnh. Hỏi rằng DDT có tác dụng ngừa bệnh ngoài da không? (kết luận với <span class="math inline">\(\alpha=0.05\)</span>)</p>
+</div>
+<div class="xca">
+<p>Người ta điều tra 250 người ở xã A thấy có 140 nữ và điều tra 160 người ở xã B thấy có 80 nữ. Hãy so sánh tỉ lệ nữ ở hai xã với mức ý nghĩa 5%.</p>
+</div>
+<div class="xca">
+<p>Áp dụng hai phương pháp gieo hạt. Theo phương pháp A gieo 180 hạt thì có 150 hạt nảy mầm; theo phương pháp B gieo 256 hạt thì thấy có 160 hạt nảy mầm. Hãy so sánh hiệu quả của hai phương pháp với mức ý nghĩa <span class="math inline">\(\alpha=5\%\)</span>.</p>
+</div>
+<div class="xca">
+<p>Theo dõi trọng lượng của một số trẻ sơ sinh tại một số nhà hộ sinh thành phố và nông thôn, người ta thấy rằng trong số 150 trẻ sơ sinh ở thành phố có 100 cháu nặng hơn 3000 gam, và trong 200 trẻ sơ sinh ở nông thôn có 98 cháu nặng hơn 3000 gam. Từ kết quả đó hãy so sánh tỉ lệ trẻ sơ sinh có trọng lượng trên 3000 gam ở thành phố và nông thôn với mức ý nghĩa 5%.</p>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const tocLinks = document.querySelectorAll("nav#TOC a[data-scroll-target]");
+  if (tocLinks.length === 0) return;
+
+  const sections = Array.from(tocLinks).map(link => {
+    const target = link.getAttribute("data-scroll-target");
+    if (target.startsWith("#")) {
+      return document.getElementById(decodeURI(target.slice(1)));
+    } else {
+      return document.querySelector(decodeURI(target));
+    }
+  });
+
+  function updateActive() {
+    let activeIndex = 0;
+    // Find the section closest to the top of the viewport
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        // If the section top has scrolled past the top offset (120px for navbar)
+        if (rect.top <= 120) {
+          activeIndex = i;
+        }
+      }
+    }
+
+    // Update active class
+    tocLinks.forEach((link, idx) => {
+      if (idx === activeIndex) {
+        link.classList.add("active");
+        
+        // Ensure parent lists are expanded (prevent Quarto from auto-collapsing active submenus)
+        let parent = link.parentElement;
+        while (parent && parent !== document.getElementById("TOC")) {
+          if (parent.tagName === "UL") {
+            parent.classList.remove("collapse");
+          }
+          parent = parent.parentElement;
+        }
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  }
+
+  // Bind to window scroll and resize events
+  window.addEventListener("scroll", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  window.addEventListener("resize", () => {
+    window.requestAnimationFrame(updateActive);
+  });
+  
+  // Initial runs to align state
+  updateActive();
+  setTimeout(updateActive, 100);
+  setTimeout(updateActive, 500);
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./slide-inferences-vn.html" class="pagination-link" aria-label="Cơ sở suy diễn thống kê">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cơ sở suy diễn thống kê</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./slide-bn-vn.html" class="pagination-link" aria-label="Mô hình đồ thị">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Mô hình đồ thị</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
